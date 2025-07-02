@@ -1,0 +1,13 @@
+spring:
+    application:
+        name: Hijra_kyc
+    datasource:
+        url: jdbc:mysql://localhost:8080/hijra
+        username: root
+        password: ''    
+    jpa:
+        generate-ddl: true
+        hibernate:
+            ddl-auto: update    
+server:
+    port: 9090        
