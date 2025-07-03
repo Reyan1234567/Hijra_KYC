@@ -10,6 +10,7 @@ public class SystemLogMapper {
         return SystemLog.builder()
         .actionType(dto.getActionType())
         .actionTime(LocalDateTime.now())
+        .userId(dto.getUserId())
         .build();
     }
     public static SystemLogOutDto toDto(SystemLog log){

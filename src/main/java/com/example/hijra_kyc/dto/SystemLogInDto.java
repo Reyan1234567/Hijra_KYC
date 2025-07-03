@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class SystemLogInDto {
+    private String userId;
     private String actionType;
     private LocalDateTime actionTime;
 }

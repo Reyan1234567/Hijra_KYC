@@ -10,12 +10,14 @@ import com.example.hijra_kyc.service.BackReasonService;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/api/back-reasons")
+@Validated
 public class BackReasonController {
     private final BackReasonService backReasonService;
     public BackReasonController(BackReasonService backReasonService){

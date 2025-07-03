@@ -3,6 +3,7 @@ package com.example.hijra_kyc.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import com.example.hijra_kyc.dto.BranchOutDto;
 
 @RestController
 @RequestMapping("/api/branches")
+@Validated
 public class BranchController {
     private final BranchService branchService;
     public BranchController(BranchService branchService){
