@@ -4,19 +4,20 @@ import java.time.LocalDateTime;
 import com.example.hijra_kyc.dto.SystemLogInDto;
 import com.example.hijra_kyc.dto.SystemLogOutDto;
 import com.example.hijra_kyc.model.SystemLog;
+import com.example.hijra_kyc.model.UserProfile;
 
 public class SystemLogMapper {
-    public static SystemLog toEntity(SystemLogInDto dto){
+    public static SystemLog toEntity(SystemLogInDto dto,UserProfile user){
         return SystemLog.builder()
         .actionType(dto.getActionType())
         .actionTime(LocalDateTime.now())
-        .userId(dto.getUserId())
+        .userId(user)
         .build();
     }
     public static SystemLogOutDto toDto(SystemLog log){
         SystemLogOutDto dto = new SystemLogOutDto();
         dto.setId(log.getId());
-        dto.setUserId(log.getUserId());
+        dto.setUserId(log.getUserId().getId());
         dto.setActionTime(log.getActionTime());
         dto.setActionType(log.getActionType());
         return dto;

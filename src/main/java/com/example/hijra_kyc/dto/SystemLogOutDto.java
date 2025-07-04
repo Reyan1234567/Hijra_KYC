@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class SystemLogOutDto {
     private int id;
-    private String userId;
+    private int userId;
     private LocalDateTime actionTime;
     private String actionType;
 }

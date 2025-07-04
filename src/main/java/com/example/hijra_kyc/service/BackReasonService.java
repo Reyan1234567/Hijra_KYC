@@ -24,7 +24,7 @@ public class BackReasonService {
     }
 
     public BackReasonOutDto createBackReason(BackReasonInDto dto){
-        UserProfile user = userRepo.findByUserId(dto.getCommentedBy())
+        UserProfile user = userRepo.findById(dto.getCommentedBy())
     .orElseThrow(() -> new RuntimeException("User not found"));
 
         BackReason backReason = BackReasonMapper.toEntity(dto,user);

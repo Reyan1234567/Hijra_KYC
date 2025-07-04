@@ -11,6 +11,5 @@ public class UserProfileInDto {
     private String lastName;
     private String userName;
     private String gender;
-    private String branchAddress;
     private String phoneNumber;
 }

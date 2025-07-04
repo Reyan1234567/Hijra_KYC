@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,8 +26,6 @@ public class UserProfile {
     private int id;
     @NotBlank(message = "user id required")
     private String userId;
-    @NotNull(message = "branch id required")
-    private int branchId;
     @NotBlank(message = "role id required")
     private String roleId;
     @NotBlank(message = "first name required")
@@ -36,9 +36,10 @@ public class UserProfile {
     private String userName;
     @NotBlank(message = "gender required")
     private String gender;
-    @NotBlank(message = "branch address required")
-    private String branchAddress;
     @NotBlank(message = "phone number required")
     private String phoneNumber;
+    @ManyToOne
+    @JoinColumn(name="branchId", nullable = false)
+    private Branch branch;
 
 }

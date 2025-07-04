@@ -13,7 +13,7 @@ public class BranchMapper {
     }
     public static BranchOutDto toDto(Branch branch){
         BranchOutDto dto = new BranchOutDto();
-        dto.setId(branch.getId());
+        dto.setId(branch.getBranchId());
         dto.setName(branch.getName());
         dto.setPhoneNumber(branch.getPhoneNumber());
         return dto;

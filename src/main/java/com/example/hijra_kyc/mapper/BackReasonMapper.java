@@ -8,7 +8,6 @@ import com.example.hijra_kyc.model.BackReason;
 import com.example.hijra_kyc.model.UserProfile;
 
 public class BackReasonMapper {
-    //UserProfile user = new UserProfile();
     public static BackReason toEntity(BackReasonInDto dto,UserProfile user){
         return BackReason.builder()
         .comment(dto.getComment())
@@ -17,13 +16,13 @@ public class BackReasonMapper {
         .commentedAt(LocalDateTime.now())
         .build();
     }
-    public static BackReasonOutDto toDto(BackReason entity){
+    public static BackReasonOutDto toDto(BackReason reason){
         BackReasonOutDto dto = new BackReasonOutDto();
-        dto.setId(entity.getId());
-        dto.setComment(entity.getComment());
-        dto.setBankAccount(entity.getBankAccount());
-        dto.setCommentedBy(entity.getCommentedBy().getUserId());
-        dto.setCommentedAt(entity.getCommentedAt());
+        dto.setId(reason.getId());
+        dto.setComment(reason.getComment());
+        dto.setBankAccount(reason.getBankAccount());
+        dto.setCommentedBy(reason.getCommentedBy().getId());
+        dto.setCommentedAt(reason.getCommentedAt());
         return dto;
     }
 }

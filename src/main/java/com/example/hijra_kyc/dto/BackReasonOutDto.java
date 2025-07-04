@@ -10,6 +10,6 @@ public class BackReasonOutDto {
     private int id;
     private String comment;
     private String bankAccount;
-    private String commentedBy;
+    private int commentedBy;
     private LocalDateTime commentedAt;
 }
