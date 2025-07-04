@@ -1,13 +1,15 @@
 package com.example.hijra_kyc.service;
 
+import com.example.hijra_kyc.dto.MessageDelete;
+import com.example.hijra_kyc.dto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageInDto;
+import com.example.hijra_kyc.dto.MessageOutDto;
 import com.example.hijra_kyc.mapper.MessageMapper;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Message;
 import com.example.hijra_kyc.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,22 +24,87 @@ public class MessageService {
         Message message = messageMapper.toMessage(messageInDto);
 
         try{
+            messageRepository.findById(messageInDto.getReceiver())
+                    .orElseThrow(()->new RuntimeException("Receiver Not Found"));
+
+            var messageField=messageInDto.getMessage();
+            if(messageField.isEmpty()){
+                return baseService.error("Message Field Empty");
+            }
             var response=messageRepository.save(message);
             return baseService.success(response);
         }
         catch(Exception e){
-            return baseService.error();
+            return baseService.error(e.getMessage());
         }
     }
 
-    public BaseList<?> getConversation(Long user1, Long user2){
+    public BaseList<?> getConversation(Long user){
         try{
-           var result= messageRepository.findConversationBetweenUsers(user1,user2);
+           messageRepository.findById(user.intValue())
+                   .orElseThrow(()->new RuntimeException("User Not Found"));
+           var result= messageRepository.findConversationBetweenUsers(getLoggerUserId(),user);
            return baseService.ListSuccess(result);
         }
         catch(Exception e){
-            return baseService.listError();
+            return baseService.listError(e.getMessage());
         }
     }
+
+    public Base<?> updateStatus(Long senderId) {
+        try{
+            Long receiverId = getLoggerUserId();
+            messageRepository.findById(senderId.intValue())
+                    .orElseThrow(()-> new RuntimeException("Sender Not Found"));
+            messageRepository.updateStatus(senderId, receiverId);
+            return baseService.success("Message Updated successfully");
+        }
+        catch(Exception e){
+            return baseService.error(e.getMessage());
+        }
+    }
+
+    public Base<?> deleteMessage(MessageDelete message) {
+        try{
+            messageRepository.findById(message.getId().intValue())
+                    .orElseThrow(()-> new RuntimeException("Message Not Found"));
+            if(message.getSenderId().intValue()==getLoggerUserId()){
+                return baseService.error("Unauthorized!");
+            }
+            messageRepository.deleteById(message.getId().intValue());
+            return baseService.success("Message Deleted successfully");
+        }
+        catch(Exception e){
+            return baseService.error(e.getMessage());
+        }
+    }
+
+
+    public Base<?> updateMessage(MessageOutDto message){
+        try{
+            if(!messageRepository.existsById(message.getId().intValue())){
+                return baseService.error("Message Not Found");
+            }
+            if(message.getSenderId().intValue()==getLoggerUserId()){
+                return baseService.error("Unauthorized!");
+            }
+            var lastMessage=messageRepository.findLatestMessage(message.getRecieverId(), getLoggerUserId());
+            if(lastMessage==null){
+                return baseService.error("Message Not Found");
+            }
+            messageRepository.updateMessageBody(message.getId().intValue(), message.getMessage());
+            return baseService.success("Message Updated successfully");
+        }
+        catch(Exception e){
+            return baseService.error(e.getMessage());
+        }
+    }
+
+    private Long getLoggerUserId() {
+//        some logic to get the currently logged in user
+        return 1L;
+    }
+
+
 
 }

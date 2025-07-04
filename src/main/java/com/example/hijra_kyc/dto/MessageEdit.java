@@ -1,10 +1,10 @@
 package com.example.hijra_kyc.dto;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
-public class MessageInDto {
+public class MessageEdit {
+    private Long recieverId;
+    private Long senderId;
     private String message;
-    private int receiver;
 }

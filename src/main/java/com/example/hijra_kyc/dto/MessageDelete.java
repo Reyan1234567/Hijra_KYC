@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MessageOutDto {
+public class MessageDelete {
     private Long id;
     private Long senderId;
-    private Long recieverId;
-    private String message;
 }

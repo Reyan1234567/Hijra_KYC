@@ -1,10 +1,8 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.ConversationRequestDto;
-import com.example.hijra_kyc.dto.MessageInDto;
+import com.example.hijra_kyc.dto.*;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
-import com.example.hijra_kyc.model.Message;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +23,28 @@ public class MessageController {
         return baseService.rest(save);
     }
 
-    @PostMapping("/getConvo")
-    public ResponseEntity<?> getMessages(@RequestBody ConversationRequestDto dto){
-        BaseList<?> getConversation=messageService.getConversation(dto.getUser1(), dto.getUser2());
+    @PostMapping("/getConvo/{id}")
+    public ResponseEntity<?> getMessages(@PathVariable Long id){
+        BaseList<?> getConversation=messageService.getConversation(id);
         return baseService.rest(getConversation);
+    }
+
+    @PatchMapping("/updateSeen/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id){
+        Base<?> updateResult=messageService.updateStatus(id);
+        return baseService.rest(updateResult);
+    }
+
+    @DeleteMapping("/")
+    public ResponseEntity<?> deleteMessage(@RequestBody MessageDelete message){
+        Base<?> deleteMessage=messageService.deleteMessage(message);
+        return baseService.rest(deleteMessage);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> editMessage(@PathVariable Long id, @RequestBody MessageEdit message){
+        Base<?> messageEdit=messageService.updateMessage(new MessageOutDto(id, message.getSenderId(), message.getRecieverId(), message.getMessage()));
+        return baseService.rest(messageEdit);
     }
 
 }

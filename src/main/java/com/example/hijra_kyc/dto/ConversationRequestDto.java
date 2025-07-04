@@ -4,6 +4,5 @@ import lombok.Data;
 
 @Data
 public class ConversationRequestDto {
-    private Long user1;
-    private Long user2;
+    private Long userId;
 }

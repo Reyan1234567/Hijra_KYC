@@ -12,7 +12,8 @@ public class MessageMapper {
     public Message toMessage(MessageInDto messageInDto){
 
         KycUserProfile sender = new KycUserProfile();
-        sender.setId(messageInDto.getSender());
+//        sender.setId(messageInDto.getSender());
+//        supposed to enter the id we get from the token when the user logs in
 
         KycUserProfile receiver = new KycUserProfile();
         receiver.setId(messageInDto.getReceiver());
