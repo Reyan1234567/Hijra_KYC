@@ -2,7 +2,7 @@ spring:
     application:
         name: Hijra_kyc
     datasource:
-        url: jdbc:mysql://localhost:8080/hijra
+        url: jdbc:mysql://localhost:3306/hijra
         username: root
         password: ''    
     jpa:
