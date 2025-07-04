@@ -29,4 +29,8 @@ public class BranchService {
             .map(BranchMapper::toDto)
             .collect(Collectors.toList());
     }
+    public Branch searchBranchById(int id){
+        return branchRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+    }
 }

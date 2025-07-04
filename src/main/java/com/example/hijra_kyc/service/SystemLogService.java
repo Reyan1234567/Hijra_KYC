@@ -35,4 +35,8 @@ public class SystemLogService {
             .map(SystemLogMapper::toDto)
             .collect(Collectors.toList());
     }
+    public SystemLog searchLogById(int id){
+        return logRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Log not found with id: " + id));
+    }
 }

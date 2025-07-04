@@ -38,4 +38,8 @@ public class BackReasonService {
             .collect(Collectors.toList());
         
     }
+    public BackReason searchBackReasonById(int id){
+        return backReasonRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Back Reason not found with id: " + id));
+    }
 }
