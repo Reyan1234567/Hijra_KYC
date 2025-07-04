@@ -3,6 +3,7 @@ package com.example.hijra_kyc.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.hijra_kyc.dto.UserProfileInDto;
@@ -32,5 +33,15 @@ public class UserProfileService {
         return userRepository.findAll().stream()
         .map(UserProfileMapper::toDto)
         .collect(Collectors.toList());
+    }
+    public UserProfile searchUserById(int id){
+         return userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+    }
+    public void deleteUserById(int id) {
+        UserProfile user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        userRepository.delete(user);
     }
 }
