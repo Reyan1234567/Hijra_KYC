@@ -2,12 +2,14 @@ package com.example.hijra_kyc.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "kyc_images")
 public class Image {
     @Id
@@ -20,6 +22,7 @@ public class Image {
     private String imageName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_account", referencedColumnName = "customer_account")
-    private MakeForm customerAccount;
+    @JoinColumn(name = "image_make_id")
+    private MakeForm imageMake;
+
 }

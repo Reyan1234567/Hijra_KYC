@@ -21,6 +21,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     @Query("Select m from Message m where(m.senderId=:senderId and m.recieverId=:recieverId) order by m.id desc limit 1")
     Message findLatestMessage(@Param("senderId") Long senderId, @Param("recieverId") Long recieverId);
 
-    @Query("Update Message m set m.messageBody=:messageBody where m.id=:id")
-    void updateMessageBody(@Param("id") Integer id, @Param("messageBody") String messageBody);
+//    @Modifying
+//    @Query("Update Message m set m.messageBody=:messageBody where m.id=:id")
+//    void updateMessageBody(@Param("id") Integer id, @Param("messageBody") String messageBody);
 }

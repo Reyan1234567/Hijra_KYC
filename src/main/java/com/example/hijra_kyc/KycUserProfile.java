@@ -1,5 +1,6 @@
 package com.example.hijra_kyc;
 
+import com.example.hijra_kyc.model.Branch;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -49,5 +50,9 @@ public class KycUserProfile {
     @Size(max = 255)
     @Column(name = "photo")
     private String photo;
+
+    @ManyToOne
+    @JoinColumn(name = "id", referencedColumnName = "branch_id")
+    private Branch branch;
 
 }

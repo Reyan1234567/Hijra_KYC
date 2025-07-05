@@ -19,7 +19,7 @@ public class MessageController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestBody MessageInDto message){
-        Base<?> save=messageService.save(message);
+        Base<?> save=messageService.saveMessage(message);
         return baseService.rest(save);
     }
 
@@ -42,8 +42,8 @@ public class MessageController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> editMessage(@PathVariable Long id, @RequestBody MessageEdit message){
-        Base<?> messageEdit=messageService.updateMessage(new MessageOutDto(id, message.getSenderId(), message.getRecieverId(), message.getMessage()));
+    public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message){
+        Base<?> messageEdit=messageService.updateMessage(senderId, receiverId,message);
         return baseService.rest(messageEdit);
     }
 

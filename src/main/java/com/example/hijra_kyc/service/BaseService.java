@@ -23,7 +23,7 @@ public class BaseService {
         return new Base<>(null, false, message);
     }
 
-    public BaseList<?> ListSuccess(List<?> list){
+    public BaseList<?> listSuccess(List<?> list){
         return new BaseList<>(list, true, list.size(), "Success!");
     }
 

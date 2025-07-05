@@ -3,14 +3,18 @@ package com.example.hijra_kyc.model;
 import com.example.hijra_kyc.KycUserProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "kyc_make_forms")
 public class MakeForm {
     @Id
@@ -19,7 +23,7 @@ public class MakeForm {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maker_user_id", referencedColumnName = "user_profile_id")
+    @JoinColumn(name = "maker_user_id")
     private KycUserProfile maker;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,4 +58,11 @@ public class MakeForm {
     @Size(max = 50)
     @Column(name = "status", length = 50)
     private String status;
+
+    @OneToMany(mappedBy = "imageMake")
+    private List<Image> images=new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id", referencedColumnName="branch_id")
+    private Branch branchId;
 }

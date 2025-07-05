@@ -3,7 +3,6 @@ package com.example.hijra_kyc.service;
 import com.example.hijra_kyc.dto.MessageDelete;
 import com.example.hijra_kyc.dto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageInDto;
-import com.example.hijra_kyc.dto.MessageOutDto;
 import com.example.hijra_kyc.mapper.MessageMapper;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
@@ -20,7 +19,7 @@ public class MessageService {
     private final MessageMapper messageMapper;
     private BaseService baseService;
 
-    public Base<?> save(MessageInDto messageInDto){
+    public Base<?> saveMessage(MessageInDto messageInDto){
         Message message = messageMapper.toMessage(messageInDto);
 
         try{
@@ -80,27 +79,27 @@ public class MessageService {
     }
 
 
-    public Base<?> updateMessage(MessageOutDto message){
+    public Base<?> updateMessage(Long senderId, Long receiverId, MessageEdit message){
         try{
-            if(!messageRepository.existsById(message.getId().intValue())){
-                return baseService.error("Message Not Found");
-            }
-            if(message.getSenderId().intValue()==getLoggerUserId()){
+            var messageValue=messageRepository.findById(receiverId.intValue())
+                    .orElseThrow(()->new RuntimeException("Message Not Found"));
+            if(senderId.intValue()==getLoggerUserId()){
                 return baseService.error("Unauthorized!");
             }
-            var lastMessage=messageRepository.findLatestMessage(message.getRecieverId(), getLoggerUserId());
+            var lastMessage=messageRepository.findLatestMessage(receiverId, getLoggerUserId());
             if(lastMessage==null){
                 return baseService.error("Message Not Found");
             }
-            messageRepository.updateMessageBody(message.getId().intValue(), message.getMessage());
-            return baseService.success("Message Updated successfully");
+            messageValue.setMessageBody(message.getMessage());
+            var updateResult=messageRepository.save(messageValue);
+            return baseService.success(updateResult);
         }
         catch(Exception e){
             return baseService.error(e.getMessage());
         }
     }
 
-    private Long getLoggerUserId() {
+    private static Long getLoggerUserId() {
 //        some logic to get the currently logged in user
         return 1L;
     }

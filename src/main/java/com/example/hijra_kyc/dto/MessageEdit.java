@@ -4,7 +4,5 @@ import lombok.Data;
 
 @Data
 public class MessageEdit {
-    private Long recieverId;
-    private Long senderId;
     private String message;
 }
