@@ -8,6 +8,7 @@ import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Message;
 import com.example.hijra_kyc.repository.MessageRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,7 @@ public class MessageService {
            messageRepository.findById(user.intValue())
                    .orElseThrow(()->new RuntimeException("User Not Found"));
            var result= messageRepository.findConversationBetweenUsers(getLoggerUserId(),user);
-           return baseService.ListSuccess(result);
+           return baseService.listSuccess(result);
         }
         catch(Exception e){
             return baseService.listError(e.getMessage());

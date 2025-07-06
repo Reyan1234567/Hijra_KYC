@@ -2,7 +2,6 @@ package com.example.hijra_kyc.service;
 import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.MakeFormDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
-import com.example.hijra_kyc.mapper.MakeUpdateMapper;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Branch;
@@ -23,7 +22,6 @@ import java.util.List;
 public class MakeFormService {
 
     private final MakeFormRepository makeFormRepository;
-    private final MakeUpdateMapper makeForm;
     private final MakeFormMapper makerFormMapper;
     private final BaseService baseService;
     private final UserRepository userRepository;
@@ -34,7 +32,7 @@ public class MakeFormService {
             MakeForm makeForm= makerFormMapper.mapToMakeForm(makeFormDto);
             KycUserProfile maker=userRepository.findById(makeForm.getMaker().getId().longValue())
                     .orElseThrow(()->new RuntimeException("no maker with this id")); //this is supposed to check the id not in the makeForm but in the uses_profile table, sole reason of existing is to check if that thing exists
-            Branch branchId=branchRepository.findById(maker.getBranch().getId())
+            Branch branchId=branchRepository.findById(maker.getBranch().getBranch_id())
                     .orElseThrow(()->new RuntimeException("no branch with this id"));
             makeForm.setBranchId(branchId);
             var createMakeForm=makeFormRepository.save(makeForm);

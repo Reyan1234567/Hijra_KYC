@@ -2,6 +2,7 @@ package com.example.hijra_kyc.model;
 
 import com.example.hijra_kyc.KycUserProfile;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -21,14 +22,14 @@ public class Message {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", referencedColumnName = "user_profile_id")
+    @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private KycUserProfile senderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reciever_id", referencedColumnName = "user_profile_id")
+    @JoinColumn(name = "reciever_id", referencedColumnName = "id")
     private KycUserProfile recieverId;
 
-    @Lob
+    @Size(max = 1000)
     @Column(name = "message_body")
     private String messageBody;
 

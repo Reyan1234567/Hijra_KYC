@@ -23,11 +23,11 @@ public class MakeForm {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "maker_user_id")
+    @JoinColumn(name = "maker_user_id", referencedColumnName = "id")
     private KycUserProfile maker;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ho_user_id", referencedColumnName = "user_profile_id")
+    @JoinColumn(name = "ho_user_id", referencedColumnName = "id")
     private KycUserProfile ho;
 
     @Size(max = 50)
@@ -55,14 +55,14 @@ public class MakeForm {
     @Column(name = "ho_action_time")
     private Instant hoActionTime;
 
-    @Size(max = 50)
-    @Column(name = "status", length = 50)
-    private String status;
+
+    @Column(name = "status")
+    private int status;
 
     @OneToMany(mappedBy = "imageMake")
     private List<Image> images=new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName="branch_id")
+    @JoinColumn(name = "branch_id", referencedColumnName="branch_id")
     private Branch branchId;
 }

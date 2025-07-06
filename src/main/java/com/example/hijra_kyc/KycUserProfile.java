@@ -13,7 +13,7 @@ import lombok.Setter;
 public class KycUserProfile {
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Size(max = 100)
     @Column(name = "user_profile_id", length = 100)
@@ -39,7 +39,7 @@ public class KycUserProfile {
     @Column(name = "gender", length = 10)
     private String gender;
 
-    @Lob
+    @Size(max = 255)
     @Column(name = "address")
     private String address;
 
@@ -52,7 +52,7 @@ public class KycUserProfile {
     private String photo;
 
     @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName = "branch_id")
+    @JoinColumn(name = "branch_id", referencedColumnName = "branch_id")
     private Branch branch;
 
 }

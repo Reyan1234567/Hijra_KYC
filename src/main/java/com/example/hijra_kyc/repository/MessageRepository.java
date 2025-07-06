@@ -15,7 +15,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     List<Message> findConversationBetweenUsers(@Param("user1") Long user1, @Param("user2") Long user2);
 
     @Modifying
-    @Query("Update Message m set m.receivedTimestamp=currectTimeStamp(), m.recieverStatus=1 where (m.senderId=:senderId and m.recieverId=:receiverId and m.recieverStatus=0)")
+    @Query("Update Message m set m.receivedTimestamp=current_timestamp, m.recieverStatus=1 where (m.senderId=:senderId and m.recieverId=:receiverId and m.recieverStatus=0)")
     void updateStatus(@Param("senderId") Long senderId, @Param("receiverId") Long receiverId);
 
     @Query("Select m from Message m where(m.senderId=:senderId and m.recieverId=:recieverId) order by m.id desc limit 1")

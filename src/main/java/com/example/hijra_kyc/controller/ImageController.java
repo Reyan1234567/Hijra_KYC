@@ -18,19 +18,19 @@ public class ImageController {
     private final ImageService imageService;
     private final BaseService baseService;
 
-    @GetMapping("")
+    @GetMapping("/getAll")
     public ResponseEntity<?> getImages(@RequestParam Long makeId){
         BaseList<?> getImages=imageService.getImages(makeId);
         return baseService.rest(getImages);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteImage(@PathVariable Long id){
         Base<?> deleteImage=imageService.deleteImage(id);
         return baseService.rest(deleteImage);
     }
 
-    @PostMapping("/")
+    @PostMapping("/create")
     public ResponseEntity<?> createImage(@RequestBody ImageDto image){
         Base<?> createImage=imageService.createImage(image);
         return baseService.rest(createImage);
