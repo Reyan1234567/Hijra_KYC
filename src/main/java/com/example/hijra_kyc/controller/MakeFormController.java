@@ -5,6 +5,7 @@ import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MakeFormService;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class MakeFormController {
     private final BaseService baseService;
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody MakeFormDto makeFormDto) {
+    public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
         Base<?> newMakeForm= makeFormService.saveForm(makeFormDto);
         return baseService.rest(newMakeForm);
     }

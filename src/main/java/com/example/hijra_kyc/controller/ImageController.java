@@ -6,6 +6,7 @@ import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Image;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.ImageService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

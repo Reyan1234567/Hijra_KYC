@@ -64,6 +64,9 @@ public class ImageService {
             Image image = imageRepository.findById(id.intValue())
                     .orElseThrow(() -> new RuntimeException("Image not found"));
             imageRepository.delete(image);
+            File file=new File(image.getImageName());
+            file.delete();
+
             return baseService.success("Image Deleted successfully");
         }
         catch (Exception e){

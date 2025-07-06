@@ -5,6 +5,7 @@ import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MessageService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class MessageController {
     private final BaseService baseService;
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody MessageInDto message){
+    public ResponseEntity<?> save(@Valid @RequestBody MessageInDto message){
         Base<?> save=messageService.saveMessage(message);
         return baseService.rest(save);
     }
