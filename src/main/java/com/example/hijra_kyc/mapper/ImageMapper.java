@@ -8,12 +8,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ImageMapper {
-    private MakeFormRepository makeFormRepository;
     public Image mapImageDtoToImage(ImageDto imageDto){
-        MakeForm makeId=new MakeForm();
-        makeId.setId(imageDto.getMakerId());
         return Image.builder()
-                .imageMake(makeId)
+                .imageDescription(imageDto.getDescription())
                 .build();
     }
 }

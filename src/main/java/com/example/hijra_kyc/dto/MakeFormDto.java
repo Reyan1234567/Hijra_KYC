@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class MakeFormDto {
+    private Integer makerId;
     private String cif;
     private String customerAccount;
     private String customerPhone;

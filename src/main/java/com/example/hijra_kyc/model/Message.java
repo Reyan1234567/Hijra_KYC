@@ -21,11 +21,11 @@ public class Message {
     @Column(name = "message_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private KycUserProfile senderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "reciever_id", referencedColumnName = "id")
     private KycUserProfile recieverId;
 

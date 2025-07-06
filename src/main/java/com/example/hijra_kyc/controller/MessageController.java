@@ -23,27 +23,27 @@ public class MessageController {
         return baseService.rest(save);
     }
 
-    @PostMapping("/getConvo/{id}")
-    public ResponseEntity<?> getMessages(@PathVariable Long id){
-        BaseList<?> getConversation=messageService.getConversation(id);
+    @GetMapping("/getConvo")
+    public ResponseEntity<?> getMessages(@RequestParam("user1") Long id, @RequestParam("user2") Long id1){
+        BaseList<?> getConversation=messageService.getConversation(id, id1);
         return baseService.rest(getConversation);
     }
 
-    @PatchMapping("/updateSeen/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id){
-        Base<?> updateResult=messageService.updateStatus(id);
+    @PatchMapping("/updateSeen")
+    public ResponseEntity<?> update(@RequestParam("senderId") Long senderId, @RequestParam("recieverId") Long recieverId ){
+        Base<?> updateResult=messageService.updateStatus(senderId, recieverId);
         return baseService.rest(updateResult);
     }
 
-    @DeleteMapping("/")
-    public ResponseEntity<?> deleteMessage(@RequestBody MessageDelete message){
-        Base<?> deleteMessage=messageService.deleteMessage(message);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMessage(@PathVariable("id") int id, @RequestParam("senderId") int senderId){
+        Base<?> deleteMessage=messageService.deleteMessage(id, senderId);
         return baseService.rest(deleteMessage);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message){
-        Base<?> messageEdit=messageService.updateMessage(senderId, receiverId,message);
+    @PatchMapping("/messageEdit/{id}")
+    public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message, @PathVariable("id") int id){
+        Base<?> messageEdit=messageService.updateMessage(senderId, receiverId,message, id);
         return baseService.rest(messageEdit);
     }
 

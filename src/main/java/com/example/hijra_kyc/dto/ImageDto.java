@@ -7,7 +7,6 @@ import java.io.File;
 
 @Data
 public class ImageDto {
-    private MultipartFile imageFile;
-    private String fileName;
-    private int makerId;
+    private String description;
+    private int makeId;
 }

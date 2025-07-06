@@ -24,7 +24,7 @@ public class MakeFormController {
     }
 
     @GetMapping
-    public ResponseEntity<?> get(@RequestParam int makerId) {
+    public ResponseEntity<?> get(@RequestParam("makerId") Long makerId) {
         BaseList<?> makes= makeFormService.getAll(makerId);
         return baseService.rest(makes);
     }
@@ -36,13 +36,13 @@ public class MakeFormController {
     }
 
     @PatchMapping("/updateStatus/{id}")
-    public ResponseEntity<?> statusChange(@PathVariable Long id, @RequestParam int statusNumber){
+    public ResponseEntity<?> statusChange(@PathVariable Long id, @RequestParam("status") int statusNumber) {
         Base<?> approve=makeFormService.changeStatus(id, statusNumber);
         return baseService.rest(approve);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getAll(@RequestParam("makerId") int makerId, @RequestParam("status") int status){
+    public ResponseEntity<?> getAll(@RequestParam("makerId") Long makerId, @RequestParam("status") Long status){
         BaseList<?> allMakes=makeFormService.get(makerId, status);
         return baseService.rest(allMakes);
     }

@@ -22,11 +22,11 @@ public class MakeForm {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "maker_user_id", referencedColumnName = "id")
     private KycUserProfile maker;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ho_user_id", referencedColumnName = "id")
     private KycUserProfile ho;
 

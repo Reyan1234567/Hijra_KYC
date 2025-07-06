@@ -17,7 +17,7 @@ public class Image {
     @Column(name = "image_id", nullable = false)
     private Integer id;
 
-    @Size(max = 100)
+    @Size(max = 255)
     @Column(name = "image_name", length = 100)
     private String imageName;
 
@@ -25,4 +25,7 @@ public class Image {
     @JoinColumn(name = "image_make_id")
     private MakeForm imageMake;
 
+    @Size(max = 255)
+    @Column(name = "image_description")
+    private String imageDescription;
 }

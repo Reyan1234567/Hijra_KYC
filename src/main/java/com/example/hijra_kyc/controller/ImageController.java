@@ -9,6 +9,9 @@ import com.example.hijra_kyc.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import static org.hibernate.validator.internal.util.ReflectionHelper.typeOf;
 
 @RestController
 @RequestMapping("image")
@@ -31,8 +34,11 @@ public class ImageController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createImage(@RequestBody ImageDto image){
-        Base<?> createImage=imageService.createImage(image);
+    public ResponseEntity<?> createImage(@RequestParam("file") MultipartFile file, @RequestParam("makeId") String makeId, @RequestParam("description") String description){
+        ImageDto imageDto=new ImageDto();
+        imageDto.setDescription(description);
+        imageDto.setMakeId(Integer.parseInt(makeId));
+        Base<?> createImage=imageService.createImage(file, imageDto);
         return baseService.rest(createImage);
     }
 }

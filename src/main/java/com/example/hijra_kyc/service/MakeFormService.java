@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,8 +29,9 @@ public class MakeFormService {
     public Base<?> saveForm(MakeFormDto makeFormDto) {
         try{
             MakeForm makeForm= makerFormMapper.mapToMakeForm(makeFormDto);
-            KycUserProfile maker=userRepository.findById(makeForm.getMaker().getId().longValue())
-                    .orElseThrow(()->new RuntimeException("no maker with this id")); //this is supposed to check the id not in the makeForm but in the uses_profile table, sole reason of existing is to check if that thing exists
+            KycUserProfile maker=userRepository.findById(makeFormDto.getMakerId().longValue())
+                    .orElseThrow(()->new RuntimeException("no maker with this id"));
+            makeForm.setMaker(maker);
             Branch branchId=branchRepository.findById(maker.getBranch().getBranch_id())
                     .orElseThrow(()->new RuntimeException("no branch with this id"));
             makeForm.setBranchId(branchId);
@@ -39,12 +39,14 @@ public class MakeFormService {
             return baseService.success(createMakeForm);
         }
         catch(Exception e){
+            System.out.println("In the catch"+e);
             return baseService.error(e.getMessage());
         }
     }
 
-    public BaseList<?> getAll(int makerId) {
+    public BaseList<?> getAll(Long makerId) {
         try{
+            System.out.println(makerId);
             List<MakeForm> makersForm = makeFormRepository.findByMaker(makerId);
             if(makersForm==null||makersForm.isEmpty()){
                 return baseService.listError("No list items found");
@@ -56,12 +58,12 @@ public class MakeFormService {
         }
     }
 
-    public BaseList<?> get(int makerId, int status) {
+    public BaseList<?> get(Long makerId, Long status) {
         try{
             if(status<0||status>3){
                 return baseService.listError("invalid status");
             }
-            List<MakeForm> makersForm = makeFormRepository.findByMaker(makerId, status);
+            List<MakeForm> makersForm = makeFormRepository.findByMakerAndStatus(makerId, status);
             if(makersForm==null||makersForm.isEmpty()){
                 return baseService.listError("No list items found");
             }
@@ -92,6 +94,7 @@ public class MakeFormService {
             KycUserProfile ho=userRepository.findById(hoId)
                     .orElseThrow(()->new RuntimeException("HO not found"));
             makeForm1.setHo(ho);
+            makeFormRepository.save(makeForm1);
             return baseService.success(makeForm1);
         } catch (Exception e) {
             return baseService.error(e.getMessage());
@@ -105,11 +108,10 @@ public class MakeFormService {
             if(statusNumber<0||statusNumber>3){
                 return baseService.error("invalid status");
             }
-
+            System.out.println(makeId.intValue());
             MakeForm makeForm1=makeFormRepository.findById(makeId.intValue())
                     .orElseThrow(() -> new EntityNotFoundException("Make not found"));
-
-            makeFormRepository.updateMakeFormStatus(statusNumber, makeId.intValue());
+            makeForm1.setStatus(statusNumber);
             makeForm1.setHoActionTime(Instant.now());
             makeFormRepository.save(makeForm1);
             if(statusNumber==1){
@@ -126,16 +128,4 @@ public class MakeFormService {
             return baseService.error(e.getMessage());
         }
     }
-
-    //    public Base<?> patch(Long makeId, MakeFormDto makeFormDto) {
-//        try{
-//            var makeFormValue = makeFormRepository.findById(makeId.intValue()).orElseThrow(() -> new EntityNotFoundException("Make not found"));
-//            makeForm.toMakeForm(makeFormDto, makeFormValue);
-//            return baseService.success(makeForm);
-//        }
-//        catch(Exception e){
-//            return baseService.error(e.getMessage());
-//        }
-//    }
-
 }

@@ -8,19 +8,18 @@ import com.example.hijra_kyc.service.MessageService;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @Data
 public class MakeFormMapper {
-    //a public static method to get the user's credentials
-    KycUserProfile MakerId=new KycUserProfile();
-//    MakerId.setId(4L);
     public MakeForm mapToMakeForm(MakeFormDto makeFormDto) {
         return MakeForm.builder()
-                .maker(MakerId)
                 .cif(makeFormDto.getCif())
                 .customerAccount(makeFormDto.getCustomerAccount())
                 .customerPhone(makeFormDto.getCustomerPhone())
                 .customerName(makeFormDto.getCustomerName())
+                .makeTime(Instant.now())
                 .build();
     }
 }
