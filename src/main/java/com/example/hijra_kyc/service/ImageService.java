@@ -14,6 +14,7 @@ import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.catalina.User;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
@@ -89,9 +90,6 @@ public class ImageService {
 
             if (!uploadDir.exists()) {
                 var success = uploadDir.mkdirs();
-//                if (!success) {
-//                    return baseService.error("Can't create directory");
-//                }
             }
             String fileName=filePath+LocalTime.now().toString().replace(":","-").replace(".","-")+"__"+imageFile.getOriginalFilename();
             File fileToBeUploaded=new File(fileName);
@@ -99,10 +97,14 @@ public class ImageService {
             if(!fileToBeUploaded.getParentFile().exists()){
                 fileToBeUploaded.getParentFile().mkdirs();
             }
-            imageFile.transferTo(fileToBeUploaded);
-
+//            imageFile.transferTo(fileToBeUploaded);
+            Thumbnails.of(imageFile.getInputStream())
+                            .size(600, 400)
+                            .outputQuality(0.65)
+                            .toFile(new File(fileName));
             image.setImageName(fileName);
-            return baseService.success(imageRepository.save(image));
+            var createdImage=imageRepository.save(image);
+            return baseService.success(imageOutMapper.toImageDto(image));
         }
         catch(Exception e){
             return baseService.error(e.getMessage());
