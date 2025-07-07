@@ -58,7 +58,7 @@ public class MessageService {
            var result= messageRepository.findConversationBetweenUsers(user1,user2);
            return baseService.listSuccess(result.stream()
                    .map(messageOutMapper::messageOutMapper)
-                   .collect(Collectors.toList()));
+                   .toList());
         }
         catch(Exception e){
             return baseService.listError(e.getMessage());

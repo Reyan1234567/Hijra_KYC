@@ -51,7 +51,7 @@ public class ImageService {
             return baseService.listSuccess(
                     listOfImages.stream()
                             .map((image)->imageOutMapper.toImageDto(image))
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
         catch (Exception e){

@@ -2,6 +2,7 @@ package com.example.hijra_kyc.service;
 import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.MakeFormDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
+import com.example.hijra_kyc.mapper.MakeFormOutMapper;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Branch;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -25,6 +28,7 @@ public class MakeFormService {
     private final BaseService baseService;
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
+    private final MakeFormOutMapper makeFormOutMapper;
 
     public Base<?> saveForm(MakeFormDto makeFormDto) {
         try{
@@ -36,7 +40,7 @@ public class MakeFormService {
                     .orElseThrow(()->new RuntimeException("no branch with this id"));
             makeForm.setBranchId(branchId);
             var createMakeForm=makeFormRepository.save(makeForm);
-            return baseService.success(createMakeForm);
+            return baseService.success(makeFormOutMapper.makeFormOutMapper(createMakeForm));
         }
         catch(Exception e){
             System.out.println("In the catch"+e);
@@ -51,7 +55,10 @@ public class MakeFormService {
             if(makersForm==null||makersForm.isEmpty()){
                 return baseService.listError("No list items found");
             }
-            return baseService.listSuccess(makersForm);
+            return baseService.listSuccess(makersForm.stream()
+                    .map(makeFormOutMapper::makeFormOutMapper)
+                    .toList());
+
         }
         catch(Exception e){
             return baseService.listError(e.getMessage());
