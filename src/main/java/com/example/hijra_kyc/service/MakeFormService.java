@@ -33,13 +33,20 @@ public class MakeFormService {
     public Base<?> saveForm(MakeFormDto makeFormDto) {
         try{
             MakeForm makeForm= makerFormMapper.mapToMakeForm(makeFormDto);
+            System.out.println(makeFormDto);
+            System.out.println(makeForm);
+            System.out.println(makeFormDto.getMakerId().longValue());
             KycUserProfile maker=userRepository.findById(makeFormDto.getMakerId().longValue())
                     .orElseThrow(()->new RuntimeException("no maker with this id"));
+            System.out.println("maker found");
             makeForm.setMaker(maker);
             Branch branchId=branchRepository.findById(maker.getBranch().getBranch_id())
                     .orElseThrow(()->new RuntimeException("no branch with this id"));
+            System.out.println(maker.getBranch().getBranch_id());
+            System.out.println(branchId);
             makeForm.setBranchId(branchId);
             var createMakeForm=makeFormRepository.save(makeForm);
+            System.out.println(createMakeForm);
             return baseService.success(makeFormOutMapper.makeFormOutMapper(createMakeForm));
         }
         catch(Exception e){
@@ -74,7 +81,9 @@ public class MakeFormService {
             if(makersForm==null||makersForm.isEmpty()){
                 return baseService.listError("No list items found");
             }
-            return baseService.listSuccess(makersForm);
+            return baseService.listSuccess(makersForm
+                    .stream()
+                    .map(makeFormOutMapper::makeFormOutMapper).toList());
         }
         catch(Exception e){
             return baseService.listError(e.getMessage());
@@ -102,7 +111,7 @@ public class MakeFormService {
                     .orElseThrow(()->new RuntimeException("HO not found"));
             makeForm1.setHo(ho);
             makeFormRepository.save(makeForm1);
-            return baseService.success(makeForm1);
+            return baseService.success(makeFormOutMapper.makeFormOutMapper(makeForm1));
         } catch (Exception e) {
             return baseService.error(e.getMessage());
         }
@@ -122,13 +131,13 @@ public class MakeFormService {
             makeForm1.setHoActionTime(Instant.now());
             makeFormRepository.save(makeForm1);
             if(statusNumber==1){
-                return baseService.success("Make is now Accepted"+"\n"+makeForm1);
+                return baseService.success("Make is now Accepted"+"\n"+makeFormOutMapper.makeFormOutMapper(makeForm1));
             }
             else if (statusNumber==2) {
-                return baseService.success("Make is now Rejected"+"\n"+makeForm1);
+                return baseService.success("Make is now Rejected"+"\n"+makeFormOutMapper.makeFormOutMapper(makeForm1));
             }
             else {
-                return baseService.success("Make is now Pending"+"\n"+makeForm1);
+                return baseService.success("Make is now Pending"+"\n"+makeFormOutMapper.makeFormOutMapper(makeForm1));
             }
         }
         catch (Exception e){

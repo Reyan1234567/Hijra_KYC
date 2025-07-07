@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class MakeFormOutMapper {
     public MakeFormOutDto makeFormOutMapper(MakeForm makeForm){
+        System.out.println(makeForm.getHo());
         return MakeFormOutDto.builder()
                 .id(makeForm.getId())
                 .makerId(makeForm.getMaker().getId().intValue())
-                .hoId(makeForm.getHo().getId().intValue())
+                .hoId(makeForm.getHo()!=null?makeForm.getHo().getId().intValue():0)
                 .cif(makeForm.getCif())
                 .customerAccount(makeForm.getCustomerAccount())
                 .customerPhone(makeForm.getCustomerPhone())

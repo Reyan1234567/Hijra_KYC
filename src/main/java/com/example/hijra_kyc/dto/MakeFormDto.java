@@ -2,12 +2,13 @@ package com.example.hijra_kyc.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 
 @Data
 public class MakeFormDto {
-    @NotBlank(message = "makeId is required")
+    @NotNull(message = "makeId is required")
     private Integer makerId;
 
     @NotBlank(message = "cif is required")
