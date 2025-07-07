@@ -6,56 +6,51 @@ import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.ImageReturnDto;
 import com.example.hijra_kyc.mapper.ImageMapper;
 import com.example.hijra_kyc.mapper.ImageOutMapper;
-import com.example.hijra_kyc.model.Base;
-import com.example.hijra_kyc.model.BaseList;
-import com.example.hijra_kyc.model.Image;
-import com.example.hijra_kyc.model.MakeForm;
+import com.example.hijra_kyc.model.*;
+import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
-import org.apache.catalina.User;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class ImageService {
 
     private final BaseService baseService;
+    private final BranchRepository branchRepository;
     private ImageRepository imageRepository;
     private MakeFormRepository makeFormRepository;
     private UserRepository userRepository;
     private ImageMapper imageMapper;
     private ImageOutMapper imageOutMapper;
 
-    public BaseList<?> getImages(Long makeId) {
+    public List<ImageReturnDto> getImages(Long makeId) {
         try{
             System.out.println("getImages");
             MakeForm makeForm = makeFormRepository.findById(makeId.intValue())
                     .orElseThrow(() -> new RuntimeException("Maker not found"));
             List<Image> listOfImages = makeForm.getImages();
             if(listOfImages.isEmpty()){
-                return baseService.listError("No images found");
+                throw new RuntimeException("Maker not found");
             }
             System.out.println(listOfImages);
-            return baseService.listSuccess(
-                    listOfImages.stream()
+            return listOfImages.stream()
                             .map((image)->imageOutMapper.toImageDto(image))
-                            .toList()
-            );
+                            .toList();
+
         }
         catch (Exception e){
-            return baseService.listError(e.getMessage());
+            throw e;
         }
     }
 
@@ -74,13 +69,18 @@ public class ImageService {
         }
     }
 
-    public Base<?> createImage(MultipartFile imageFile, ImageDto imageDto) {
+    public Image createImage(MultipartFile imageFile, ImageDto imageDto) throws Exception{
         try{
             var image = imageMapper.mapImageDtoToImage(imageDto);
             MakeForm makeForm=makeFormRepository.findById(imageDto.getMakeId())
                     .orElseThrow(()->new RuntimeException("can't find form-makeId"));
+            Branch branch=branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranch_id())
+                    .orElseThrow(()->new RuntimeException("branch not found"));
+
             image.setImageMake(makeForm);
             LocalDate today = LocalDate.now();
+            LocalTime now=LocalTime.now();
+            String branchName=branch.getName();
             String cif=makeForm.getCif();
 
             //uploading the file
@@ -88,29 +88,37 @@ public class ImageService {
                     .orElseThrow(()->new RuntimeException("Can't find maker-Id"));
             String makerName=maker.getFirstName();
 
-            String filePath="C:/Users/hp/Desktop/hijra_kyc/upload/"+makerName+"/"+today+"/"+cif+"/"+makeForm.getCustomerAccount()+"/";
+            //creating the path's parent path
+            String filePath= Paths.get("C:","Users","hp","Desktop","hijra_kyc","upload",branchName,today.toString(),cif,makeForm.getCustomerAccount()).toString();
             File uploadDir = new File(filePath);
 
+            //check existence and create if path doesn't exist
             if (!uploadDir.exists()) {
                 var success = uploadDir.mkdirs();
             }
-            String fileName=filePath+LocalTime.now().toString().replace(":","-").replace(".","-")+"__"+imageFile.getOriginalFilename();
+
+            //the full path which includes the file to be created
+            String fileName=Paths.get(filePath,now.toString().replace(":","-").replace(".","-")+"__"+image.getImageDescription()+today+cif+getExtension(imageFile.getOriginalFilename())).toString();
             File fileToBeUploaded=new File(fileName);
 
-            if(!fileToBeUploaded.getParentFile().exists()){
-                fileToBeUploaded.getParentFile().mkdirs();
-            }
-//            imageFile.transferTo(fileToBeUploaded);
+
+//            creates the file in a lower storage and detail
             Thumbnails.of(imageFile.getInputStream())
                             .size(600, 400)
-                            .outputQuality(0.65)
-                            .toFile(new File(fileName));
+                            .outputQuality(0.8)
+                            .toFile(fileToBeUploaded);
+
             image.setImageName(fileName);
-            var createdImage=imageRepository.save(image);
-            return baseService.success(imageOutMapper.toImageDto(image));
+            return imageRepository.save(image);
         }
         catch(Exception e){
-            return baseService.error(e.getMessage());
+            throw e;
         }
     }
+
+    private String getExtension(String originalFilename) {
+        return originalFilename.substring(originalFilename.lastIndexOf("."));
+    }
+
+
 }

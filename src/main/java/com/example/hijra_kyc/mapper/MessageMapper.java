@@ -2,6 +2,7 @@ package com.example.hijra_kyc.mapper;
 
 import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.MessageInDto;
+import com.example.hijra_kyc.dto.MessageOutDto;
 import com.example.hijra_kyc.model.Message;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,18 @@ public class MessageMapper {
                 .sentTimestamp(Instant.now())
                 .messageBody(messageInDto.getMessage())
                 .recieverStatus(0)
+                .build();
+    }
+
+    public MessageOutDto messageOutMapper(Message message) {
+        return MessageOutDto.builder()
+                .id(message.getId())
+                .senderId(message.getSenderId().getId().intValue())
+                .recieverId(message.getRecieverId().getId().intValue())
+                .messageBody(message.getMessageBody())
+                .sentTimestamp(message.getSentTimestamp())
+                .recievedTimestamp(message.getReceivedTimestamp())
+                .recieverStatus(message.getRecieverStatus())
                 .build();
     }
 }

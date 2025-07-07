@@ -1,20 +1,23 @@
 package com.example.hijra_kyc.service;
 import com.example.hijra_kyc.KycUserProfile;
+import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.MakeFormDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
 import com.example.hijra_kyc.mapper.MakeFormOutMapper;
-import com.example.hijra_kyc.model.Base;
-import com.example.hijra_kyc.model.BaseList;
-import com.example.hijra_kyc.model.Branch;
-import com.example.hijra_kyc.model.MakeForm;
+import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
+import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -24,33 +27,37 @@ import java.util.stream.Collectors;
 public class MakeFormService {
 
     private final MakeFormRepository makeFormRepository;
+    private final ImageRepository imageRepository;
     private final MakeFormMapper makerFormMapper;
     private final BaseService baseService;
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
     private final MakeFormOutMapper makeFormOutMapper;
+    private final ImageService imageService;
 
-    public Base<?> saveForm(MakeFormDto makeFormDto) {
+    public Base<?> saveForm(MakeFormDto makeFormDto, MultipartFile[] images) {
         try{
             MakeForm makeForm= makerFormMapper.mapToMakeForm(makeFormDto);
-            System.out.println(makeFormDto);
-            System.out.println(makeForm);
-            System.out.println(makeFormDto.getMakerId().longValue());
             KycUserProfile maker=userRepository.findById(makeFormDto.getMakerId().longValue())
                     .orElseThrow(()->new RuntimeException("no maker with this id"));
-            System.out.println("maker found");
             makeForm.setMaker(maker);
             Branch branchId=branchRepository.findById(maker.getBranch().getBranch_id())
                     .orElseThrow(()->new RuntimeException("no branch with this id"));
-            System.out.println(maker.getBranch().getBranch_id());
-            System.out.println(branchId);
             makeForm.setBranchId(branchId);
             var createMakeForm=makeFormRepository.save(makeForm);
-            System.out.println(createMakeForm);
+            ArrayList<Image> imageList= new ArrayList<Image>();
+            for(int i=0;i<images.length;i++){
+                ImageDto imageDto=new ImageDto();
+                imageDto.setDescription(makeFormDto.getDescriptions()[i]);
+                imageDto.setMakeId(makeForm.getId());
+                Image image=imageService.createImage(images[i],imageDto);
+                imageList.add(image);
+            }
+            createMakeForm.setImages(imageList);
             return baseService.success(makeFormOutMapper.makeFormOutMapper(createMakeForm));
         }
         catch(Exception e){
-            System.out.println("In the catch"+e);
+            System.out.println("In the catch "+e);
             return baseService.error(e.getMessage());
         }
     }
@@ -65,7 +72,6 @@ public class MakeFormService {
             return baseService.listSuccess(makersForm.stream()
                     .map(makeFormOutMapper::makeFormOutMapper)
                     .toList());
-
         }
         catch(Exception e){
             return baseService.listError(e.getMessage());
@@ -95,6 +101,10 @@ public class MakeFormService {
             MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeFormRepository.delete(makeForm1);
+            List<Image> images=makeForm1.getImages();
+            if(!images.isEmpty()){
+                images.forEach(image -> {imageService.deleteImage(image.getId().longValue());});
+            }
             return baseService.success("Make is now deleted");
         }
         catch (Exception e){
@@ -145,3 +155,5 @@ public class MakeFormService {
         }
     }
 }
+
+

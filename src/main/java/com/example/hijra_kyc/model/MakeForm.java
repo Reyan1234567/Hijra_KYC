@@ -59,7 +59,7 @@ public class MakeForm {
     @Column(name = "status")
     private int status;
 
-    @OneToMany(mappedBy = "imageMake")
+    @OneToMany(mappedBy = "imageMake", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Image> images=new ArrayList<>();
 
     @ManyToOne

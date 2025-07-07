@@ -25,7 +25,6 @@ public class MessageService {
     private final MessageMapper messageMapper;
     private final UserRepository userRepository;
     private final BaseService baseService;
-    private final MessageOutMapper messageOutMapper;
 
     public Base<?> saveMessage(MessageInDto messageInDto){
         Message message = messageMapper.toMessage(messageInDto);
@@ -42,7 +41,7 @@ public class MessageService {
                 return baseService.error("Message Field Empty");
             }
             var response=messageRepository.save(message);
-            return baseService.success(messageOutMapper.messageOutMapper(response));
+            return baseService.success(messageMapper.messageOutMapper(response));
         }
         catch(Exception e){
             return baseService.error(e.getMessage());
@@ -57,7 +56,7 @@ public class MessageService {
                    .orElseThrow(()->new RuntimeException("User2 Not Found"));
            var result= messageRepository.findConversationBetweenUsers(user1,user2);
            return baseService.listSuccess(result.stream()
-                   .map(messageOutMapper::messageOutMapper)
+                   .map(messageMapper::messageOutMapper)
                    .toList());
         }
         catch(Exception e){
@@ -112,7 +111,7 @@ public class MessageService {
             }
             messageValue.setMessageBody(message.getMessage());
             var updateResult=messageRepository.save(messageValue);
-            return baseService.success(messageOutMapper.messageOutMapper(updateResult));
+            return baseService.success(messageMapper.messageOutMapper(updateResult));
         }
         catch(Exception e){
             return baseService.error(e.getMessage());

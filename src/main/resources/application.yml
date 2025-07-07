@@ -1,7 +1,10 @@
 spring:
   application:
     name:hijra_kyc
-
+  servlet:
+    multipart:
+      max-file-size: 1500MB
+      max-request-size: 1000MB
   datasource:
     url: jdbc:mysql://localhost:3306/hijra_kyc
     username: root
@@ -14,3 +17,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+server:
+  tomcat:
+    multipart:
+      max-file-count:300
+    max-swallow-size: -1

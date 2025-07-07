@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Data
 @Service
 public class MakeFormOutMapper {
+    private final ImageOutMapper imageOutMapper;
     public MakeFormOutDto makeFormOutMapper(MakeForm makeForm){
         System.out.println(makeForm.getHo());
         return MakeFormOutDto.builder()
@@ -20,6 +21,7 @@ public class MakeFormOutMapper {
                 .customerName(makeForm.getCustomerName())
                 .status(makeForm.getStatus())
                 .branchId(makeForm.getBranchId().getBranch_id().intValue())
+                .image(makeForm.getImages().stream().map(imageOutMapper::toImageDto).toList())
                 .build();
     }
 }

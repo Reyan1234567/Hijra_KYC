@@ -5,11 +5,16 @@ import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MakeFormService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("makeForm")
@@ -18,11 +23,11 @@ public class MakeFormController {
     private final MakeFormService makeFormService;
     private final BaseService baseService;
 
-    @PostMapping
-    public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
-        Base<?> newMakeForm= makeFormService.saveForm(makeFormDto);
-        return baseService.rest(newMakeForm);
-    }
+//    @PostMapping
+//    public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
+//        Base<?> newMakeForm= makeFormService.saveForm(makeFormDto);
+//        return baseService.rest(newMakeForm);
+//    }
 
     @GetMapping
     public ResponseEntity<?> get(@RequestParam("makerId") Long makerId) {
@@ -52,6 +57,13 @@ public class MakeFormController {
     public ResponseEntity<?> updateAssign(@RequestParam("id") Long id, @RequestParam("hoId") Long hoId){
         Base<?> status=makeFormService.updateAssignTime(id, hoId);
         return baseService.rest(status);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> save(@RequestParam("makerId") String makerId,@RequestParam("cif") String cif,@RequestParam("CA") String customerAccount,@RequestParam("CP") String customerPhone,@RequestParam("CN") String customerName,@RequestParam("descriptions") String[] descriptions,@RequestParam("image") MultipartFile[] images) {
+        MakeFormDto makeFormDto=new MakeFormDto(Integer.parseInt(makerId), cif, customerAccount, customerPhone, customerName, descriptions);
+        Base<?> newMakeForm= makeFormService.saveForm(makeFormDto, images);
+        return baseService.rest(newMakeForm);
     }
 
 //    @PatchMapping("/updateForm/{id}")

@@ -22,11 +22,11 @@ public class ImageController {
     private final ImageService imageService;
     private final BaseService baseService;
 
-    @GetMapping("/getAll")
-    public ResponseEntity<?> getImages(@RequestParam Long makeId){
-        BaseList<?> getImages=imageService.getImages(makeId);
-        return baseService.rest(getImages);
-    }
+//    @GetMapping("/getAll")
+//    public ResponseEntity<?> getImages(@RequestParam Long makeId){
+//        BaseList<?> getImages=imageService.getImages(makeId);
+//        return baseService.rest(getImages);
+//    }
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteImage(@PathVariable Long id){
@@ -34,12 +34,12 @@ public class ImageController {
         return baseService.rest(deleteImage);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createImage(@RequestParam("file") MultipartFile file, @RequestParam("makeId") String makeId, @RequestParam("description") String description){
-        ImageDto imageDto=new ImageDto();
-        imageDto.setDescription(description);
-        imageDto.setMakeId(Integer.parseInt(makeId));
-        Base<?> createImage=imageService.createImage(file, imageDto);
-        return baseService.rest(createImage);
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<?> createImage(@RequestParam("file") MultipartFile file, @RequestParam("makeId") String makeId, @RequestParam("description") String description){
+//        ImageDto imageDto=new ImageDto();
+//        imageDto.setDescription(description);
+//        imageDto.setMakeId(Integer.parseInt(makeId));
+//        Base<?> createImage=imageService.createImage(file, imageDto);
+//        return baseService.rest(createImage);
+//    }
 }

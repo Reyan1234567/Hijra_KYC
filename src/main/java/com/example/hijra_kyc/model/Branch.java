@@ -13,4 +13,7 @@ public class Branch {
     @Column(name = "branch_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long branch_id;
+
+    @Column(name = "branch_name")
+    private String name;
 }
