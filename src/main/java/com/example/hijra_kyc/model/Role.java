@@ -1,20 +1,22 @@
 package com.example.hijra_kyc.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Role {
+
     @Id
-    private String roleId;
+    @Column(name = "role_id", length = 10)
+    private String roleId;  // e.g., "R001"
+
+    @Column(name = "role_name")
     private String roleName;
+
+    @Column(name = "record_status")
     private String recordStatus;
 }

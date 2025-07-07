@@ -1,17 +1,15 @@
 package com.example.hijra_kyc.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class RolePermissionOutDto {
-    private String rolePermissionId;
+    private String rolePermissionId;  // String because your entity uses String IDs
     private String roleId;
+    private String roleName;          // optional, for better API clarity
     private String permissionId;
+    private String permissionName;    // optional, for better API clarity
     private String recordStatus;
 }
