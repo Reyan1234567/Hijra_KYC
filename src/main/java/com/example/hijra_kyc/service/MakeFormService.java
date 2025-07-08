@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.service;
-import com.example.hijra_kyc.KycUserProfile;
+import com.example.hijra_kyc
+        .KycUserProfile;
 import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.MakeFormDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
