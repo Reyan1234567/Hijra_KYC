@@ -17,8 +17,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-server:
-  tomcat:
-    multipart:
-      max-file-count:300
-    max-swallow-size: -1
