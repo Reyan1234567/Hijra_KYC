@@ -3,7 +3,6 @@ import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.MakeFormDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
-import com.example.hijra_kyc.mapper.MakeFormOutMapper;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
@@ -16,11 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -32,7 +27,6 @@ public class MakeFormService {
     private final BaseService baseService;
     private final UserRepository userRepository;
     private final BranchRepository branchRepository;
-    private final MakeFormOutMapper makeFormOutMapper;
     private final ImageService imageService;
 
     public Base<?> saveForm(MakeFormDto makeFormDto, MultipartFile[] images) {
@@ -49,12 +43,12 @@ public class MakeFormService {
             for(int i=0;i<images.length;i++){
                 ImageDto imageDto=new ImageDto();
                 imageDto.setDescription(makeFormDto.getDescriptions()[i]);
-                imageDto.setMakeId(makeForm.getId());
+                imageDto.setMakeId(createMakeForm.getId());
                 Image image=imageService.createImage(images[i],imageDto);
                 imageList.add(image);
             }
             createMakeForm.setImages(imageList);
-            return baseService.success(makeFormOutMapper.makeFormOutMapper(createMakeForm));
+            return baseService.success(makerFormMapper.makeFormOutMapper(createMakeForm));
         }
         catch(Exception e){
             System.out.println("In the catch "+e);
@@ -70,7 +64,7 @@ public class MakeFormService {
                 return baseService.listError("No list items found");
             }
             return baseService.listSuccess(makersForm.stream()
-                    .map(makeFormOutMapper::makeFormOutMapper)
+                    .map(makerFormMapper::makeFormOutMapper)
                     .toList());
         }
         catch(Exception e){
@@ -89,7 +83,7 @@ public class MakeFormService {
             }
             return baseService.listSuccess(makersForm
                     .stream()
-                    .map(makeFormOutMapper::makeFormOutMapper).toList());
+                    .map(makerFormMapper::makeFormOutMapper).toList());
         }
         catch(Exception e){
             return baseService.listError(e.getMessage());
@@ -101,10 +95,6 @@ public class MakeFormService {
             MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeFormRepository.delete(makeForm1);
-            List<Image> images=makeForm1.getImages();
-            if(!images.isEmpty()){
-                images.forEach(image -> {imageService.deleteImage(image.getId().longValue());});
-            }
             return baseService.success("Make is now deleted");
         }
         catch (Exception e){
@@ -121,7 +111,7 @@ public class MakeFormService {
                     .orElseThrow(()->new RuntimeException("HO not found"));
             makeForm1.setHo(ho);
             makeFormRepository.save(makeForm1);
-            return baseService.success(makeFormOutMapper.makeFormOutMapper(makeForm1));
+            return baseService.success(makerFormMapper.makeFormOutMapper(makeForm1));
         } catch (Exception e) {
             return baseService.error(e.getMessage());
         }
@@ -141,13 +131,13 @@ public class MakeFormService {
             makeForm1.setHoActionTime(Instant.now());
             makeFormRepository.save(makeForm1);
             if(statusNumber==1){
-                return baseService.success("Make is now Accepted"+"\n"+makeFormOutMapper.makeFormOutMapper(makeForm1));
+                return baseService.success("Make is now Accepted"+"\n"+makerFormMapper.makeFormOutMapper(makeForm1));
             }
             else if (statusNumber==2) {
-                return baseService.success("Make is now Rejected"+"\n"+makeFormOutMapper.makeFormOutMapper(makeForm1));
+                return baseService.success("Make is now Rejected"+"\n"+makerFormMapper.makeFormOutMapper(makeForm1));
             }
             else {
-                return baseService.success("Make is now Pending"+"\n"+makeFormOutMapper.makeFormOutMapper(makeForm1));
+                return baseService.success("Make is now Pending"+"\n"+makerFormMapper.makeFormOutMapper(makeForm1));
             }
         }
         catch (Exception e){

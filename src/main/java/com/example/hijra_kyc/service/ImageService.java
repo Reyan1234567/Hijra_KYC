@@ -1,11 +1,9 @@
 package com.example.hijra_kyc.service;
 
-
 import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.ImageReturnDto;
 import com.example.hijra_kyc.mapper.ImageMapper;
-import com.example.hijra_kyc.mapper.ImageOutMapper;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
@@ -32,7 +30,6 @@ public class ImageService {
     private MakeFormRepository makeFormRepository;
     private UserRepository userRepository;
     private ImageMapper imageMapper;
-    private ImageOutMapper imageOutMapper;
 
     public List<ImageReturnDto> getImages(Long makeId) {
         try{
@@ -45,7 +42,7 @@ public class ImageService {
             }
             System.out.println(listOfImages);
             return listOfImages.stream()
-                            .map((image)->imageOutMapper.toImageDto(image))
+                            .map((image)->imageMapper.toImageDto(image))
                             .toList();
 
         }
@@ -71,9 +68,12 @@ public class ImageService {
 
     public Image createImage(MultipartFile imageFile, ImageDto imageDto) throws Exception{
         try{
+            System.out.println("In the createImage");
             var image = imageMapper.mapImageDtoToImage(imageDto);
+            System.out.println("image created "+image);
             MakeForm makeForm=makeFormRepository.findById(imageDto.getMakeId())
                     .orElseThrow(()->new RuntimeException("can't find form-makeId"));
+            image.setImageMake(makeForm);
             Branch branch=branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranch_id())
                     .orElseThrow(()->new RuntimeException("branch not found"));
 
@@ -91,7 +91,7 @@ public class ImageService {
             //creating the path's parent path
             String filePath= Paths.get("C:","Users","hp","Desktop","hijra_kyc","upload",branchName,today.toString(),cif,makeForm.getCustomerAccount()).toString();
             File uploadDir = new File(filePath);
-
+            System.out.println(filePath);
             //check existence and create if path doesn't exist
             if (!uploadDir.exists()) {
                 var success = uploadDir.mkdirs();

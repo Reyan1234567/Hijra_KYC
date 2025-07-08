@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,9 +62,17 @@ public class MakeFormController {
 
     @PostMapping
     public ResponseEntity<?> save(@RequestParam("makerId") String makerId,@RequestParam("cif") String cif,@RequestParam("CA") String customerAccount,@RequestParam("CP") String customerPhone,@RequestParam("CN") String customerName,@RequestParam("descriptions") String[] descriptions,@RequestParam("image") MultipartFile[] images) {
-        MakeFormDto makeFormDto=new MakeFormDto(Integer.parseInt(makerId), cif, customerAccount, customerPhone, customerName, descriptions);
-        Base<?> newMakeForm= makeFormService.saveForm(makeFormDto, images);
-        return baseService.rest(newMakeForm);
+        if(descriptions.length!=images.length){
+            return new ResponseEntity<>("Images and descriptions don't match", HttpStatus.BAD_REQUEST);
+        }
+        try{
+            MakeFormDto makeFormDto = new MakeFormDto(Integer.parseInt(makerId), cif, customerAccount, customerPhone, customerName, descriptions);
+            Base<?> newMakeForm= makeFormService.saveForm(makeFormDto, images);
+            return baseService.rest(newMakeForm);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 //    @PatchMapping("/updateForm/{id}")

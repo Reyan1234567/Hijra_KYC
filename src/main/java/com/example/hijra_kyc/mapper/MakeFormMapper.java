@@ -14,7 +14,7 @@ import java.time.Instant;
 @Service
 @Data
 public class MakeFormMapper {
-    private final ImageOutMapper imageOutMapper;
+    private final ImageMapper imageMapper;
     public MakeForm mapToMakeForm(MakeFormDto makeFormDto) {
         return MakeForm.builder()
                 .cif(makeFormDto.getCif())
@@ -36,7 +36,7 @@ public class MakeFormMapper {
                 .customerName(makeForm.getCustomerName())
                 .status(makeForm.getStatus())
                 .branchId(makeForm.getBranchId().getBranch_id().intValue())
-                .image(makeForm.getImages().stream().map(imageOutMapper::toImageDto).toList())
+                .image(makeForm.getImages().stream().map(imageMapper::toImageDto).toList())
                 .build();
     }
 }

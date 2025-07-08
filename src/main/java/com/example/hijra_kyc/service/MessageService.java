@@ -4,7 +4,6 @@ import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageInDto;
 import com.example.hijra_kyc.mapper.MessageMapper;
-import com.example.hijra_kyc.mapper.MessageOutMapper;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Message;
@@ -14,8 +13,6 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
