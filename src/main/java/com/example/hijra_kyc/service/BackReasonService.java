@@ -34,9 +34,9 @@ public class BackReasonService {
     }
     public List<BackReasonOutDto> getAllBackReasons(){
         return backReasonRepository.findAll().stream()
-            .map(BackReasonMapper:: toDto)
-            .collect(Collectors.toList());
-        
+                .map(BackReasonMapper:: toDto)
+                .collect(Collectors.toList());
+
     }
     public BackReason searchBackReasonById(int id){
         return backReasonRepository.findById(id)

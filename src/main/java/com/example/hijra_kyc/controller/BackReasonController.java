@@ -23,8 +23,8 @@ import com.example.hijra_kyc.model.BackReason;
 @Validated
 public class BackReasonController {
     private final BackReasonService backReasonService;
-    public BackReasonController(BackReasonService backReasonService){
-        this.backReasonService = backReasonService;
+    public BackReasonController(BackReasonService BackReasonService){
+        this.backReasonService = BackReasonService;
     }
     @PostMapping("/post-Back-Reason")
     public ResponseEntity<BackReasonOutDto> postBackReason(@RequestBody BackReasonInDto dto) {
