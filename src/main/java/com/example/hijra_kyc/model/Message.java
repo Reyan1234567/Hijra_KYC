@@ -1,10 +1,10 @@
 package com.example.hijra_kyc.model;
 
-import com.example.hijra_kyc.KycUserProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.apache.catalina.User;
 
 import java.time.Instant;
 
@@ -23,11 +23,11 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
-    private KycUserProfile senderId;
+    private UserProfile senderId;
 
     @ManyToOne
     @JoinColumn(name = "reciever_id", referencedColumnName = "id")
-    private KycUserProfile recieverId;
+    private UserProfile recieverId;
 
     @Size(max = 1000)
     @Column(name = "message_body")

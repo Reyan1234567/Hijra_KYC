@@ -1,7 +1,5 @@
 package com.example.hijra_kyc.mapper;
 
-
-import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.MakeFormDto;
 import com.example.hijra_kyc.dto.MakeFormOutDto;
 import com.example.hijra_kyc.model.MakeForm;
@@ -28,14 +26,14 @@ public class MakeFormMapper {
     public MakeFormOutDto makeFormOutMapper(MakeForm makeForm){
         return MakeFormOutDto.builder()
                 .id(makeForm.getId())
-                .makerId(makeForm.getMaker().getId().intValue())
-                .hoId(makeForm.getHo()!=null?makeForm.getHo().getId().intValue():0)
+                .makerId(makeForm.getMaker().getId())
+                .hoId(makeForm.getHo()!=null?makeForm.getHo().getId():0)
                 .cif(makeForm.getCif())
                 .customerAccount(makeForm.getCustomerAccount())
                 .customerPhone(makeForm.getCustomerPhone())
                 .customerName(makeForm.getCustomerName())
                 .status(makeForm.getStatus())
-                .branchId(makeForm.getBranchId().getBranch_id().intValue())
+                .branchId(makeForm.getBranchId().getBranchId())
                 .image(makeForm.getImages().stream().map(imageMapper::toImageDto).toList())
                 .build();
     }

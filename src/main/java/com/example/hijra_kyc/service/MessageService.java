@@ -1,14 +1,14 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageInDto;
 import com.example.hijra_kyc.mapper.MessageMapper;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Message;
+import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.repository.MessageRepository;
-import com.example.hijra_kyc.repository.UserRepository;
+import com.example.hijra_kyc.repository.UserProfileRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -20,17 +20,17 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
     private final MessageMapper messageMapper;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userRepository;
     private final BaseService baseService;
 
     public Base<?> saveMessage(MessageInDto messageInDto){
         Message message = messageMapper.toMessage(messageInDto);
 
         try{
-            KycUserProfile reciever=userRepository.findById((long) messageInDto.getReceiver())
+            UserProfile reciever=userRepository.findById(messageInDto.getReceiver())
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             message.setRecieverId(reciever);
-            KycUserProfile sender=userRepository.findById((long) messageInDto.getSender())
+            UserProfile sender=userRepository.findById(messageInDto.getSender())
                     .orElseThrow(()->new RuntimeException("Sender Not Found"));
             message.setSenderId(sender);
             var messageField=messageInDto.getMessage();
@@ -47,9 +47,9 @@ public class MessageService {
 
     public BaseList<?> getConversation(Long user1, Long user2){
         try{
-           userRepository.findById(user1)
+           userRepository.findById(user1.intValue())
                    .orElseThrow(()->new RuntimeException("User1 Not Found"));
-           userRepository.findById(user2)
+           userRepository.findById(user2.intValue())
                    .orElseThrow(()->new RuntimeException("User2 Not Found"));
            var result= messageRepository.findConversationBetweenUsers(user1,user2);
            return baseService.listSuccess(result.stream()

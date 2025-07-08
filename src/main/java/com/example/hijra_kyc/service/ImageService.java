@@ -1,6 +1,5 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.ImageReturnDto;
 import com.example.hijra_kyc.mapper.ImageMapper;
@@ -8,7 +7,7 @@ import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
-import com.example.hijra_kyc.repository.UserRepository;
+import com.example.hijra_kyc.repository.UserProfileRepository;
 import lombok.AllArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class ImageService {
     private final BranchRepository branchRepository;
     private ImageRepository imageRepository;
     private MakeFormRepository makeFormRepository;
-    private UserRepository userRepository;
+    private UserProfileRepository userRepository;
     private ImageMapper imageMapper;
 
     public List<ImageReturnDto> getImages(Long makeId) {
@@ -73,7 +72,7 @@ public class ImageService {
         MakeForm makeForm=makeFormRepository.findById(imageDto.getMakeId())
                 .orElseThrow(()->new RuntimeException("can't find form-makeId"));
         image.setImageMake(makeForm);
-        Branch branch=branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranch_id())
+        Branch branch=branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranchId())
                 .orElseThrow(()->new RuntimeException("branch not found"));
 
         image.setImageMake(makeForm);
@@ -83,7 +82,7 @@ public class ImageService {
         String cif=makeForm.getCif();
 
         //uploading the file
-        KycUserProfile maker=userRepository.findById(image.getImageMake().getMaker().getId())
+        UserProfile maker=userRepository.findById(image.getImageMake().getMaker().getId())
                 .orElseThrow(()->new RuntimeException("Can't find maker-Id"));
         String makerName=maker.getFirstName();
 

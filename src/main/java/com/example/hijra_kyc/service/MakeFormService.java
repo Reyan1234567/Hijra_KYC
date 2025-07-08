@@ -1,6 +1,5 @@
 package com.example.hijra_kyc.service;
-import com.example.hijra_kyc
-        .KycUserProfile;
+
 import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.MakeFormDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
@@ -8,7 +7,7 @@ import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
-import com.example.hijra_kyc.repository.UserRepository;
+import com.example.hijra_kyc.repository.UserProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,17 +25,17 @@ public class MakeFormService {
     private final ImageRepository imageRepository;
     private final MakeFormMapper makerFormMapper;
     private final BaseService baseService;
-    private final UserRepository userRepository;
+    private final UserProfileRepository userRepository;
     private final BranchRepository branchRepository;
     private final ImageService imageService;
 
     public Base<?> saveForm(MakeFormDto makeFormDto, MultipartFile[] images) {
         try{
             MakeForm makeForm= makerFormMapper.mapToMakeForm(makeFormDto);
-            KycUserProfile maker=userRepository.findById(makeFormDto.getMakerId().longValue())
+            UserProfile maker=userRepository.findById(makeFormDto.getMakerId())
                     .orElseThrow(()->new RuntimeException("no maker with this id"));
             makeForm.setMaker(maker);
-            Branch branchId=branchRepository.findById(maker.getBranch().getBranch_id())
+            Branch branchId=branchRepository.findById(maker.getBranch().getBranchId())
                     .orElseThrow(()->new RuntimeException("no branch with this id"));
             makeForm.setBranchId(branchId);
             var createMakeForm=makeFormRepository.save(makeForm);
@@ -108,7 +107,7 @@ public class MakeFormService {
             MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeForm1.setHoAssignTime(Instant.now());
-            KycUserProfile ho=userRepository.findById(hoId)
+            UserProfile ho=userRepository.findById(hoId.intValue())
                     .orElseThrow(()->new RuntimeException("HO not found"));
             makeForm1.setHo(ho);
             makeFormRepository.save(makeForm1);

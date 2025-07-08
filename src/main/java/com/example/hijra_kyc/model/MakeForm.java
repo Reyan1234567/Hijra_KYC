@@ -1,6 +1,5 @@
 package com.example.hijra_kyc.model;
 
-import com.example.hijra_kyc.KycUserProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -24,11 +23,11 @@ public class MakeForm {
 
     @ManyToOne
     @JoinColumn(name = "maker_user_id", referencedColumnName = "id")
-    private KycUserProfile maker;
+    private UserProfile maker;
 
     @ManyToOne
     @JoinColumn(name = "ho_user_id", referencedColumnName = "id")
-    private KycUserProfile ho;
+    private UserProfile ho;
 
     @Size(max = 50)
     @Column(name = "cif", length = 50)
@@ -63,6 +62,6 @@ public class MakeForm {
     private List<Image> images=new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "branch_id", referencedColumnName="branch_id")
+    @JoinColumn(name = "branch_id", referencedColumnName="branchId")
     private Branch branchId;
 }

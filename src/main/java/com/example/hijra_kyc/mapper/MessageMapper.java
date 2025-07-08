@@ -1,6 +1,5 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.KycUserProfile;
 import com.example.hijra_kyc.dto.MessageInDto;
 import com.example.hijra_kyc.dto.MessageOutDto;
 import com.example.hijra_kyc.model.Message;
@@ -21,8 +20,8 @@ public class MessageMapper {
     public MessageOutDto messageOutMapper(Message message) {
         return MessageOutDto.builder()
                 .id(message.getId())
-                .senderId(message.getSenderId().getId().intValue())
-                .recieverId(message.getRecieverId().getId().intValue())
+                .senderId(message.getSenderId().getId())
+                .recieverId(message.getRecieverId().getId())
                 .messageBody(message.getMessageBody())
                 .sentTimestamp(message.getSentTimestamp())
                 .recievedTimestamp(message.getReceivedTimestamp())
