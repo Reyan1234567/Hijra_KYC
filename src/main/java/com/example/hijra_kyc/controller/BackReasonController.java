@@ -10,12 +10,17 @@ import com.example.hijra_kyc.service.BackReasonService;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.hijra_kyc.mapper.BackReasonMapper;
+import com.example.hijra_kyc.model.BackReason;
+
 @RestController
 @RequestMapping("/api/back-reasons")
+@Validated
 public class BackReasonController {
     private final BackReasonService backReasonService;
     public BackReasonController(BackReasonService backReasonService){
@@ -31,6 +36,10 @@ public class BackReasonController {
         List<BackReasonOutDto> result = backReasonService.getAllBackReasons();
         return ResponseEntity.ok(result);
     }
-    
-    
+    @GetMapping("/search-back-reason/{id}")
+    public ResponseEntity<BackReasonOutDto> getBackReasonById(int id) {
+        BackReason reason = backReasonService.searchBackReasonById(id);
+        BackReasonOutDto dto = BackReasonMapper.toDto(reason);
+        return ResponseEntity.ok(dto);
+    }
 }
