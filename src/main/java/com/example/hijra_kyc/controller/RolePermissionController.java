@@ -27,7 +27,8 @@ public class RolePermissionController {
     }
 
     @GetMapping("/by-permission/{permissionId}")
-    public ResponseEntity<List<RolePermissionOutDto>> getRolesByPermission(@PathVariable String permissionId) {
+    public ResponseEntity<String> getRolesByPermission(@PathVariable String permissionId) {
         return ResponseEntity.ok(rolePermissionService.getAllRolesByPermission(permissionId));
     }
+
 }

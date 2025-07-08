@@ -3,27 +3,28 @@ package com.example.hijra_kyc.mapper;
 import com.example.hijra_kyc.dto.UserProfileInDto;
 import com.example.hijra_kyc.dto.UserProfileOutDto;
 import com.example.hijra_kyc.model.Branch;
+import com.example.hijra_kyc.model.Role;
 import com.example.hijra_kyc.model.UserProfile;
 
 public class UserProfileMapper {
-    public static UserProfile toEntity(UserProfileInDto dto, Branch branch){
+    public static UserProfile toEntity(UserProfileInDto dto, Branch branch, Role role){
         return UserProfile.builder()
-        .userId(dto.getUserID())
-        .branch(branch)
-        .roleId(dto.getRoleId())
-        .firstName(dto.getFirstName())
-        .lastName(dto.getLastName())
-        .userName(dto.getUserName())
-        .gender(dto.getGender())
-        .phoneNumber(dto.getPhoneNumber())
-        .build();
+                .userId(dto.getUserID())
+                .branch(branch)
+                .roleId(role)
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .userName(dto.getUserName())
+                .gender(dto.getGender())
+                .phoneNumber(dto.getPhoneNumber())
+                .build();
     }
     public static UserProfileOutDto toDto(UserProfile user){
         UserProfileOutDto dto = new UserProfileOutDto();
         dto.setId(user.getId());
         dto.setUserID(user.getUserId());
         dto.setBranchId(user.getBranch().getBranchId());
-        dto.setRoleId(user.getRoleId());
+        dto.setRoleId(user.getRoleId().getRoleId());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setUserName(user.getUserName());

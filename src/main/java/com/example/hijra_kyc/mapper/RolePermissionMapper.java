@@ -30,7 +30,7 @@ public final class RolePermissionMapper {
             throw new IllegalArgumentException("RolePermission entity and its Role and Permission must not be null");
         }
         return RolePermissionOutDto.builder()
-                .rolePermissionId(entity.getRolePermissionId())
+                .rolePermissionId(String.valueOf(entity.getRolePermissionId()))
                 .roleId(entity.getRole().getRoleId())
                 .roleName(entity.getRole().getRoleName())               // Include for better info
                 .permissionId(entity.getPermission().getPermissionId())

@@ -120,6 +120,7 @@ public class ImageService {
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Image not found"));
             image.setImageDescription(description);
+            imageRepository.save(image);
             return baseService.success("Image Edited successfully");
         }
         catch (Exception e){

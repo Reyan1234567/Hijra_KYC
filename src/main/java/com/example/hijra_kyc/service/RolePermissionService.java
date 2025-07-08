@@ -32,6 +32,8 @@ public class RolePermissionService {
                 .orElseThrow(() -> new RuntimeException("Permission not found"));
 
         RolePermission rolePermission = RolePermissionMapper.toEntity(dto, role, permission);
+//        rolePermission.setRolePermissionId(Long.valueOf(generateCustomRolePermissionId())); // Set generated ID
+
         RolePermission saved = rolePermissionRepository.save(rolePermission);
         return RolePermissionMapper.toDto(saved);
     }
@@ -43,10 +45,17 @@ public class RolePermissionService {
                 .collect(Collectors.toList());
     }
 
-    public List<RolePermissionOutDto> getAllRolesByPermission(String permissionId) {
+    public String getAllRolesByPermission(String permissionId) {
         return rolePermissionRepository.findAll().stream()
                 .filter(rp -> rp.getPermission().getPermissionId().equals(permissionId))
                 .map(RolePermissionMapper::toDto)
-                .collect(Collectors.toList());
+                .toList().toString();
     }
+
+
+    private String generateCustomRolePermissionId() {
+        long count = rolePermissionRepository.count() + 1;
+        return String.format("RP%03d", count); // RP001, RP002...
+    }
+
 }

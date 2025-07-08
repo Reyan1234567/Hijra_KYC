@@ -1,7 +1,12 @@
 package com.example.hijra_kyc.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
@@ -12,7 +17,7 @@ public class Permission {
 
     @Id
     @Column(name = "permission_id", length = 10)
-    private String permissionId;  // e.g., "P001"
+    private String permissionId;  
 
     @Column(name = "permission_name")
     private String permissionName;

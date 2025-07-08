@@ -11,7 +11,8 @@ import lombok.*;
 public class RolePermission {
 
     @Id
-    private String rolePermissionId;  // Use String to store values like "RP001"
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-generated numeric ID
+    private Long rolePermissionId;
 
     private String recordStatus;
 

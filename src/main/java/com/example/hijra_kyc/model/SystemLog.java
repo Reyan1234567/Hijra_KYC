@@ -25,9 +25,9 @@ public class SystemLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull(message = "commented by is required")
+    @NotNull(message = "user id is required")
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserProfile userId;
     
     private LocalDateTime actionTime;

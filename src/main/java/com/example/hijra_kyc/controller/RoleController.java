@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.controller;
 
+import com.example.hijra_kyc.dto.PermissionOutDto;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/api/roles")
@@ -30,10 +33,16 @@ public class RoleController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/" +
-            "s")
+    @GetMapping("/" + "s")
     public ResponseEntity<List<RoleOutDto>> getAllRoles() {
         List<RoleOutDto> result = roleService.getAllRoles();
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/{roleId}/permissions")
+    public ResponseEntity<List<PermissionOutDto>> getPermissionsByRole(@PathVariable String roleId) {
+        List<PermissionOutDto> permissions = roleService.getPermissionsByRole(roleId);
+        return ResponseEntity.ok(permissions);
+    }
+
 }
