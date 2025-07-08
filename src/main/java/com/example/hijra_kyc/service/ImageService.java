@@ -67,53 +67,48 @@ public class ImageService {
     }
 
     public Image createImage(MultipartFile imageFile, ImageDto imageDto) throws Exception{
-        try{
-            System.out.println("In the createImage");
-            var image = imageMapper.mapImageDtoToImage(imageDto);
-            System.out.println("image created "+image);
-            MakeForm makeForm=makeFormRepository.findById(imageDto.getMakeId())
-                    .orElseThrow(()->new RuntimeException("can't find form-makeId"));
-            image.setImageMake(makeForm);
-            Branch branch=branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranch_id())
-                    .orElseThrow(()->new RuntimeException("branch not found"));
+        System.out.println("In the createImage");
+        var image = imageMapper.mapImageDtoToImage(imageDto);
+        System.out.println("image created "+image);
+        MakeForm makeForm=makeFormRepository.findById(imageDto.getMakeId())
+                .orElseThrow(()->new RuntimeException("can't find form-makeId"));
+        image.setImageMake(makeForm);
+        Branch branch=branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranch_id())
+                .orElseThrow(()->new RuntimeException("branch not found"));
 
-            image.setImageMake(makeForm);
-            LocalDate today = LocalDate.now();
-            LocalTime now=LocalTime.now();
-            String branchName=branch.getName();
-            String cif=makeForm.getCif();
+        image.setImageMake(makeForm);
+        LocalDate today = LocalDate.now();
+        LocalTime now=LocalTime.now();
+        String branchName=branch.getName();
+        String cif=makeForm.getCif();
 
-            //uploading the file
-            KycUserProfile maker=userRepository.findById(image.getImageMake().getMaker().getId())
-                    .orElseThrow(()->new RuntimeException("Can't find maker-Id"));
-            String makerName=maker.getFirstName();
+        //uploading the file
+        KycUserProfile maker=userRepository.findById(image.getImageMake().getMaker().getId())
+                .orElseThrow(()->new RuntimeException("Can't find maker-Id"));
+        String makerName=maker.getFirstName();
 
-            //creating the path's parent path
-            String filePath= Paths.get("C:","Users","hp","Desktop","hijra_kyc","upload",branchName,today.toString(),cif,makeForm.getCustomerAccount()).toString();
-            File uploadDir = new File(filePath);
-            System.out.println(filePath);
-            //check existence and create if path doesn't exist
-            if (!uploadDir.exists()) {
-                var success = uploadDir.mkdirs();
-            }
+        //creating the path's parent path
+        String filePath= Paths.get("C:","Users","hp","Desktop","hijra_kyc","upload",branchName,today.toString(),cif,makeForm.getCustomerAccount()).toString();
+        File uploadDir = new File(filePath);
+        System.out.println(filePath);
+        //check existence and create if path doesn't exist
+        if (!uploadDir.exists()) {
+            var success = uploadDir.mkdirs();
+        }
 
-            //the full path which includes the file to be created
-            String fileName=Paths.get(filePath,now.toString().replace(":","-").replace(".","-")+"__"+image.getImageDescription()+today+cif+getExtension(imageFile.getOriginalFilename())).toString();
-            File fileToBeUploaded=new File(fileName);
+        //the full path which includes the file to be created
+        String fileName=Paths.get(filePath,now.toString().replace(":","-").replace(".","-")+"__"+image.getImageDescription()+today+cif+getExtension(imageFile.getOriginalFilename())).toString();
+        File fileToBeUploaded=new File(fileName);
 
 
 //            creates the file in a lower storage and detail
-            Thumbnails.of(imageFile.getInputStream())
-                            .size(600, 400)
-                            .outputQuality(0.8)
-                            .toFile(fileToBeUploaded);
+        Thumbnails.of(imageFile.getInputStream())
+                        .size(600, 400)
+                        .outputQuality(0.85)
+                        .toFile(fileToBeUploaded);
 
-            image.setImageName(fileName);
-            return imageRepository.save(image);
-        }
-        catch(Exception e){
-            throw e;
-        }
+        image.setImageName(fileName);
+        return imageRepository.save(image);
     }
 
     private String getExtension(String originalFilename) {
@@ -121,4 +116,15 @@ public class ImageService {
     }
 
 
+    public Base<?> editDescription(String description, int id) {
+        try{
+            Image image = imageRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Image not found"));
+            image.setImageDescription(description);
+            return baseService.success("Image Edited successfully");
+        }
+        catch (Exception e){
+            return baseService.error(e.getMessage());
+        }
+    }
 }
