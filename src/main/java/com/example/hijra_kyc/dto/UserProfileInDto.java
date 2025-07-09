@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class UserProfileInDto {
     private String userID;
-    private int branchId;
-    private String roleId;
+    private Long branchId;
+    private Long roleId;
     private String firstName;
     private String lastName;
     private String userName;

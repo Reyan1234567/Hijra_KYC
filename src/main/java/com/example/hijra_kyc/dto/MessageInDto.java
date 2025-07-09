@@ -8,11 +8,11 @@ import lombok.Getter;
 @Data
 public class MessageInDto {
     @NotNull(message="senderId is required")
-    private int sender;
+    private Long sender;
 
     @NotBlank(message = "messageBody is required")
     private String message;
 
     @NotBlank(message="receiverId is required")
-    private int receiver;
+    private Long receiver;
 }

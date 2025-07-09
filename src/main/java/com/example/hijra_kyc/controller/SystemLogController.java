@@ -17,15 +17,17 @@ import com.example.hijra_kyc.mapper.SystemLogMapper;
 import com.example.hijra_kyc.model.SystemLog;
 import com.example.hijra_kyc.service.SystemLogService;
 
+import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequestMapping("/api/system-logs")
 @Validated
+@RequiredArgsConstructor
 public class SystemLogController {
     private final SystemLogService logService;
-    public SystemLogController(SystemLogService logService) {
-        this.logService = logService;
-    }   
+    private final SystemLogMapper mapper;
+
     @PostMapping("/add-new-logs")
     public ResponseEntity<SystemLogOutDto> postLogs(@RequestBody SystemLogInDto dto) {
        SystemLogOutDto result = logService.createLog(dto);
@@ -37,11 +39,11 @@ public class SystemLogController {
         return ResponseEntity.ok(result);
     }
     @GetMapping("/search-System-log/{id}")
-    public ResponseEntity<SystemLogOutDto> getLogById(@PathVariable int id) {
+    public ResponseEntity<SystemLogOutDto> getLogById(@PathVariable Long id) {
         SystemLog log = logService.searchLogById(id);
-        SystemLogOutDto dto = SystemLogMapper.toDto(log);
+        SystemLogOutDto dto = mapper.toDto(log);
         return ResponseEntity.ok(dto);
     }
-    
+ 
     
 }

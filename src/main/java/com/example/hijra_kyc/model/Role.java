@@ -12,7 +12,7 @@ public class Role {
 
     @Id
     @Column(name = "role_id", length = 10)
-    private String roleId;  // e.g., "R001"
+    private Long roleId;  // e.g., "R001"
 
     @Column(name = "role_name")
     private String roleName;

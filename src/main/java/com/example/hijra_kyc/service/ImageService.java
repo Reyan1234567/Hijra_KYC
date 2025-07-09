@@ -33,7 +33,7 @@ public class ImageService {
     public List<ImageReturnDto> getImages(Long makeId) {
         try{
             System.out.println("getImages");
-            MakeForm makeForm = makeFormRepository.findById(makeId.intValue())
+            MakeForm makeForm = makeFormRepository.findById(makeId)
                     .orElseThrow(() -> new RuntimeException("Maker not found"));
             List<Image> listOfImages = makeForm.getImages();
             if(listOfImages.isEmpty()){
@@ -52,7 +52,7 @@ public class ImageService {
 
     public Base<?> deleteImage(Long id) {
         try{
-            Image image = imageRepository.findById(id.intValue())
+            Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Image not found"));
             imageRepository.delete(image);
             File file=new File(image.getImageName());
@@ -115,7 +115,7 @@ public class ImageService {
     }
 
 
-    public Base<?> editDescription(String description, int id) {
+    public Base<?> editDescription(String description, Long id) {
         try{
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Image not found"));

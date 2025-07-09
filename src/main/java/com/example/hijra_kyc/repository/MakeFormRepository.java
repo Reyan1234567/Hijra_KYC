@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface MakeFormRepository extends JpaRepository<MakeForm, Integer> {
+public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
     @Query("Select m from MakeForm m where m.maker.id=:makerId")
     List<MakeForm> findByMaker(Long makerId);
 

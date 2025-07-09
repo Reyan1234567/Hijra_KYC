@@ -17,15 +17,17 @@ import com.example.hijra_kyc.mapper.BranchMapper;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.service.BranchService;
 
+import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequestMapping("/api/branches")
 @Validated
+@RequiredArgsConstructor
 public class BranchController {
     private final BranchService branchService;
-    public BranchController(BranchService branchService){
-        this.branchService = branchService;
-    }
+    private BranchMapper mapper;
+
     @PostMapping("/post-branch")
     public ResponseEntity<BranchOutDto> postBranch(@RequestBody BranchInDto dto) {
         BranchOutDto result = branchService.createBranch(dto);
@@ -38,9 +40,9 @@ public class BranchController {
     
     }
     @GetMapping("/search-branch/{id}")
-    public ResponseEntity<BranchOutDto> getBranchById(@PathVariable int id) {
+    public ResponseEntity<BranchOutDto> getBranchById(@PathVariable Long id) {
         Branch branch = branchService.searchBranchById(id);
-        BranchOutDto dto = BranchMapper.toDto(branch);
+        BranchOutDto dto = mapper.toDto(branch);
         return ResponseEntity.ok(dto);
     }
     

@@ -6,5 +6,7 @@ import lombok.Data;
 public class BackReasonInDto {
     private String comment;
     private String bankAccount;
-    private int commentedBy;
+    private Long commentedBy;
+    private Long makerId;
+    private Long branchId;
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,16 +17,17 @@ import com.example.hijra_kyc.mapper.UserProfileMapper;
 import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.service.UserProfileService;
 
+import lombok.RequiredArgsConstructor;
+
 
 
 @RestController
 @RequestMapping("/api/user-profiles")
 @Validated
+@RequiredArgsConstructor
 public class UserProfileController {
     private final UserProfileService userService;
-    public UserProfileController(UserProfileService userService){
-        this.userService = userService;
-    }
+    private final UserProfileMapper mapper;
     @PostMapping("/add-new-user")
     public ResponseEntity<UserProfileOutDto>postNewUser(@RequestBody UserProfileInDto dto) {
         UserProfileOutDto result = userService.createUser(dto);
@@ -39,15 +39,10 @@ public class UserProfileController {
         return ResponseEntity.ok(result);
     }
     @GetMapping("/search-user/{id}")
-    public ResponseEntity<UserProfileOutDto> getUserById(@PathVariable int id) {
+    public ResponseEntity<UserProfileOutDto> getUserById(@PathVariable Long id) {
         UserProfile user = userService.searchUserById(id);
-        UserProfileOutDto dto = UserProfileMapper.toDto(user);
+        UserProfileOutDto dto = mapper.toDto(user);
         return ResponseEntity.ok(dto);
-    }
-    @DeleteMapping("/delete-user/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        userService.deleteUserById(id);
-        return ResponseEntity.ok().build();
     }
     
     

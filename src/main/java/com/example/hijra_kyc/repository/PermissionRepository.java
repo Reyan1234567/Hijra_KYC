@@ -7,9 +7,9 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PermissionRepository extends JpaRepository<Permission, String> {
+public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     @Query("SELECT p FROM Permission p JOIN RolePermission rp ON p.permissionId = rp.permission.permissionId " +
             "WHERE rp.role.roleId = :roleId AND rp.recordStatus = 'ACTIVE'")
-    List<Permission> findPermissionsByRoleId(@Param("roleId") String roleId);
+    List<Permission> findPermissionsByRoleId(@Param("roleId") Long roleId);
 }

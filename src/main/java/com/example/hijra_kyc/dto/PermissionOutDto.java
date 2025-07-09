@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionOutDto {
-    private String permissionId;
+    private Long permissionId;
     private String permissionName;
     private String permissionDisplayName;
     private String permissionCategory;

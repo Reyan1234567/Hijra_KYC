@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class BranchInDto {
     private String name;
-    private String phoneNumber;
+    private String branchCode;
 }
 

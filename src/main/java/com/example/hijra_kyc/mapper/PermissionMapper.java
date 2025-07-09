@@ -1,14 +1,18 @@
 package com.example.hijra_kyc.mapper;
 
+import org.springframework.stereotype.Service;
+
 import com.example.hijra_kyc.dto.PermissionInDto;
 import com.example.hijra_kyc.dto.PermissionOutDto;
 import com.example.hijra_kyc.model.Permission;
 
+import lombok.RequiredArgsConstructor;
+@Service
+@RequiredArgsConstructor
 public class PermissionMapper {
 
-    public static Permission toEntity(PermissionInDto dto) {
+    public Permission toEntity(PermissionInDto dto) {
         return Permission.builder()
-                .permissionId(dto.getPermissionId())
                 .permissionName(dto.getPermissionName())
                 .permissionDisplayName(dto.getPermissionDisplayName())
                 .permissionCategory(dto.getPermissionCategory())
@@ -16,7 +20,7 @@ public class PermissionMapper {
                 .build();
     }
 
-    public static PermissionOutDto toDto(Permission entity) {
+    public  PermissionOutDto toDto(Permission entity) {
         return PermissionOutDto.builder()
                 .permissionId(entity.getPermissionId())
                 .permissionName(entity.getPermissionName())

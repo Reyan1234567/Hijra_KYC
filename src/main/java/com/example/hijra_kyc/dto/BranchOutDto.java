@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class BranchOutDto {
-    private int id;
+    private Long id;
     private String name;
-    private String phoneNumber;
+    private String branchCode;
 }

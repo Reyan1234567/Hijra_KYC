@@ -12,6 +12,7 @@ import com.example.hijra_kyc.repository.UserProfileRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,9 +48,9 @@ public class MessageService {
 
     public BaseList<?> getConversation(Long user1, Long user2){
         try{
-           userRepository.findById(user1.intValue())
+           userRepository.findById(user1)
                    .orElseThrow(()->new RuntimeException("User1 Not Found"));
-           userRepository.findById(user2.intValue())
+           userRepository.findById(user2)
                    .orElseThrow(()->new RuntimeException("User2 Not Found"));
            var result= messageRepository.findConversationBetweenUsers(user1,user2);
            return baseService.listSuccess(result.stream()
@@ -63,9 +64,9 @@ public class MessageService {
     @Transactional
     public Base<?> updateStatus(Long senderId, Long receiverId) {
         try{
-            messageRepository.findById(senderId.intValue())
+            messageRepository.findById(senderId)
                     .orElseThrow(()-> new RuntimeException("Sender Not Found"));
-            messageRepository.findById(receiverId.intValue())
+            messageRepository.findById(receiverId)
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             messageRepository.updateStatus(senderId, receiverId);
             return baseService.success("Message Updated successfully");
@@ -75,11 +76,11 @@ public class MessageService {
         }
     }
 
-    public Base<?> deleteMessage(int id, int senderId) {
+    public Base<?> deleteMessage(Long id, Long senderId) {
         try{
             Message message=messageRepository.findById(id)
                     .orElseThrow(()-> new RuntimeException("Message Not Found"));
-            if(message.getSenderId().getId()!=senderId){
+            if(message.getSenderId().getId() != senderId){
                 return baseService.error("Unauthorized!");
             }
             messageRepository.deleteById(message.getId());
@@ -91,11 +92,11 @@ public class MessageService {
     }
 
 
-    public Base<?> updateMessage(Long senderId, Long receiverId, MessageEdit message, int id){
+    public Base<?> updateMessage(Long senderId, Long receiverId, MessageEdit message, Long id){
         try{
             var messageValue=messageRepository.findById(id)
                     .orElseThrow(()->new RuntimeException("Message Not Found"));
-            if(senderId.intValue()!=messageValue.getSenderId().getId()){
+            if(senderId != messageValue.getSenderId().getId()){
                 return baseService.error("Unauthorized!");
             }
             var lastMessage=messageRepository.findLatestMessage(receiverId, senderId);

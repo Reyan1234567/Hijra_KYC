@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int branchId;
+    private Long branchId;
     @NotBlank(message = "name is required")
     @Column(unique=true)
     private String name;
-    @NotBlank(message = "phone number is required")
-    private String phoneNumber;
+    @NotBlank(message = "branchCode is required")
+    private String branchCode;
     
 }

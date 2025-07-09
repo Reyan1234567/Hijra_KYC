@@ -14,5 +14,5 @@ public class ImageDto {
     private String description;
 
     @NotBlank(message = "MakeId is required")
-    private int makeId;
+    private Long makeId;
 }

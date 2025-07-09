@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 @Builder
 public class RolePermissionOutDto {
-    private String rolePermissionId;  // String because your entity uses String IDs
-    private String roleId;
+    private Long rolePermissionId;  // String because your entity uses String IDs
+    private Long roleId;
     private String roleName;          // optional, for better API clarity
-    private String permissionId;
+    private Long permissionId;
     private String permissionName;    // optional, for better API clarity
     private String recordStatus;
 }

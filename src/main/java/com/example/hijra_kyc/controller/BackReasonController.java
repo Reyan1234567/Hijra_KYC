@@ -7,6 +7,8 @@ import com.example.hijra_kyc.dto.BackReasonInDto;
 import com.example.hijra_kyc.dto.BackReasonOutDto;
 import com.example.hijra_kyc.service.BackReasonService;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -22,11 +24,11 @@ import com.example.hijra_kyc.model.BackReason;
 @RestController
 @RequestMapping("/api/back-reasons")
 @Validated
+@RequiredArgsConstructor
 public class BackReasonController {
     private final BackReasonService backReasonService;
-    public BackReasonController(BackReasonService BackReasonService){
-        this.backReasonService = BackReasonService;
-    }
+    private final BackReasonMapper mapper;
+
     @PostMapping("/post-Back-Reason")
     public ResponseEntity<BackReasonOutDto> postBackReason(@RequestBody BackReasonInDto dto) {
         BackReasonOutDto result = backReasonService.createBackReason(dto);
@@ -38,9 +40,9 @@ public class BackReasonController {
         return ResponseEntity.ok(result);
     }
     @GetMapping("/search-back-reason/{id}")
-    public ResponseEntity<BackReasonOutDto> getBackReasonById(@PathVariable int id) {
+    public ResponseEntity<BackReasonOutDto> getBackReasonById(@PathVariable Long id) {
         BackReason reason = backReasonService.searchBackReasonById(id);
-        BackReasonOutDto dto = BackReasonMapper.toDto(reason);
+        BackReasonOutDto dto = mapper.toDto(reason);
         return ResponseEntity.ok(dto);
     }
 }

@@ -92,7 +92,7 @@ public class MakeFormService {
 
     public Base<?> delete(Long id) {
         try{
-            MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
+            MakeForm makeForm1 = makeFormRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeFormRepository.delete(makeForm1);
             return baseService.success("Make is now deleted");
@@ -104,10 +104,10 @@ public class MakeFormService {
 
     public Base<?> updateAssignTime(Long id, Long hoId){
         try{
-            MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
+            MakeForm makeForm1 = makeFormRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeForm1.setHoAssignTime(Instant.now());
-            UserProfile ho=userRepository.findById(hoId.intValue())
+            UserProfile ho=userRepository.findById(hoId)
                     .orElseThrow(()->new RuntimeException("HO not found"));
             makeForm1.setHo(ho);
             makeFormRepository.save(makeForm1);
@@ -125,7 +125,7 @@ public class MakeFormService {
                 return baseService.error("invalid status");
             }
             System.out.println(makeId.intValue());
-            MakeForm makeForm1=makeFormRepository.findById(makeId.intValue())
+            MakeForm makeForm1=makeFormRepository.findById(makeId)
                     .orElseThrow(() -> new EntityNotFoundException("Make not found"));
             makeForm1.setStatus(statusNumber);
             makeForm1.setHoActionTime(Instant.now());

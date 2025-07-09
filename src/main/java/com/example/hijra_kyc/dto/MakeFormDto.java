@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class MakeFormDto {
     @NotNull(message = "makeId is required")
-    private Integer makerId;
+    private Long makerId;
 
     @NotBlank(message = "cif is required")
     private String cif;

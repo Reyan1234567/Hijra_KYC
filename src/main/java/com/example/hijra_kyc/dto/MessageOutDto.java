@@ -8,9 +8,9 @@ import java.time.Instant;
 @Builder
 @Data
 public class MessageOutDto {
-    private int id;
-    private int senderId;
-    private int recieverId;
+    private Long id;
+    private Long senderId;
+    private Long recieverId;
     private String messageBody;
     private Instant sentTimestamp;
     private Instant recievedTimestamp;

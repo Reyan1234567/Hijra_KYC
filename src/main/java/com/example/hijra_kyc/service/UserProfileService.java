@@ -15,38 +15,33 @@ import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.RoleRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserProfileService {
     private final UserProfileRepository userRepository;
     private final BranchRepository branchRepo;
     private final RoleRepository roleRepo;
-    public UserProfileService(UserProfileRepository userRepository, BranchRepository branchRepo,RoleRepository roleRepo){
-        this.userRepository = userRepository;
-        this.branchRepo = branchRepo;
-        this.roleRepo = roleRepo;
-    }
+    private final UserProfileMapper mapper;
+
     public UserProfileOutDto createUser(UserProfileInDto dto){
         Branch branch = branchRepo.findById(dto.getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
         Role role = roleRepo.findById(dto.getRoleId())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
-        UserProfile user = UserProfileMapper.toEntity(dto,branch,role);
+        UserProfile user = mapper.toEntity(dto,branch,role);
         UserProfile savedUser = userRepository.save(user);
-        return UserProfileMapper.toDto(savedUser);
+        return mapper.toDto(savedUser);
     }
     public List<UserProfileOutDto> getAllUsers(){
         return userRepository.findAll().stream()
-                .map(UserProfileMapper::toDto)
+                .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
-    public UserProfile searchUserById(int id){
+    public UserProfile searchUserById(Long id){
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-    }
-    public void deleteUserById(int id) {
-        UserProfile user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        userRepository.delete(user);
     }
 }

@@ -4,10 +4,10 @@ import lombok.Data;
 
 @Data
 public class UserProfileOutDto {
-    private int id;
+    private Long id;
     private String userID;
-    private int branchId;
-    private String roleId;
+    private Long branchId;
+    private Long roleId;
     private String firstName;
     private String lastName;
     private String userName;

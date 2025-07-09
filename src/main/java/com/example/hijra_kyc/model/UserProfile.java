@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @NotBlank(message = "user id required")
     @Column(unique = true)
     private String userId;
@@ -42,8 +42,9 @@ public class UserProfile {
     private String gender;
     @NotBlank(message = "phone number required")
     private String phoneNumber;
+    @NotBlank(message = "status required")
+    private String status;
     @ManyToOne
     @JoinColumn(name="branchId", nullable = false)
     private Branch branch;
-
 }

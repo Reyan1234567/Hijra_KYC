@@ -64,12 +64,12 @@ public class MakeFormController {
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestParam("makerId") String makerId,@RequestParam("cif") String cif,@RequestParam("CA") String customerAccount,@RequestParam("CP") String customerPhone,@RequestParam("CN") String customerName,@RequestParam("descriptions") String[] descriptions,@RequestParam("image") MultipartFile[] images) {
+    public ResponseEntity<?> save(@RequestParam("makerId") Long makerId,@RequestParam("cif") String cif,@RequestParam("CA") String customerAccount,@RequestParam("CP") String customerPhone,@RequestParam("CN") String customerName,@RequestParam("descriptions") String[] descriptions,@RequestParam("image") MultipartFile[] images) {
         if(descriptions.length!=images.length){
             return new ResponseEntity<>("Images and descriptions don't match", HttpStatus.BAD_REQUEST);
         }
         try{
-            MakeFormDto makeFormDto = new MakeFormDto(Integer.parseInt(makerId), cif, customerAccount, customerPhone, customerName, descriptions);
+            MakeFormDto makeFormDto = new MakeFormDto(makerId, cif, customerAccount, customerPhone, customerName, descriptions);
             Base<?> newMakeForm= makeFormService.saveForm(makeFormDto, images);
             return baseService.rest(newMakeForm);
         }

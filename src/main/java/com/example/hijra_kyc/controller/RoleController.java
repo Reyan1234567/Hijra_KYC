@@ -40,7 +40,7 @@ public class RoleController {
     }
 
     @GetMapping("/{roleId}/permissions")
-    public ResponseEntity<List<PermissionOutDto>> getPermissionsByRole(@PathVariable String roleId) {
+    public ResponseEntity<List<PermissionOutDto>> getPermissionsByRole(@PathVariable Long roleId) {
         List<PermissionOutDto> permissions = roleService.getPermissionsByRole(roleId);
         return ResponseEntity.ok(permissions);
     }

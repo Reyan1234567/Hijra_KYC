@@ -31,11 +31,11 @@ public class ImageController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createImage(@RequestParam("file") MultipartFile file, @RequestParam("makeId") String makeId, @RequestParam("description") String description){
+    public ResponseEntity<?> createImage(@RequestParam("file") MultipartFile file, @RequestParam("makeId") Long makeId, @RequestParam("description") String description){
         try{
             ImageDto imageDto = new ImageDto();
             imageDto.setDescription(description);
-            imageDto.setMakeId(Integer.parseInt(makeId));
+            imageDto.setMakeId(makeId);
             Image createImage = imageService.createImage(file, imageDto);
             Base<?> base=baseService.success("image created");
             return baseService.rest(base);
@@ -45,7 +45,7 @@ public class ImageController {
     }
 
     @PatchMapping("/description")
-    public ResponseEntity<?> editDescription(@RequestParam("description") String description, @RequestParam("id") int id){
+    public ResponseEntity<?> editDescription(@RequestParam("description") String description, @RequestParam("id") Long id){
         Base<?> newImage=imageService.editDescription(description, id);
         return baseService.rest(newImage);
     }

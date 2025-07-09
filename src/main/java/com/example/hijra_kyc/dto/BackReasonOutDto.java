@@ -7,9 +7,11 @@ import lombok.Data;
 
 @Data
 public class BackReasonOutDto {
-    private int id;
+    private Long id;
     private String comment;
     private String bankAccount;
-    private int commentedBy;
+    private Long commentedBy;
+    private Long makerId;
+    private Long branchId;
     private LocalDateTime commentedAt;
 }

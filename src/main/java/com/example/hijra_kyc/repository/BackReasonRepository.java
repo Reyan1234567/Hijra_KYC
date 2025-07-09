@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.hijra_kyc.model.BackReason;
 
-public interface BackReasonRepository extends JpaRepository<BackReason, Integer> {
+public interface BackReasonRepository extends JpaRepository<BackReason, Long> {
     
 }

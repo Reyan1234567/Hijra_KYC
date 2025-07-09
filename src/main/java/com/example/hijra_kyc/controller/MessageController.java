@@ -37,13 +37,13 @@ public class MessageController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMessage(@PathVariable("id") int id, @RequestParam("senderId") int senderId){
+    public ResponseEntity<?> deleteMessage(@PathVariable("id") Long id, @RequestParam("senderId") Long senderId){
         Base<?> deleteMessage=messageService.deleteMessage(id, senderId);
         return baseService.rest(deleteMessage);
     }
 
     @PatchMapping("/messageEdit/{id}")
-    public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message, @PathVariable("id") int id){
+    public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message, @PathVariable("id") Long id){
         Base<?> messageEdit=messageService.updateMessage(senderId, receiverId,message, id);
         return baseService.rest(messageEdit);
     }
