@@ -1,6 +1,6 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.ImageDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageDto;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.Image;
 import com.example.hijra_kyc.service.BaseService;

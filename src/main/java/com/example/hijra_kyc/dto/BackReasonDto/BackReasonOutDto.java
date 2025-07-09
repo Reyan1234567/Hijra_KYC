@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.BackReasonDto;
 
 import java.time.LocalDateTime;
 

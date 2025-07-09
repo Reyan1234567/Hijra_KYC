@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.Imagedto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

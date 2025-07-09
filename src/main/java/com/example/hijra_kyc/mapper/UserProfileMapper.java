@@ -2,8 +2,8 @@ package com.example.hijra_kyc.mapper;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.UserProfileInDto;
-import com.example.hijra_kyc.dto.UserProfileOutDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.model.Role;
 import com.example.hijra_kyc.model.UserProfile;

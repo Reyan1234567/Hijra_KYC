@@ -1,8 +1,8 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.dto.RoleInDto;
-import com.example.hijra_kyc.dto.RoleOutDto;
-import com.example.hijra_kyc.dto.PermissionOutDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
+import com.example.hijra_kyc.dto.RoleDto.RoleInDto;
+import com.example.hijra_kyc.dto.RoleDto.RoleOutDto;
 import com.example.hijra_kyc.mapper.RoleMapper;
 import com.example.hijra_kyc.mapper.PermissionMapper;
 import com.example.hijra_kyc.model.Permission;

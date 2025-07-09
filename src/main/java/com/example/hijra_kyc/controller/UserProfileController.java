@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.hijra_kyc.dto.UserProfileInDto;
-import com.example.hijra_kyc.dto.UserProfileOutDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
 import com.example.hijra_kyc.mapper.UserProfileMapper;
 import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.service.UserProfileService;

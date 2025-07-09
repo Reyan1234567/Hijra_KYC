@@ -2,8 +2,8 @@ package com.example.hijra_kyc.mapper;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.PermissionInDto;
-import com.example.hijra_kyc.dto.PermissionOutDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionInDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
 import com.example.hijra_kyc.model.Permission;
 
 import lombok.RequiredArgsConstructor;

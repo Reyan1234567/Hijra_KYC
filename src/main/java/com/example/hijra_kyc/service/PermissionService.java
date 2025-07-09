@@ -1,7 +1,7 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.dto.PermissionInDto;
-import com.example.hijra_kyc.dto.PermissionOutDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionInDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
 import com.example.hijra_kyc.mapper.PermissionMapper;
 import com.example.hijra_kyc.model.Permission;
 import com.example.hijra_kyc.repository.PermissionRepository;

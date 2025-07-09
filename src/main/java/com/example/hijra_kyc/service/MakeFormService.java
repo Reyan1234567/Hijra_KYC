@@ -1,7 +1,7 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.dto.ImageDto;
-import com.example.hijra_kyc.dto.MakeFormDto;
+import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;

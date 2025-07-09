@@ -3,8 +3,6 @@ package com.example.hijra_kyc.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.hijra_kyc.dto.BackReasonInDto;
-import com.example.hijra_kyc.dto.BackReasonOutDto;
 import com.example.hijra_kyc.service.BackReasonService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
 import com.example.hijra_kyc.mapper.BackReasonMapper;
 import com.example.hijra_kyc.model.BackReason;
 

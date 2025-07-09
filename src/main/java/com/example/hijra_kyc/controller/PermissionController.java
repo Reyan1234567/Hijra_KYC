@@ -1,7 +1,7 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.PermissionInDto;
-import com.example.hijra_kyc.dto.PermissionOutDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionInDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
 import com.example.hijra_kyc.service.PermissionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

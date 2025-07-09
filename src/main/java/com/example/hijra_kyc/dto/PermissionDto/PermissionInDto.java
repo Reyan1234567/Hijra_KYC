@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.PermissionDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

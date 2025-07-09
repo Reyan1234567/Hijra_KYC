@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.hijra_kyc.dto.SystemLogInDto;
-import com.example.hijra_kyc.dto.SystemLogOutDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogInDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogOutDto;
 import com.example.hijra_kyc.mapper.SystemLogMapper;
 import com.example.hijra_kyc.model.SystemLog;
 import com.example.hijra_kyc.service.SystemLogService;

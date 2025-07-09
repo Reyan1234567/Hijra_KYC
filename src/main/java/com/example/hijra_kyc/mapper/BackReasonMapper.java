@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.BackReasonInDto;
-import com.example.hijra_kyc.dto.BackReasonOutDto;
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
 import com.example.hijra_kyc.model.BackReason;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.model.UserProfile;

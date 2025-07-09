@@ -1,9 +1,11 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.FormDto;
 
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+
+import com.example.hijra_kyc.dto.Imagedto.ImageReturnDto;
 
 @Builder
 @Data

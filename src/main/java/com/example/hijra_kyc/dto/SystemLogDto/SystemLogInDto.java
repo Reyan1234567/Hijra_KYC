@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.SystemLogDto;
 
 
 import lombok.Data;

@@ -3,8 +3,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.SystemLogInDto;
-import com.example.hijra_kyc.dto.SystemLogOutDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogInDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogOutDto;
 import com.example.hijra_kyc.model.SystemLog;
 import com.example.hijra_kyc.model.UserProfile;
 

@@ -1,7 +1,7 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.dto.ImageDto;
-import com.example.hijra_kyc.dto.ImageReturnDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageReturnDto;
 import com.example.hijra_kyc.mapper.ImageMapper;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;

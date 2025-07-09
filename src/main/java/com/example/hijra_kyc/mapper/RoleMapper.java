@@ -2,8 +2,8 @@ package com.example.hijra_kyc.mapper;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.RoleInDto;
-import com.example.hijra_kyc.dto.RoleOutDto;
+import com.example.hijra_kyc.dto.RoleDto.RoleInDto;
+import com.example.hijra_kyc.dto.RoleDto.RoleOutDto;
 import com.example.hijra_kyc.model.Role;
 
 import lombok.RequiredArgsConstructor;

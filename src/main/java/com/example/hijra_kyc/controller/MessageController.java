@@ -1,6 +1,7 @@
 package com.example.hijra_kyc.controller;
 
 import com.example.hijra_kyc.dto.*;
+import com.example.hijra_kyc.dto.MessageDto.MessageInDto;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;

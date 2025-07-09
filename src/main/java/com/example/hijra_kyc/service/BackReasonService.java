@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.BackReasonInDto;
-import com.example.hijra_kyc.dto.BackReasonOutDto;
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
 import com.example.hijra_kyc.mapper.BackReasonMapper;
 import com.example.hijra_kyc.model.BackReason;
 import com.example.hijra_kyc.model.Branch;

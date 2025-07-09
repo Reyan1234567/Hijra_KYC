@@ -5,11 +5,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.BranchInDto;
-import com.example.hijra_kyc.dto.BranchOutDto;
+import com.example.hijra_kyc.dto.BranchDto.BranchInDto;
+import com.example.hijra_kyc.dto.BranchDto.BranchOutDto;
 import com.example.hijra_kyc.mapper.BranchMapper;
 import com.example.hijra_kyc.model.Branch;
+import com.example.hijra_kyc.model.District;
 import com.example.hijra_kyc.repository.BranchRepository;
+import com.example.hijra_kyc.repository.DistrictRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,9 +20,11 @@ import lombok.RequiredArgsConstructor;
 public class BranchService {
     private final BranchRepository branchRepository;
     private final BranchMapper mapper;
-
+    private final DistrictRepository districtRepository;
     public BranchOutDto createBranch(BranchInDto dto){
-        Branch branch = mapper.toEntity(dto);
+        District district  = districtRepository.findById(dto.getDistrictCode())
+        .orElseThrow(() -> new RuntimeException("Diistrict is not found"));
+        Branch branch = mapper.toEntity(dto,district);
         Branch savedBranch = branchRepository.save(branch);
         return mapper.toDto(savedBranch);
     }

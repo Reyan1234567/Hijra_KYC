@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.SystemLogInDto;
-import com.example.hijra_kyc.dto.SystemLogOutDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogInDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogOutDto;
 import com.example.hijra_kyc.mapper.SystemLogMapper;
 import com.example.hijra_kyc.model.SystemLog;
 import com.example.hijra_kyc.model.UserProfile;

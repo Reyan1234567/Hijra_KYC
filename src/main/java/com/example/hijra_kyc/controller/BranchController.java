@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.hijra_kyc.dto.BranchInDto;
-import com.example.hijra_kyc.dto.BranchOutDto;
+import com.example.hijra_kyc.dto.BranchDto.BranchInDto;
+import com.example.hijra_kyc.dto.BranchDto.BranchOutDto;
 import com.example.hijra_kyc.mapper.BranchMapper;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.service.BranchService;

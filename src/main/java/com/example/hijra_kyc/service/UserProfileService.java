@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.UserProfileInDto;
-import com.example.hijra_kyc.dto.UserProfileOutDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
 import com.example.hijra_kyc.mapper.UserProfileMapper;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.model.Role;

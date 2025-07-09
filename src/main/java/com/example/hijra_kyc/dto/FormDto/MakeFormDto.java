@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.FormDto;
 
 import com.example.hijra_kyc.model.Image;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.Imagedto;
 
 import lombok.Builder;
 import lombok.Data;
