@@ -17,7 +17,6 @@ import java.util.List;
 @Table(name = "kyc_make_forms")
 public class MakeForm {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

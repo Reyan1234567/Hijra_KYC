@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class RoleOutDto {
     private String roleId;
     private String roleName;
     private String recordStatus;
+    private Set<PermissionOutDto> permissions;
 }
-

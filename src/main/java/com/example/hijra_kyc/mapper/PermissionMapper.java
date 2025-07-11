@@ -3,26 +3,30 @@ package com.example.hijra_kyc.mapper;
 import com.example.hijra_kyc.dto.PermissionInDto;
 import com.example.hijra_kyc.dto.PermissionOutDto;
 import com.example.hijra_kyc.model.Permission;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PermissionMapper {
 
-    public static Permission toEntity(PermissionInDto dto) {
+    // Convert PermissionInDto -> Permission (Entity)
+    public Permission toModel(PermissionInDto dto) {
         return Permission.builder()
                 .permissionId(dto.getPermissionId())
-                .permissionName(dto.getPermissionName())
-                .permissionDisplayName(dto.getPermissionDisplayName())
                 .permissionCategory(dto.getPermissionCategory())
+                .permissionDisplayName(dto.getPermissionDisplayName())
+                .permissionName(dto.getPermissionName())
                 .recordStatus(dto.getRecordStatus())
                 .build();
     }
 
-    public static PermissionOutDto toDto(Permission entity) {
+    // Convert Permission (Entity) -> PermissionOutDto
+    public PermissionOutDto toOutDto(Permission permission) {
         return PermissionOutDto.builder()
-                .permissionId(entity.getPermissionId())
-                .permissionName(entity.getPermissionName())
-                .permissionDisplayName(entity.getPermissionDisplayName())
-                .permissionCategory(entity.getPermissionCategory())
-                .recordStatus(entity.getRecordStatus())
+                .permissionId(permission.getPermissionId())
+                .permissionCategory(permission.getPermissionCategory())
+                .permissionDisplayName(permission.getPermissionDisplayName())
+                .permissionName(permission.getPermissionName())
+                .recordStatus(permission.getRecordStatus())
                 .build();
     }
 }

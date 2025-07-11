@@ -5,34 +5,30 @@ import com.example.hijra_kyc.dto.PermissionOutDto;
 import com.example.hijra_kyc.mapper.PermissionMapper;
 import com.example.hijra_kyc.model.Permission;
 import com.example.hijra_kyc.repository.PermissionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PermissionService {
 
     private final PermissionRepository permissionRepository;
+    private final PermissionMapper permissionMapper;
 
-    public PermissionService(PermissionRepository permissionRepository) {
-        this.permissionRepository = permissionRepository;
-    }
-
+    // Create and save a new permission
     public PermissionOutDto createPermission(PermissionInDto dto) {
-        Permission permission = PermissionMapper.toEntity(dto);
-        Permission savedPermission = permissionRepository.save(permission);
-        return PermissionMapper.toDto(savedPermission);
+        Permission permission = permissionMapper.toModel(dto);
+        Permission saved = permissionRepository.save(permission);
+        return permissionMapper.toOutDto(saved);
     }
 
+    // Get all permissions
     public List<PermissionOutDto> getAllPermissions() {
         return permissionRepository.findAll().stream()
-                .map(PermissionMapper::toDto)
+                .map(permissionMapper::toOutDto)
                 .collect(Collectors.toList());
-    }
-
-    public PermissionOutDto getPermissionById(String permissionId) {
-        Permission permission = permissionRepository.findById(permissionId).orElse(null);
-        return permission != null ? PermissionMapper.toDto(permission) : null;
     }
 }

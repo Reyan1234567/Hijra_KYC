@@ -13,7 +13,6 @@ import lombok.*;
 @Table(name = "kyc_images")
 public class Image {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id", nullable = false)
     private Integer id;
 

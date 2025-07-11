@@ -1,8 +1,8 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.PermissionInDto;
-import com.example.hijra_kyc.dto.PermissionOutDto;
+import com.example.hijra_kyc.dto.*;
 import com.example.hijra_kyc.service.PermissionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,23 +10,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/permissions")
+@RequiredArgsConstructor
 public class PermissionController {
 
     private final PermissionService permissionService;
 
-    public PermissionController(PermissionService permissionService) {
-        this.permissionService = permissionService;
+    @PostMapping
+    public ResponseEntity<PermissionOutDto> createPermission(@RequestBody PermissionInDto dto) {
+        return ResponseEntity.ok(permissionService.createPermission(dto));
     }
 
-    @PostMapping("/post-permission")
-    public ResponseEntity<PermissionOutDto> postPermission(@RequestBody PermissionInDto dto) {
-        PermissionOutDto result = permissionService.createPermission(dto);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/get-all-permissions")
+    @GetMapping
     public ResponseEntity<List<PermissionOutDto>> getAllPermissions() {
-        List<PermissionOutDto> result = permissionService.getAllPermissions();
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(permissionService.getAllPermissions());
     }
 }

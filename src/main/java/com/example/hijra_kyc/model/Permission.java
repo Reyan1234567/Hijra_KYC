@@ -1,33 +1,42 @@
 package com.example.hijra_kyc.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.ManyToMany;
+import lombok.*;
+
+import java.util.Set;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Permission {
 
     @Id
-    @Column(name = "permission_id", length = 10)
-    private String permissionId;  
+    private String permissionId;
 
-    @Column(name = "permission_name")
-    private String permissionName;
-
-    @Column(name = "permission_category")
     private String permissionCategory;
-
-    @Column(name = "permission_display_name")
     private String permissionDisplayName;
-
-    @Column(name = "record_status")
+    private String permissionName;
     private String recordStatus;
+
+    @ManyToMany(mappedBy = "permissions")
+    private Set<Role> roles;
+
+    // ✅ Add this manually
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Permission)) return false;
+        Permission p = (Permission) o;
+        return permissionId != null && permissionId.equals(p.permissionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return permissionId != null ? permissionId.hashCode() : 0;
+    }
 }
