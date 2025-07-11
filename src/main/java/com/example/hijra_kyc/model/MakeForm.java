@@ -8,9 +8,9 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

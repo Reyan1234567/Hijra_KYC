@@ -17,11 +17,13 @@ import com.example.hijra_kyc.mapper.BranchMapper;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.service.BranchService;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 
 @RestController
 @RequestMapping("/api/branches")
+@AllArgsConstructor
 @Validated
 @RequiredArgsConstructor
 public class BranchController {

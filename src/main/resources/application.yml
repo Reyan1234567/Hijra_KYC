@@ -1,6 +1,10 @@
 spring:
     application:
         name: Hijra_kyc
+    servlet:
+        multipart:
+            max-file-size: 15MB
+            max-request-size: 10MB
     datasource:
         url: jdbc:mysql://localhost:8080/hijra
         username: root
@@ -8,11 +12,11 @@ spring:
     jpa:
         generate-ddl: true
         hibernate:
-            ddl-auto: update
+            ddl-auto: validate
         show-sql: true
         properties:
           hibernate:
-              format_sql: true
+              format_sql: false
               dialect: org.hibernate.dialect.MySQL8Dialect
 server:
     port: 9090

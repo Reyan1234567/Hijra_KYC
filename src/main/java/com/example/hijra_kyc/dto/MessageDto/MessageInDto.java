@@ -1,9 +1,8 @@
 package com.example.hijra_kyc.dto.MessageDto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
 
 @Data
 public class MessageInDto {

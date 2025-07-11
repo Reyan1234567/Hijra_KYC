@@ -28,6 +28,7 @@ public class UserProfileService {
     public UserProfileOutDto createUser(UserProfileInDto dto){
         Branch branch = branchRepo.findById(dto.getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
+        System.out.println(dto.getRoleId());
         Role role = roleRepo.findById(dto.getRoleId())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
         UserProfile user = mapper.toEntity(dto,branch,role);
