@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.SystemLogDto;
 
 
 import lombok.Data;
@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class SystemLogInDto {
     private String actionType;
-    private int userId;
+    private Long userId;
 }

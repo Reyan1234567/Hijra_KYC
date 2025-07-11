@@ -5,31 +5,35 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.BranchInDto;
-import com.example.hijra_kyc.dto.BranchOutDto;
+import com.example.hijra_kyc.dto.BranchDto.BranchInDto;
+import com.example.hijra_kyc.dto.BranchDto.BranchOutDto;
 import com.example.hijra_kyc.mapper.BranchMapper;
 import com.example.hijra_kyc.model.Branch;
+import com.example.hijra_kyc.model.District;
 import com.example.hijra_kyc.repository.BranchRepository;
+import com.example.hijra_kyc.repository.DistrictRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class BranchService {
     private final BranchRepository branchRepository;
-
-    public BranchService(BranchRepository branchRepository){
-        this.branchRepository = branchRepository;
-    }
-
+    private final BranchMapper mapper;
+    private final DistrictRepository districtRepository;
     public BranchOutDto createBranch(BranchInDto dto){
-        Branch branch = BranchMapper.toEntity(dto);
+        District district  = districtRepository.findById(dto.getDistrictCode())
+        .orElseThrow(() -> new RuntimeException("Diistrict is not found"));
+        Branch branch = mapper.toEntity(dto,district);
         Branch savedBranch = branchRepository.save(branch);
-        return BranchMapper.toDto(savedBranch);
+        return mapper.toDto(savedBranch);
     }
     public List<BranchOutDto> getAllBranches(){
         return branchRepository.findAll().stream()
-            .map(BranchMapper::toDto)
+            .map(mapper::toDto)
             .collect(Collectors.toList());
     }
-    public Branch searchBranchById(int id){
+    public Branch searchBranchById(Long id){
         return branchRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
     }

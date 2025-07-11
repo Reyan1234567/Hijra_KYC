@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.FormDto;
 
 import com.example.hijra_kyc.model.Image;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class MakeFormDto {
     @NotNull(message = "makeId is required")
-    private Integer makerId;
+    private Long makerId;
 
     @NotBlank(message = "cif is required")
     @Pattern(regexp="^\\d{5}$", message = "cif is not in the correct format")

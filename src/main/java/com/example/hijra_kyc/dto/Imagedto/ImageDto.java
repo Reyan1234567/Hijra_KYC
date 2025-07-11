@@ -1,13 +1,10 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.Imagedto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 
 @Data
 public class ImageDto {

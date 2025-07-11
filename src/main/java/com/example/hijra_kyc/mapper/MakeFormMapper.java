@@ -1,9 +1,8 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.dto.MakeFormDto;
-import com.example.hijra_kyc.dto.MakeFormOutDto;
+import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
+import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
 import com.example.hijra_kyc.model.MakeForm;
-import com.example.hijra_kyc.service.MessageService;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 

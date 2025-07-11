@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class BackReason {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     @NotBlank(message = "comment is required")
     private String comment;
     @NotBlank(message = "bank account is required")
@@ -32,6 +32,13 @@ public class BackReason {
     @ManyToOne
     @JoinColumn(name = "commented_by", referencedColumnName = "id", nullable = false)
     private UserProfile commentedBy;
-    
+    @NotNull(message = "maker id  is required")
+    @ManyToOne
+    @JoinColumn(name = "maker_id", referencedColumnName = "id", nullable = false)
+    private UserProfile makerId;
+    @NotNull(message = "commented by is required")
+    @ManyToOne
+    @JoinColumn(name = "branch_id",referencedColumnName = "branchId", nullable = false)
+    private Branch branchId;
     private LocalDateTime commentedAt;
 }

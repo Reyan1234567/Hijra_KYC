@@ -1,18 +1,17 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.MessageDto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
 
 @Data
 public class MessageInDto {
     @NotNull(message="senderId is required")
-    private int sender;
+    private Long sender;
 
     @NotBlank(message = "messageBody is required")
     private String message;
 
-    @NotNull(message="receiverId is required")
-    private int receiver;
+    @NotBlank(message="receiverId is required")
+    private Long receiver;
 }

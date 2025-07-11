@@ -1,20 +1,24 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.dto.RoleInDto;
-import com.example.hijra_kyc.dto.RoleOutDto;
+import org.springframework.stereotype.Service;
+
+import com.example.hijra_kyc.dto.RoleDto.RoleInDto;
+import com.example.hijra_kyc.dto.RoleDto.RoleOutDto;
 import com.example.hijra_kyc.model.Role;
 
+import lombok.RequiredArgsConstructor;
+@Service
+@RequiredArgsConstructor
 public class RoleMapper {
 
-    public static Role toEntity(RoleInDto dto) {
+    public Role toEntity(RoleInDto dto) {
         return Role.builder()
-                .roleId(dto.getRoleId())
                 .roleName(dto.getRoleName())
                 .recordStatus(dto.getRecordStatus())
                 .build();
     }
 
-    public static RoleOutDto toDto(Role entity) {
+    public RoleOutDto toDto(Role entity) {
         RoleOutDto dto = new RoleOutDto();
         dto.setRoleId(entity.getRoleId());
         dto.setRoleName(entity.getRoleName());

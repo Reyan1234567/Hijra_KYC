@@ -1,6 +1,6 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.ImageDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageDto;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.ImageService;
@@ -34,7 +34,7 @@ public class ImageController {
 
 
     @PatchMapping("/description")
-    public ResponseEntity<?> editDescription(@RequestParam("description") String description, @RequestParam("id") int id){
+    public ResponseEntity<?> editDescription(@RequestParam("description") String description, @RequestParam("id") Long id){
         String newImage=imageService.editDescription(description, id);
         return ResponseEntity.ok(newImage);
     }

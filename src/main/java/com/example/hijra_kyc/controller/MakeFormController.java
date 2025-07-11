@@ -1,11 +1,13 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.MakeFormOutDto;
+
 import com.example.hijra_kyc.service.DistributorService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.hijra_kyc.dto.MakeFormDto;
+
+import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
+import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;
@@ -56,7 +58,7 @@ public class MakeFormController {
 
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
-        Integer Id=makeFormService.saveForm(makeFormDto);
+        Long Id=makeFormService.saveForm(makeFormDto);
         return ResponseEntity.ok(Id);
     }
 

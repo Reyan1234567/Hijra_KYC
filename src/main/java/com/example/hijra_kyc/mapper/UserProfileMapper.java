@@ -1,13 +1,19 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.dto.UserProfileInDto;
-import com.example.hijra_kyc.dto.UserProfileOutDto;
+import org.springframework.stereotype.Service;
+
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.model.Role;
 import com.example.hijra_kyc.model.UserProfile;
 
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
 public class UserProfileMapper {
-    public static UserProfile toEntity(UserProfileInDto dto, Branch branch, Role role){
+    public UserProfile toEntity(UserProfileInDto dto, Branch branch, Role role){
         return UserProfile.builder()
                 .userId(dto.getUserID())
                 .branch(branch)
@@ -19,7 +25,7 @@ public class UserProfileMapper {
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
     }
-    public static UserProfileOutDto toDto(UserProfile user){
+    public UserProfileOutDto toDto(UserProfile user){
         UserProfileOutDto dto = new UserProfileOutDto();
         dto.setId(user.getId());
         dto.setUserID(user.getUserId());

@@ -1,6 +1,8 @@
 package com.example.hijra_kyc.controller;
 
 import com.example.hijra_kyc.dto.*;
+import com.example.hijra_kyc.dto.MessageDto.MessageInDto;
+import com.example.hijra_kyc.dto.MessageDto.MessageOutDto;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;
@@ -39,7 +41,7 @@ public class MessageController {
     }
 
     @PatchMapping("/messageEdit/{id}")
-    public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message, @PathVariable("id") int id){
+    public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message, @PathVariable("id") Long id){
         MessageOutDto messageEdit=messageService.updateMessage(senderId, receiverId,message, id);
         return ResponseEntity.ok(messageEdit);
     }

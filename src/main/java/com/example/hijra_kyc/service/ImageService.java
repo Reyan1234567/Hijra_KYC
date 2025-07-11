@@ -1,7 +1,7 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.dto.ImageDto;
-import com.example.hijra_kyc.dto.ImageReturnDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageReturnDto;
 import com.example.hijra_kyc.mapper.ImageMapper;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
@@ -38,7 +38,7 @@ public class ImageService {
     public List<ImageReturnDto> getImages(Long makeId) {
         try{
             System.out.println("getImages");
-            MakeForm makeForm = makeFormRepository.findById(makeId.intValue())
+            MakeForm makeForm = makeFormRepository.findById(makeId)
                     .orElseThrow(() -> new RuntimeException("Maker not found"));
             List<Image> listOfImages = makeForm.getImages();
             if(listOfImages.isEmpty()){
@@ -56,7 +56,7 @@ public class ImageService {
     }
 
     public String deleteImage(Long id) {
-            Image image = imageRepository.findById(id.intValue())
+            Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Image not found"));
             imageRepository.delete(image);
             File file=new File(image.getImageName());
@@ -68,7 +68,7 @@ public class ImageService {
     public void createImage(@Valid ImageDto imageDto, Long makeId){
         try{
             var image = imageMapper.mapImageDtoToImage(imageDto);
-            MakeForm makeForm = makeFormRepository.findById(makeId.intValue())
+            MakeForm makeForm = makeFormRepository.findById(makeId)
                     .orElseThrow(() -> new RuntimeException("can't find form-makeId"));
             image.setImageMake(makeForm);
             Branch branch = branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranchId())
@@ -125,7 +125,7 @@ public class ImageService {
     }
 
 
-    public String editDescription(String description, int id) {
+    public String editDescription(String description, Long id) {
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Image not found"));
             image.setImageDescription(description);

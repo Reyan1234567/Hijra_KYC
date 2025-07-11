@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.PermissionDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionOutDto {
-    private String permissionId;
+    private Long permissionId;
     private String permissionName;
     private String permissionDisplayName;
     private String permissionCategory;

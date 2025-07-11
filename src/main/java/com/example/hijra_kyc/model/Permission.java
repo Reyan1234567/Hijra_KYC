@@ -17,7 +17,7 @@ public class Permission {
 
     @Id
     @Column(name = "permission_id", length = 10)
-    private String permissionId;  
+    private Long permissionId;  
 
     @Column(name = "permission_name")
     private String permissionName;

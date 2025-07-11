@@ -1,21 +1,30 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.dto.BranchInDto;
-import com.example.hijra_kyc.dto.BranchOutDto;
-import com.example.hijra_kyc.model.Branch;
+import org.springframework.stereotype.Service;
 
+import com.example.hijra_kyc.dto.BranchDto.BranchInDto;
+import com.example.hijra_kyc.dto.BranchDto.BranchOutDto;
+import com.example.hijra_kyc.model.Branch;
+import com.example.hijra_kyc.model.District;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
 public class BranchMapper {
-    public static Branch toEntity(BranchInDto dto){
+    public Branch toEntity(BranchInDto dto, District district){
         return Branch.builder()
         .name(dto.getName())
-        .phoneNumber(dto.getPhoneNumber())
+        .branchCode(dto.getBranchCode())
+        .districtCode(district)
         .build();
     }
-    public static BranchOutDto toDto(Branch branch){
+    public BranchOutDto toDto(Branch branch){
         BranchOutDto dto = new BranchOutDto();
         dto.setId(branch.getBranchId());
         dto.setName(branch.getName());
-        dto.setPhoneNumber(branch.getPhoneNumber());
+        dto.setBranchCode(branch.getBranchCode());
+        dto.setDistrictCode(branch.getDistrictCode().getId());
         return dto;
     }
 }

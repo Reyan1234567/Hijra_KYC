@@ -5,37 +5,37 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.SystemLogInDto;
-import com.example.hijra_kyc.dto.SystemLogOutDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogInDto;
+import com.example.hijra_kyc.dto.SystemLogDto.SystemLogOutDto;
 import com.example.hijra_kyc.mapper.SystemLogMapper;
 import com.example.hijra_kyc.model.SystemLog;
 import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.repository.SystemLogRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SystemLogService {
     private final SystemLogRepository logRepository;
     private final UserProfileRepository userRepo;
-    public SystemLogService(SystemLogRepository logRepository,UserProfileRepository userRepo){
-        this.logRepository = logRepository;
-        this.userRepo = userRepo;
-    }
+    private final SystemLogMapper mapper;
 
     public SystemLogOutDto createLog(SystemLogInDto dto){
         UserProfile user = userRepo.findById(dto.getUserId())
         .orElseThrow(() -> new RuntimeException("User Not found"));
         
-        SystemLog log = SystemLogMapper.toEntity(dto,user);
+        SystemLog log = mapper.toEntity(dto,user);
         SystemLog savedLog = logRepository.save(log);
-        return SystemLogMapper.toDto(savedLog);
+        return mapper.toDto(savedLog);
     }
     public List<SystemLogOutDto> getAllLogs(){
         return logRepository.findAll().stream()
-            .map(SystemLogMapper::toDto)
+            .map(mapper::toDto)
             .collect(Collectors.toList());
     }
-    public SystemLog searchLogById(int id){
+    public SystemLog searchLogById(Long id){
         return logRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Log not found with id: " + id));
     }

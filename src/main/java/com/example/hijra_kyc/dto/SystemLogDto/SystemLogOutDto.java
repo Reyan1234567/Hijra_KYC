@@ -1,11 +1,11 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.SystemLogDto;
 import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
 public class SystemLogOutDto {
-    private int id;
-    private int userId;
+    private Long id;
+    private Long userId;
     private LocalDateTime actionTime;
     private String actionType;
 }

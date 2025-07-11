@@ -1,22 +1,26 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.dto.ImageDto;
-import com.example.hijra_kyc.dto.MakeFormDto;
-import com.example.hijra_kyc.dto.MakeFormOutDto;
+
+import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
+import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @AllArgsConstructor
 @Service
@@ -31,7 +35,7 @@ public class MakeFormService {
     private final ImageService imageService;
 
 
-    public Integer saveForm(MakeFormDto makeFormDto) {
+    public Long saveForm(MakeFormDto makeFormDto) {
             MakeForm makeForm=makerFormMapper.mapToMakeForm(makeFormDto);
             UserProfile maker=userRepository.findById(makeFormDto.getMakerId())
                     .orElseThrow(()->new EntityNotFoundException("User not found"));
@@ -68,17 +72,17 @@ public class MakeFormService {
     }
 
     public String delete(Long id) {
-            MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
+            MakeForm makeForm1 = makeFormRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeFormRepository.delete(makeForm1);
             return "Make is now deleted";
     }
 
     public MakeFormOutDto updateAssignTime(Long id, Long hoId){
-            MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
+            MakeForm makeForm1 = makeFormRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeForm1.setHoAssignTime(Instant.now());
-            UserProfile ho=userRepository.findById(hoId.intValue())
+            UserProfile ho=userRepository.findById(hoId)
                     .orElseThrow(()->new RuntimeException("HO not found"));
             makeForm1.setHo(ho);
             makeFormRepository.save(makeForm1);
@@ -92,7 +96,7 @@ public class MakeFormService {
                 throw new IllegalArgumentException("invalid status");
             }
             System.out.println(makeId.intValue());
-            MakeForm makeForm1=makeFormRepository.findById(makeId.intValue())
+            MakeForm makeForm1=makeFormRepository.findById(makeId)
                     .orElseThrow(() -> new EntityNotFoundException("Make not found"));
             makeForm1.setStatus(statusNumber);
             makeForm1.setHoActionTime(Instant.now());

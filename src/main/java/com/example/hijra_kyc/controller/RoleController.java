@@ -1,12 +1,13 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.PermissionOutDto;
+
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.hijra_kyc.dto.RoleInDto;
-import com.example.hijra_kyc.dto.RoleOutDto;
+import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
+import com.example.hijra_kyc.dto.RoleDto.RoleInDto;
+import com.example.hijra_kyc.dto.RoleDto.RoleOutDto;
 import com.example.hijra_kyc.service.RoleService;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class RoleController {
     }
 
     @GetMapping("/{roleId}/permissions")
-    public ResponseEntity<List<PermissionOutDto>> getPermissionsByRole(@PathVariable String roleId) {
+    public ResponseEntity<List<PermissionOutDto>> getPermissionsByRole(@PathVariable Long roleId) {
         List<PermissionOutDto> permissions = roleService.getPermissionsByRole(roleId);
         return ResponseEntity.ok(permissions);
     }

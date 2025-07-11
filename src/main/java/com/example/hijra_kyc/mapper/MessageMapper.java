@@ -1,7 +1,7 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.dto.MessageInDto;
-import com.example.hijra_kyc.dto.MessageOutDto;
+import com.example.hijra_kyc.dto.MessageDto.MessageInDto;
+import com.example.hijra_kyc.dto.MessageDto.MessageOutDto;
 import com.example.hijra_kyc.model.Message;
 import org.springframework.stereotype.Service;
 

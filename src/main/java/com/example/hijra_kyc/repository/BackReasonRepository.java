@@ -6,6 +6,6 @@ import com.example.hijra_kyc.model.BackReason;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface BackReasonRepository extends JpaRepository<BackReason, Integer> {
+public interface BackReasonRepository extends JpaRepository<BackReason, Long> {
     
 }

@@ -63,9 +63,9 @@ public class DistributorService {
     }
 
 
-    public void changeStatus(List<Integer> ids){
+    public void changeStatus(List<Long> ids){
         try{
-            for (Integer id : ids) {
+            for (Long id : ids) {
                 UserProfile user = userProfileRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found"));
                 user.setStatus(2);
@@ -77,12 +77,12 @@ public class DistributorService {
         }
     }
 
-    public void Makeassign(int hoId, List<Integer> ids){
+    public void Makeassign(Long hoId, List<Long> ids){
         System.out.println("In Makeassign function");
         UserProfile headOfficeProfile=userProfileRepository.findById(hoId)
                 .orElseThrow(()->new RuntimeException("User with id: "+hoId+" not found"));
         System.out.println("headOfficeProfile "+headOfficeProfile.getId());
-        for(int id:ids){
+        for(Long id:ids){
             System.out.println("In the for loop of the Makeassign");
             MakeForm makeForm=makeFormRepository.findById(id)
                     .orElseThrow(()->new RuntimeException("Make form with id: "+id+" not found"));

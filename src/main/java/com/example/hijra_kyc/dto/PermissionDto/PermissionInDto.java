@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.PermissionDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleOutDto {
-    private String roleId;
-    private String roleName;
+public class PermissionInDto {
+    private String permissionName;
+    private String permissionDisplayName;
+    private String permissionCategory;
     private String recordStatus;
 }
-

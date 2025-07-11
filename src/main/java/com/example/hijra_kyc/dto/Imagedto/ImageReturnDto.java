@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.Imagedto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,8 +6,8 @@ import lombok.Data;
 @Builder
 @Data
 public class ImageReturnDto {
-    private int id;
+    private Long id;
     private String name;
     private String description;
-    private int make_id;
+    private Long make_id;
 }

@@ -1,10 +1,8 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.dto.ImageDto;
-import com.example.hijra_kyc.dto.ImageReturnDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageDto;
+import com.example.hijra_kyc.dto.Imagedto.ImageReturnDto;
 import com.example.hijra_kyc.model.Image;
-import com.example.hijra_kyc.model.MakeForm;
-import com.example.hijra_kyc.repository.MakeFormRepository;
 import org.springframework.stereotype.Service;
 
 @Service
