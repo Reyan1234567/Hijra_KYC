@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,6 +24,7 @@ import com.example.hijra_kyc.model.BackReason;
 
 @RestController
 @RequestMapping("/api/back-reasons")
+@AllArgsConstructor
 @Validated
 @RequiredArgsConstructor
 public class BackReasonController {

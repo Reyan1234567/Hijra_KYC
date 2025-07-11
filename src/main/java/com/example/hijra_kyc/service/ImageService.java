@@ -8,19 +8,24 @@ import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.validation.annotation.Validated;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Base64;
 import java.util.List;
 
 @AllArgsConstructor
 @Service
+@Validated
 public class ImageService {
 
     private final BaseService baseService;
@@ -58,60 +63,66 @@ public class ImageService {
             File file=new File(image.getImageName());
             file.delete();
 
-            return baseService.success("Image Deleted successfully");
+            return "Image Deleted successfully";
+    }
+
+    public void createImage(@Valid ImageDto imageDto, Long makeId){
+        try{
+            var image = imageMapper.mapImageDtoToImage(imageDto);
+            MakeForm makeForm = makeFormRepository.findById(makeId.intValue())
+                    .orElseThrow(() -> new RuntimeException("can't find form-makeId"));
+            image.setImageMake(makeForm);
+            Branch branch = branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranchId())
+                    .orElseThrow(() -> new RuntimeException("branch not found"));
+
+            LocalDate today = LocalDate.now();
+            LocalTime now = LocalTime.now();
+            String branchName = branch.getName();
+            String cif = makeForm.getCif();
+
+            //check if the file sent is an image
+
+            //getting the file
+            String fileString = imageDto.getFile();
+            String fileType=fileString.split(",")[0].split("/")[1].split(";")[0];
+            String encodedBit=fileString.split(",")[1];
+            byte[] fileByte=Base64.getDecoder().decode(encodedBit);
+
+            System.out.println(fileType);
+            //check, if really an image
+            if(fileType.equals("png")||fileType.equals("jpg")||fileType.equals("jpeg")||fileType.equals("webm")){
+                throw new RuntimeException("file type not supported");
+            }
+            //creating the path's parent path
+            String filePath = Paths.get("C:", "Users", "hp", "Desktop", "hijra_kyc", "upload", branchName, today.toString(), cif, makeForm.getCustomerAccount()).toString();
+            File uploadDir = new File(filePath);
+            //check existence and create if path doesn't exist
+            if (!uploadDir.exists()) {
+                var success = uploadDir.mkdirs();
+            }
+
+            //the full path which includes the file to be created
+            String fileName = Paths.get(filePath, now.toString().replace(":", "-").replace(".", "-") + "__" + image.getImageDescription() + today + cif + "."+fileType).toString();
+            File fileToBeUploaded = new File(fileName);
+
+
+//          creates the file in a lower storage and detail
+            Thumbnails.of(new ByteArrayInputStream(fileByte))
+                    .size(600, 400)
+                    .outputQuality(0.85)
+                    .toFile(fileToBeUploaded);
+//          could use Files.write(Path, bytes), were bytes is the decoded image,
+//          and the the Path is of type path representing the path(Path.get("..."))
+
+            image.setImageName(fileName);
+            imageRepository.save(image);
+//            baseService.success("Image created successfully");
         }
         catch (Exception e){
-            return baseService.error(e.getMessage());
+//            baseService.error(e.getMessage());
+//            imageRepository.deleteAllById();
+            System.out.println(e.getMessage());
         }
-    }
-
-    public Image createImage(MultipartFile imageFile, ImageDto imageDto) throws Exception{
-        System.out.println("In the createImage");
-        var image = imageMapper.mapImageDtoToImage(imageDto);
-        System.out.println("image created "+image);
-        MakeForm makeForm=makeFormRepository.findById(imageDto.getMakeId())
-                .orElseThrow(()->new RuntimeException("can't find form-makeId"));
-        image.setImageMake(makeForm);
-        Branch branch=branchRepository.findById(image.getImageMake().getMaker().getBranch().getBranchId())
-                .orElseThrow(()->new RuntimeException("branch not found"));
-
-        image.setImageMake(makeForm);
-        LocalDate today = LocalDate.now();
-        LocalTime now=LocalTime.now();
-        String branchName=branch.getName();
-        String cif=makeForm.getCif();
-
-        //uploading the file
-        UserProfile maker=userRepository.findById(image.getImageMake().getMaker().getId())
-                .orElseThrow(()->new RuntimeException("Can't find maker-Id"));
-        String makerName=maker.getFirstName();
-
-        //creating the path's parent path
-        String filePath= Paths.get("C:","Users","hp","Desktop","hijra_kyc","upload",branchName,today.toString(),cif,makeForm.getCustomerAccount()).toString();
-        File uploadDir = new File(filePath);
-        System.out.println(filePath);
-        //check existence and create if path doesn't exist
-        if (!uploadDir.exists()) {
-            var success = uploadDir.mkdirs();
-        }
-
-        //the full path which includes the file to be created
-        String fileName=Paths.get(filePath,now.toString().replace(":","-").replace(".","-")+"__"+image.getImageDescription()+today+cif+getExtension(imageFile.getOriginalFilename())).toString();
-        File fileToBeUploaded=new File(fileName);
-
-
-//            creates the file in a lower storage and detail
-        Thumbnails.of(imageFile.getInputStream())
-                        .size(600, 400)
-                        .outputQuality(0.85)
-                        .toFile(fileToBeUploaded);
-
-        image.setImageName(fileName);
-        return imageRepository.save(image);
-    }
-
-    private String getExtension(String originalFilename) {
-        return originalFilename.substring(originalFilename.lastIndexOf("."));
     }
 
 
@@ -121,10 +132,14 @@ public class ImageService {
                     .orElseThrow(() -> new RuntimeException("Image not found"));
             image.setImageDescription(description);
             imageRepository.save(image);
-            return baseService.success("Image Edited successfully");
-        }
-        catch (Exception e){
-            return baseService.error(e.getMessage());
-        }
+            return "Image Edited successfully";
+    }
+
+    public String createImages(@Valid List<ImageDto> imageListDto, Long makeId) {
+            for (ImageDto image : imageListDto) {
+                createImage(image, makeId);
+            }
+            return "Images created successfully";
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.hijra_kyc.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/user-profiles")
+@RequiredArgsConstructor
 @Validated
 @RequiredArgsConstructor
 public class UserProfileController {

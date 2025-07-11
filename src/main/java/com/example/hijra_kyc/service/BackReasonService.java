@@ -3,6 +3,7 @@ package com.example.hijra_kyc.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
@@ -18,6 +19,7 @@ import com.example.hijra_kyc.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 @RequiredArgsConstructor
 public class BackReasonService {
     private final BackReasonRepository backReasonRepository;

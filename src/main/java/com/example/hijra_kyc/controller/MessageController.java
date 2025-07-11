@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("message")
 @RequiredArgsConstructor
@@ -21,14 +23,14 @@ public class MessageController {
 
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody MessageInDto message){
-        Base<?> save=messageService.saveMessage(message);
-        return baseService.rest(save);
+        MessageOutDto save=messageService.saveMessage(message);
+        return ResponseEntity.ok(save);
     }
 
     @GetMapping("/getConvo")
     public ResponseEntity<?> getMessages(@RequestParam("user1") Long id, @RequestParam("user2") Long id1){
-        BaseList<?> getConversation=messageService.getConversation(id, id1);
-        return baseService.rest(getConversation);
+        List<MessageOutDto> getConversation=messageService.getConversation(id, id1);
+        return ResponseEntity.ok(getConversation);
     }
 
     @PatchMapping("/updateSeen")

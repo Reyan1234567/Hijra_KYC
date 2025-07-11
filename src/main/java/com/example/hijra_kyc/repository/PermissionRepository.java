@@ -1,11 +1,12 @@
 package com.example.hijra_kyc.repository;
 
-import com.example.hijra_kyc.model.Permission;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import com.example.hijra_kyc.model.Permission;
 
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
