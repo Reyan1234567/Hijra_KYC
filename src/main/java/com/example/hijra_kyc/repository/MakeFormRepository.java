@@ -1,25 +1,25 @@
 package com.example.hijra_kyc.repository;
 
-import com.example.hijra_kyc.model.MakeForm;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
-@Service
+import com.example.hijra_kyc.model.MakeForm;
+
+@Repository
 public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
-    @Query("Select m from MakeForm m where m.maker.id=:makerId")
-    List<MakeForm> findByMaker(Long makerId);
 
-    @Query("Select m from MakeForm m where m.maker.id=:makerId and m.status=:status")
-    List<MakeForm> findByMakerAndStatus(Long makerId, Long status);
+     @Query("SELECT m FROM MakeForm m WHERE m.maker.id = :makerId")
+    List<MakeForm> findByMaker(@Param("makerId") Long makerId);
 
-    @Modifying
-    @Query("Update MakeForm set status=:number where id=:id")
-    void updateMakeFormStatus(@Param("number") int id, @Param("id") int status);
+    @Query("SELECT m FROM MakeForm m WHERE m.maker.id = :makerId AND m.status = :status")
+    List<MakeForm> findByMakerAndStatus(@Param("makerId") Long makerId, @Param("status") Long status);
 
-    @Query("Select m from MakeForm m where m.maker=:maker_Id")
-    MakeForm findMakeFormById(@Param("maker_Id") int id);
+    @Query("SELECT m FROM MakeForm m WHERE m.id = :id")
+    MakeForm findMakeFormById(@Param("id") Long id);
+
 }

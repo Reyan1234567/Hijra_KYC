@@ -27,18 +27,18 @@ public class DistrictController {
     private final DistrictService districtService;
     private final DistrictMapper mapper;
 
-     @PostMapping("/post-branch")
+     @PostMapping("/post-district")
     public ResponseEntity<DistrictOutDto> postBranch(@RequestBody DistrictInDto dto) {
         DistrictOutDto result = districtService.createDistrict(dto);
         return ResponseEntity.ok(result);
     }
-    @GetMapping("/get-all-branches")
+    @GetMapping("/get-all-districts")
     public ResponseEntity<List<DistrictOutDto>> getAllBranches(){
         List<DistrictOutDto> result = districtService.getAllDistricts();
         return ResponseEntity.ok(result);
     
     }
-    @GetMapping("/search-branch/{id}")
+    @GetMapping("/search-district/{id}")
     public ResponseEntity<DistrictOutDto> getBranchById(@PathVariable Long id) {
         District district = districtService.searchDistrictById(id);
         DistrictOutDto dto = mapper.toDto(district);
