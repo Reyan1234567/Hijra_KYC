@@ -2,6 +2,7 @@ package com.example.hijra_kyc.controller;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,10 @@ import com.example.hijra_kyc.service.BranchService;
 
 @RestController
 @RequestMapping("/api/branches")
+@AllArgsConstructor
 @Validated
 public class BranchController {
     private final BranchService branchService;
-    public BranchController(BranchService branchService){
-        this.branchService = branchService;
-    }
     @PostMapping("/post-branch")
     public ResponseEntity<BranchOutDto> postBranch(@RequestBody BranchInDto dto) {
         BranchOutDto result = branchService.createBranch(dto);

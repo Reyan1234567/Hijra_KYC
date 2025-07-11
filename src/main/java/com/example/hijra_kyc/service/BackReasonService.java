@@ -3,6 +3,7 @@ package com.example.hijra_kyc.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.hijra_kyc.dto.BackReasonInDto;
@@ -14,14 +15,11 @@ import com.example.hijra_kyc.repository.BackReasonRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
 
 @Service
+@RequiredArgsConstructor
 public class BackReasonService {
     private final BackReasonRepository backReasonRepository;
     private final UserProfileRepository userRepo;
 
-    public BackReasonService(BackReasonRepository backReasonRepository,UserProfileRepository userRepo){
-        this.backReasonRepository = backReasonRepository;
-        this.userRepo = userRepo;
-    }
 
     public BackReasonOutDto createBackReason(BackReasonInDto dto){
         UserProfile user = userRepo.findById(dto.getCommentedBy())

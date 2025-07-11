@@ -2,6 +2,7 @@ package com.example.hijra_kyc.service;
 
 import com.example.hijra_kyc.dto.ImageDto;
 import com.example.hijra_kyc.dto.MakeFormDto;
+import com.example.hijra_kyc.dto.MakeFormOutDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.BranchRepository;
@@ -29,81 +30,51 @@ public class MakeFormService {
     private final BranchRepository branchRepository;
     private final ImageService imageService;
 
-    public Base<?> saveForm(MakeFormDto makeFormDto, MultipartFile[] images) {
-        try{
-            MakeForm makeForm= makerFormMapper.mapToMakeForm(makeFormDto);
+
+    public Integer saveForm(MakeFormDto makeFormDto) {
+            MakeForm makeForm=makerFormMapper.mapToMakeForm(makeFormDto);
             UserProfile maker=userRepository.findById(makeFormDto.getMakerId())
-                    .orElseThrow(()->new RuntimeException("no maker with this id"));
+                    .orElseThrow(()->new EntityNotFoundException("User not found"));
             makeForm.setMaker(maker);
-            Branch branchId=branchRepository.findById(maker.getBranch().getBranchId())
-                    .orElseThrow(()->new RuntimeException("no branch with this id"));
-            makeForm.setBranchId(branchId);
-            var createMakeForm=makeFormRepository.save(makeForm);
-            ArrayList<Image> imageList= new ArrayList<Image>();
-            for(int i=0;i<images.length;i++){
-                ImageDto imageDto=new ImageDto();
-                imageDto.setDescription(makeFormDto.getDescriptions()[i]);
-                imageDto.setMakeId(createMakeForm.getId());
-                Image image=imageService.createImage(images[i],imageDto);
-                imageList.add(image);
+            MakeForm foundMakeForm=makeFormRepository.findMakeFormByAccount(makeForm.getCustomerAccount());
+            if(foundMakeForm==null){
+                foundMakeForm=makeFormRepository.save(makeForm);
             }
-            createMakeForm.setImages(imageList);
-            return baseService.success(makerFormMapper.makeFormOutMapper(createMakeForm));
-        }
-        catch(Exception e){
-            System.out.println("In the catch "+e);
-            return baseService.error(e.getMessage());
-        }
+            return foundMakeForm.getId();
     }
 
-    public BaseList<?> getAll(Long makerId) {
-        try{
-            System.out.println(makerId);
-            List<MakeForm> makersForm = makeFormRepository.findByMaker(makerId);
-            if(makersForm==null||makersForm.isEmpty()){
-                return baseService.listError("No list items found");
-            }
-            return baseService.listSuccess(makersForm.stream()
-                    .map(makerFormMapper::makeFormOutMapper)
-                    .toList());
+    public List<MakeFormOutDto> getAll(Long makerId) {
+        System.out.println(makerId);
+        List<MakeForm> makersForm = makeFormRepository.findByMaker(makerId);
+        if(makersForm==null||makersForm.isEmpty()){
+            throw new EntityNotFoundException("Maker not found");
         }
-        catch(Exception e){
-            return baseService.listError(e.getMessage());
-        }
+        return makersForm.stream()
+                .map(makerFormMapper::makeFormOutMapper)
+                .toList();
     }
 
-    public BaseList<?> get(Long makerId, Long status) {
-        try{
+    public List<MakeFormOutDto> get(Long makerId, Long status) {
             if(status<0||status>3){
-                return baseService.listError("invalid status");
+                throw new IllegalArgumentException("invalid status");
             }
             List<MakeForm> makersForm = makeFormRepository.findByMakerAndStatus(makerId, status);
             if(makersForm==null||makersForm.isEmpty()){
-                return baseService.listError("No list items found");
+                throw new EntityNotFoundException("No list items found");
             }
-            return baseService.listSuccess(makersForm
+            return makersForm
                     .stream()
-                    .map(makerFormMapper::makeFormOutMapper).toList());
-        }
-        catch(Exception e){
-            return baseService.listError(e.getMessage());
-        }
+                    .map(makerFormMapper::makeFormOutMapper).toList();
     }
 
-    public Base<?> delete(Long id) {
-        try{
+    public String delete(Long id) {
             MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeFormRepository.delete(makeForm1);
-            return baseService.success("Make is now deleted");
-        }
-        catch (Exception e){
-            return baseService.error(e.getMessage());
-        }
+            return "Make is now deleted";
     }
 
-    public Base<?> updateAssignTime(Long id, Long hoId){
-        try{
+    public MakeFormOutDto updateAssignTime(Long id, Long hoId){
             MakeForm makeForm1 = makeFormRepository.findById(id.intValue())
                     .orElseThrow(() -> new RuntimeException("Make not found"));
             makeForm1.setHoAssignTime(Instant.now());
@@ -111,18 +82,14 @@ public class MakeFormService {
                     .orElseThrow(()->new RuntimeException("HO not found"));
             makeForm1.setHo(ho);
             makeFormRepository.save(makeForm1);
-            return baseService.success(makerFormMapper.makeFormOutMapper(makeForm1));
-        } catch (Exception e) {
-            return baseService.error(e.getMessage());
-        }
+            return makerFormMapper.makeFormOutMapper(makeForm1);
     }
 
 
 
-    public Base<?> changeStatus(Long makeId, int statusNumber) {
-        try{
+    public String changeStatus(Long makeId, int statusNumber) {
             if(statusNumber<0||statusNumber>3){
-                return baseService.error("invalid status");
+                throw new IllegalArgumentException("invalid status");
             }
             System.out.println(makeId.intValue());
             MakeForm makeForm1=makeFormRepository.findById(makeId.intValue())
@@ -131,18 +98,14 @@ public class MakeFormService {
             makeForm1.setHoActionTime(Instant.now());
             makeFormRepository.save(makeForm1);
             if(statusNumber==1){
-                return baseService.success("Make is now Accepted"+"\n"+makerFormMapper.makeFormOutMapper(makeForm1));
+                return "Make is now Accepted";
             }
             else if (statusNumber==2) {
-                return baseService.success("Make is now Rejected"+"\n"+makerFormMapper.makeFormOutMapper(makeForm1));
+                return "Make is now Rejected";
             }
             else {
-                return baseService.success("Make is now Pending"+"\n"+makerFormMapper.makeFormOutMapper(makeForm1));
+                return "Make is now Pending";
             }
-        }
-        catch (Exception e){
-            return baseService.error(e.getMessage());
-        }
     }
 }
 

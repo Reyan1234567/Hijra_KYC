@@ -2,6 +2,7 @@ package com.example.hijra_kyc.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,10 @@ import com.example.hijra_kyc.service.SystemLogService;
 
 @RestController
 @RequestMapping("/api/system-logs")
+@RequiredArgsConstructor
 @Validated
 public class SystemLogController {
     private final SystemLogService logService;
-    public SystemLogController(SystemLogService logService) {
-        this.logService = logService;
-    }   
     @PostMapping("/add-new-logs")
     public ResponseEntity<SystemLogOutDto> postLogs(@RequestBody SystemLogInDto dto) {
        SystemLogOutDto result = logService.createLog(dto);
