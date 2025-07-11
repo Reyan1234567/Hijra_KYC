@@ -2,6 +2,7 @@ package com.example.hijra_kyc.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,12 +23,10 @@ import com.example.hijra_kyc.service.UserProfileService;
 
 @RestController
 @RequestMapping("/api/user-profiles")
+@RequiredArgsConstructor
 @Validated
 public class UserProfileController {
     private final UserProfileService userService;
-    public UserProfileController(UserProfileService userService){
-        this.userService = userService;
-    }
     @PostMapping("/add-new-user")
     public ResponseEntity<UserProfileOutDto>postNewUser(@RequestBody UserProfileInDto dto) {
         UserProfileOutDto result = userService.createUser(dto);
@@ -49,6 +48,7 @@ public class UserProfileController {
         userService.deleteUserById(id);
         return ResponseEntity.ok().build();
     }
+
     
     
 }

@@ -2,6 +2,7 @@ package com.example.hijra_kyc.service;
 
 import com.example.hijra_kyc.dto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageInDto;
+import com.example.hijra_kyc.dto.MessageOutDto;
 import com.example.hijra_kyc.mapper.MessageMapper;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.BaseList;
@@ -9,10 +10,13 @@ import com.example.hijra_kyc.model.Message;
 import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.repository.MessageRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -23,10 +27,8 @@ public class MessageService {
     private final UserProfileRepository userRepository;
     private final BaseService baseService;
 
-    public Base<?> saveMessage(MessageInDto messageInDto){
+    public MessageOutDto saveMessage(MessageInDto messageInDto){
         Message message = messageMapper.toMessage(messageInDto);
-
-        try{
             UserProfile reciever=userRepository.findById(messageInDto.getReceiver())
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             message.setRecieverId(reciever);
@@ -35,44 +37,31 @@ public class MessageService {
             message.setSenderId(sender);
             var messageField=messageInDto.getMessage();
             if(messageField.isEmpty()){
-                return baseService.error("Message Field Empty");
+                throw new RuntimeException("Message Field Empty");
             }
             var response=messageRepository.save(message);
-            return baseService.success(messageMapper.messageOutMapper(response));
-        }
-        catch(Exception e){
-            return baseService.error(e.getMessage());
-        }
+            return messageMapper.messageOutMapper(response);
     }
 
-    public BaseList<?> getConversation(Long user1, Long user2){
-        try{
+    public List<MessageOutDto> getConversation(Long user1, Long user2){
            userRepository.findById(user1.intValue())
                    .orElseThrow(()->new RuntimeException("User1 Not Found"));
            userRepository.findById(user2.intValue())
                    .orElseThrow(()->new RuntimeException("User2 Not Found"));
            var result= messageRepository.findConversationBetweenUsers(user1,user2);
-           return baseService.listSuccess(result.stream()
+           return result.stream()
                    .map(messageMapper::messageOutMapper)
-                   .toList());
-        }
-        catch(Exception e){
-            return baseService.listError(e.getMessage());
-        }
+                   .toList();
     }
+
     @Transactional
-    public Base<?> updateStatus(Long senderId, Long receiverId) {
-        try{
+    public String updateStatus(Long senderId, Long receiverId) {
             messageRepository.findById(senderId.intValue())
                     .orElseThrow(()-> new RuntimeException("Sender Not Found"));
             messageRepository.findById(receiverId.intValue())
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             messageRepository.updateStatus(senderId, receiverId);
-            return baseService.success("Message Updated successfully");
-        }
-        catch(Exception e){
-            return baseService.error(e.getMessage());
-        }
+            return "Message Updated successfully";
     }
 
     public Base<?> deleteMessage(int id, int senderId) {
@@ -91,27 +80,22 @@ public class MessageService {
     }
 
 
-    public Base<?> updateMessage(Long senderId, Long receiverId, MessageEdit message, int id){
-        try{
+    public MessageOutDto updateMessage(Long senderId, Long receiverId, MessageEdit message, int id){
             var messageValue=messageRepository.findById(id)
                     .orElseThrow(()->new RuntimeException("Message Not Found"));
             if(senderId.intValue()!=messageValue.getSenderId().getId()){
-                return baseService.error("Unauthorized!");
+                throw new RuntimeException("Unauthorized!");
             }
             var lastMessage=messageRepository.findLatestMessage(receiverId, senderId);
             if(lastMessage==null){
-                return baseService.error("Message Not Found");
+                throw new EntityNotFoundException("Message Not Found");
             }
             System.out.println(lastMessage.get(0).getId());
             if(!lastMessage.get(0).getId().equals(messageValue.getId())){
-                return baseService.error("Can't Update Message!");
+                throw new RuntimeException("Can't Update Message!");
             }
             messageValue.setMessageBody(message.getMessage());
             var updateResult=messageRepository.save(messageValue);
-            return baseService.success(messageMapper.messageOutMapper(updateResult));
-        }
-        catch(Exception e){
-            return baseService.error(e.getMessage());
-        }
+            return messageMapper.messageOutMapper(updateResult);
     }
 }
