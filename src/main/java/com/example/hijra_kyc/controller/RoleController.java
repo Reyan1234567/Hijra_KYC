@@ -1,46 +1,47 @@
 package com.example.hijra_kyc.controller;
 
-
-import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
 import com.example.hijra_kyc.dto.RoleDto.RoleInDto;
 import com.example.hijra_kyc.dto.RoleDto.RoleOutDto;
 import com.example.hijra_kyc.service.RoleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/roles")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RoleController {
 
     private final RoleService roleService;
 
-    @PostMapping("/post-role")
-    public ResponseEntity<RoleOutDto> postRole(@RequestBody RoleInDto dto) {
-        RoleOutDto result = roleService.createRole(dto);
-        return ResponseEntity.ok(result);
+    // Create a new role
+    @PostMapping
+    public ResponseEntity<RoleOutDto> createRole(@RequestBody RoleInDto dto) {
+        RoleOutDto created = roleService.createRole(dto);
+        return ResponseEntity.ok(created);
     }
 
-    @GetMapping("/" + "s")
+    // Get all roles
+    @GetMapping
     public ResponseEntity<List<RoleOutDto>> getAllRoles() {
-        List<RoleOutDto> result = roleService.getAllRoles();
-        return ResponseEntity.ok(result);
+        List<RoleOutDto> roles = roleService.getAllRoles();
+        return ResponseEntity.ok(roles);
     }
 
+    // Get one role by ID
+    @GetMapping("/{roleId}")
+    public ResponseEntity<RoleOutDto> getRole(@PathVariable long roleId) {
+        RoleOutDto role = roleService.getRole(roleId);
+        return ResponseEntity.ok(role);
+    }
     @GetMapping("/{roleId}/permissions")
-    public ResponseEntity<List<PermissionOutDto>> getPermissionsByRole(@PathVariable Long roleId) {
-        List<PermissionOutDto> permissions = roleService.getPermissionsByRole(roleId);
+    public ResponseEntity<
+            Set<PermissionOutDto>> getRolePermissions(@PathVariable long roleId) {
+        Set<PermissionOutDto> permissions = roleService.getPermissionsByRoleId(roleId);
         return ResponseEntity.ok(permissions);
     }
 

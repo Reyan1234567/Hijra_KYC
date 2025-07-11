@@ -4,16 +4,16 @@ import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
 import com.example.hijra_kyc.dto.RoleDto.RoleInDto;
 import com.example.hijra_kyc.dto.RoleDto.RoleOutDto;
 import com.example.hijra_kyc.mapper.RoleMapper;
-import com.example.hijra_kyc.mapper.PermissionMapper;
 import com.example.hijra_kyc.model.Permission;
-import com.example.hijra_kyc.repository.PermissionRepository;
+import com.example.hijra_kyc.model.Role;
 import com.example.hijra_kyc.repository.RoleRepository;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,32 +21,41 @@ import java.util.stream.Collectors;
 public class RoleService {
 
     private final RoleRepository roleRepository;
-    private final PermissionRepository permissionRepository;  // Keep this injected
     private final RoleMapper roleMapper;
-    private final PermissionMapper permissionMapper;
 
+    // Write operation - must NOT be readOnly
+    @Transactional
     public RoleOutDto createRole(RoleInDto dto) {
-        var role = roleMapper.toEntity(dto);
-        var savedRole = roleRepository.save(role);
-        return roleMapper.toDto(savedRole);
+        Role role = roleMapper.toModel(dto);
+        Role savedRole = roleRepository.save(role);
+        return roleMapper.toOutDto(savedRole);
     }
 
+    // Read operation - readOnly = true for optimization
+    @Transactional(readOnly = true)
     public List<RoleOutDto> getAllRoles() {
         return roleRepository.findAll().stream()
-                .map(roleMapper::toDto)
+                .map(roleMapper::toOutDto)
                 .collect(Collectors.toList());
     }
 
-    public RoleOutDto getRoleById(Long roleId) {
-        var role = roleRepository.findById(roleId).orElse(null);
-        return role != null ? roleMapper.toDto(role) : null;
+    // Read operation - readOnly = true
+    @Transactional(readOnly = true)
+    public RoleOutDto getRole(long roleId) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + roleId));
+        return roleMapper.toOutDto(role);
     }
 
-    public List<PermissionOutDto> getPermissionsByRole(Long roleId) {
-        List<Permission> permissions = permissionRepository.findPermissionsByRoleId(roleId);
-        // Call static method directly on PermissionMapper
+    // Read operation for permissions - readOnly = true
+    @Transactional(readOnly = true)
+    public Set<PermissionOutDto> getPermissionsByRoleId(long roleId) {
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + roleId));
+        // Initialize the lazy collection safely
+        Set<Permission> permissions = new HashSet<>(role.getPermissions());
         return permissions.stream()
-                .map(permissionMapper::toDto)
-                .collect(Collectors.toList());
+                .map(roleMapper::mapPermission)
+                .collect(Collectors.toSet());
     }
 }

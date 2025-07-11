@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/branches")
-@AllArgsConstructor
 @Validated
 @RequiredArgsConstructor
 public class BranchController {

@@ -1,32 +1,32 @@
 package com.example.hijra_kyc.mapper;
 
-import org.springframework.stereotype.Service;
-
 import com.example.hijra_kyc.dto.PermissionDto.PermissionInDto;
 import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
 import com.example.hijra_kyc.model.Permission;
+import org.springframework.stereotype.Component;
 
-import lombok.RequiredArgsConstructor;
-@Service
-@RequiredArgsConstructor
+@Component
 public class PermissionMapper {
 
-    public Permission toEntity(PermissionInDto dto) {
+    // Convert PermissionInDto -> Permission (Entity)
+    public Permission toModel(PermissionInDto dto) {
         return Permission.builder()
-                .permissionName(dto.getPermissionName())
-                .permissionDisplayName(dto.getPermissionDisplayName())
+                .permissionId(Long.valueOf(dto.getPermissionId()))
                 .permissionCategory(dto.getPermissionCategory())
+                .permissionDisplayName(dto.getPermissionDisplayName())
+                .permissionName(dto.getPermissionName())
                 .recordStatus(dto.getRecordStatus())
                 .build();
     }
 
-    public  PermissionOutDto toDto(Permission entity) {
+    // Convert Permission (Entity) -> PermissionOutDto
+    public PermissionOutDto toOutDto(Permission permission) {
         return PermissionOutDto.builder()
-                .permissionId(entity.getPermissionId())
-                .permissionName(entity.getPermissionName())
-                .permissionDisplayName(entity.getPermissionDisplayName())
-                .permissionCategory(entity.getPermissionCategory())
-                .recordStatus(entity.getRecordStatus())
+                .permissionId(permission.getPermissionId())
+                .permissionCategory(permission.getPermissionCategory())
+                .permissionDisplayName(permission.getPermissionDisplayName())
+                .permissionName(permission.getPermissionName())
+                .recordStatus(permission.getRecordStatus())
                 .build();
     }
 }
