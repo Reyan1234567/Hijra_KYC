@@ -44,7 +44,7 @@ public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
     @Query("Select m.id from MakeForm m where m.hoActionTime is null and m.makeTime>:day")
     List<Integer> findLeftMakes(@Param("day") Instant day);
 
-    @Modifying
-    @Query("UPDATE MakeForm m set m.ho.id=:hoId where m.id in :ids")
-    void updateHoIdOfaListOfMakeForms(@Param("hoId") int id, @Param("ids") List<Integer> ids);
+        @Modifying
+    @Query("UPDATE MakeForm m set m.ho.id=:hoId, m.hoAssignTime=:time where m.id in :ids ")
+    void updateHoIdOfaListOfMakeForms(@Param("hoId") int id, @Param("ids") List<Integer> ids, @Param("now") Instant now);
 }
