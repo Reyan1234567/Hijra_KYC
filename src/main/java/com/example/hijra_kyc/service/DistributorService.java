@@ -7,6 +7,7 @@ import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.ArrayList;
@@ -18,14 +19,13 @@ import java.util.Random;
 @AllArgsConstructor
 public class DistributorService {
 
-    private final BaseService baseService;
     private final MakeFormRepository makeFormRepository;
     private final UserProfileRepository userProfileRepository;
 
-    final int NIGHT_CHECKER_1=19;
-    final int NIGHT_CHECKER_2=25;
+    final Long NIGHT_CHECKER_1=19L;
+    final Long NIGHT_CHECKER_2=25L;
 
-    final String ROLE="rol/003";
+    final Long ROLE=3L;
 
     @Transactional
     public void setPresent(){
@@ -37,7 +37,7 @@ public class DistributorService {
         }
     }
 
-    public List<Integer> whoIsPresent(){
+    public List<Long> whoIsPresent(){
         try{
             return userProfileRepository.findPresentUsers(ROLE);
         }
@@ -86,13 +86,11 @@ public class DistributorService {
             makeFormRepository.save(makeForm);
         }
     }
-
+    @Transactional
     public String Assign(){
-
-        int forEachChecker;
-        List<Integer> PresentCheckers=whoIsPresent();
+        List<Long> PresentCheckers=whoIsPresent();
         List<Integer> makesNotAssignedToday=makesNotAssignedToday();
-        int indexVariable=0;
+        long indexVariable=0;
         if(PresentCheckers.size()==0){
            throw new EntityNotFoundException("No available checkers");
         }
@@ -100,14 +98,14 @@ public class DistributorService {
             throw new EntityNotFoundException("Nothing to assign");
         }
 
-        forEachChecker = makesNotAssignedToday.size() / PresentCheckers.size();
-
+        int forEachChecker = makesNotAssignedToday.size() / PresentCheckers.size();
+        System.out.println("forEachChecker"+forEachChecker);
         if(forEachChecker==0){
-            List<Integer> shuffledCheckers=new ArrayList<>(PresentCheckers);
+            List<Long> shuffledCheckers=new ArrayList<>(PresentCheckers);
             Collections.shuffle(shuffledCheckers);
 
             for (int i=0; i<makesNotAssignedToday.size(); i++) {
-                makeFormRepository.updateHoIdOfaListOfMakeForms(shuffledCheckers.get(i), List.of(makesNotAssignedToday.get(i)));
+                makeFormRepository.updateHoIdOfaListOfMakeForms(shuffledCheckers.get(i), List.of(makesNotAssignedToday.get(i)), getTime());
             }
             return "assigned successfully";
         }
@@ -119,19 +117,25 @@ public class DistributorService {
                 throw new EntityNotFoundException("No available checkers");
             }
             else{
+                System.out.println("In the second else");
                 for(countOfUnmade unmade:unmades){
+                    System.out.println("In the for loop");
+                    System.out.println(unmade.getId());
+                    System.out.println(unmade.getCount());
                     if(!PresentCheckers.contains(unmade.getId())){
+                        System.out.println("In the first jump");
                         continue;
                     }
                     if(unmade.getCount()>forEachChecker){
+                        System.out.println("In the second jump");
                         continue;
                     }
-                    int comparisonVar=forEachChecker-unmade.getCount();
+                    long comparisonVar=forEachChecker-(unmade.getCount()/2);
                     unmade.setCount(Math.max(comparisonVar, 0));
-                    int toBeCapped=Math.min(indexVariable + unmade.getCount(), makesNotAssignedToday.size());
-                    List<Integer> divided=makesNotAssignedToday.subList(indexVariable, toBeCapped);
+                    long toBeCapped=Math.min(indexVariable + unmade.getCount(), makesNotAssignedToday.size());
+                    List<Integer> divided=makesNotAssignedToday.subList((int)indexVariable, (int)toBeCapped);
                     indexVariable=toBeCapped;
-                    makeFormRepository.updateHoIdOfaListOfMakeForms(unmade.getId(), divided);
+                    makeFormRepository.updateHoIdOfaListOfMakeForms(unmade.getId(), divided, getTime());
                 }
             }
             return "assigned successfully";
@@ -140,10 +144,11 @@ public class DistributorService {
     }
 
     @Transactional
-    public void AssignNight(){
+    public String AssignNight(){
         List<Integer> makesLeft=makeFormRepository.findLeftMakes(getTime());
-        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_1, makesLeft.subList(0,makesLeft.size()/2));
-        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_2, makesLeft.subList(makesLeft.size()/2,makesLeft.size()));
+        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_1, makesLeft.subList(0,makesLeft.size()/2), getTime());
+        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_2, makesLeft.subList(makesLeft.size()/2,makesLeft.size()), getTime());
+        return "Night shift started";
     }
 
     public Instant getTime(){
