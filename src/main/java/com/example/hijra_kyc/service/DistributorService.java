@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@AllArgsConstructor
 public class DistributorService {
 
     private final BaseService baseService;
@@ -25,12 +26,6 @@ public class DistributorService {
     final int NIGHT_CHECKER_2=25;
 
     final String ROLE="rol/003";
-
-    public DistributorService(BaseService baseService, MakeFormRepository makeFormRepository, UserProfileRepository userProfileRepository) {
-        this.baseService = baseService;
-        this.makeFormRepository = makeFormRepository;
-        this.userProfileRepository = userProfileRepository;
-    }
 
     @Transactional
     public void setPresent(){
