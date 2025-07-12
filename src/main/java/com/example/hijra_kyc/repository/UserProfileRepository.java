@@ -14,10 +14,10 @@ import com.example.hijra_kyc.model.UserProfile;
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long>{
 
     @Query("Select u.id from UserProfile u where(u.roleId.roleId=:roleId and u.status=1)")
-    List<Integer> findPresentUsers(@Param("roleId") String roleId);
+    List<Long> findPresentUsers(@Param("roleId") Long roleId);
 
     @Modifying
     @Query("Update UserProfile set status=2 where roleId.roleId=:roleId ")
-    void updateUsersAttendance(@Param("roleId") String roleId);
+    void updateUsersAttendance(@Param("roleId") Long roleId);
 
 }
