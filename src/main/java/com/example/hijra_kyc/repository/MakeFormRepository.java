@@ -38,13 +38,13 @@ public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
     @Query("Update MakeForm set ho.id=:id where (ho is null and makeTime > :todayHourMin)")
     void nightAssign(@Param("id") int id, @Param("todayHourMin") LocalDateTime todayHourMin);
 
-    @Query("Select u.id, count(u.id) as count from UserProfile u left join MakeForm m on m.ho.id=u.id and m.hoActionTime is null and m.makeTime>:day where u.roleId=:role group by u.id")
-    List<countOfUnmade> findCheckersPerformance(@Param("day") Instant day, @Param("rol/003") String role);
+    @Query("Select NEW com.example.hijra_kyc.service.countOfUnmade(u.id, count(u.id)) as count from UserProfile u left join MakeForm m on m.ho.id=u.id and m.hoActionTime is null and m.makeTime>:day where u.roleId.roleId=:role group by u.id")
+    List<countOfUnmade> findCheckersPerformance(@Param("day") Instant day, @Param("role") Long role);
 
     @Query("Select m.id from MakeForm m where m.hoActionTime is null and m.makeTime>:day")
     List<Integer> findLeftMakes(@Param("day") Instant day);
 
-        @Modifying
+    @Modifying
     @Query("UPDATE MakeForm m set m.ho.id=:hoId, m.hoAssignTime=:time where m.id in :ids ")
-    void updateHoIdOfaListOfMakeForms(@Param("hoId") int id, @Param("ids") List<Integer> ids, @Param("now") Instant now);
+    void updateHoIdOfaListOfMakeForms(@Param("hoId") Long id, @Param("ids") List<Integer> ids, @Param("time") Instant now);
 }
