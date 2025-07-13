@@ -60,8 +60,4 @@ public class MakeForm {
 
     @OneToMany(mappedBy = "imageMake", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Image> images=new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "branch_id", referencedColumnName="branchId")
-    private Branch branchId;
 }
