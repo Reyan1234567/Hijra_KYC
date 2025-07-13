@@ -32,7 +32,6 @@ public class MakeFormMapper {
                 .customerPhone(makeForm.getCustomerPhone())
                 .customerName(makeForm.getCustomerName())
                 .status(makeForm.getStatus())
-                .branchId(makeForm.getBranchId().getBranchId())
                 .image(makeForm.getImages().stream().map(imageMapper::toImageDto).toList())
                 .build();
     }
