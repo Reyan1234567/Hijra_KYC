@@ -10,10 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -49,7 +46,7 @@ public class DistributorService {
     public List<Integer> makesNotAssignedToday(){
 
         try{
-            return makeFormRepository.findMakeForms(getTime());
+            return makeFormRepository.findMakeForms(getBeginningOfTheMorning());
         }
         catch(Exception e){
             e.printStackTrace();
@@ -88,70 +85,87 @@ public class DistributorService {
     }
     @Transactional
     public String Assign(){
-        List<Long> PresentCheckers=whoIsPresent();
+        List<Long> presentCheckers=whoIsPresent();
         List<Integer> makesNotAssignedToday=makesNotAssignedToday();
         long indexVariable=0;
-        if(PresentCheckers.size()==0){
+
+        if(presentCheckers.isEmpty()){
            throw new EntityNotFoundException("No available checkers");
         }
         if(makesNotAssignedToday.isEmpty()){
             throw new EntityNotFoundException("Nothing to assign");
         }
 
-        int forEachChecker = makesNotAssignedToday.size() / PresentCheckers.size();
-        System.out.println("forEachChecker"+forEachChecker);
+        long forEachChecker = makesNotAssignedToday.size() / presentCheckers.size();
+        System.out.println("forEachChecker: "+forEachChecker);
         if(forEachChecker==0){
-            List<Long> shuffledCheckers=new ArrayList<>(PresentCheckers);
+            List<Long> shuffledCheckers=new ArrayList<>(presentCheckers);
             Collections.shuffle(shuffledCheckers);
 
             for (int i=0; i<makesNotAssignedToday.size(); i++) {
-                makeFormRepository.updateHoIdOfaListOfMakeForms(shuffledCheckers.get(i), List.of(makesNotAssignedToday.get(i)), getTime());
+                makeFormRepository.updateHoIdOfaListOfMakeForms(shuffledCheckers.get(i), List.of(makesNotAssignedToday.get(i)), Instant.now());
             }
             return "assigned successfully";
         }
 
         else{
             System.out.println("In the else");
-            List<countOfUnmade> unmades=makeFormRepository.findCheckersPerformance(getTime(),ROLE);
+            List<countOfUnmade> unmades=makeFormRepository.findCheckersPerformance(getBeginningOfTheMorning(),ROLE);
             if(unmades.isEmpty()){
                 throw new EntityNotFoundException("No available checkers");
             }
             else{
-                System.out.println("In the second else");
-                for(countOfUnmade unmade:unmades){
-                    System.out.println("In the for loop");
-                    System.out.println(unmade.getId());
-                    System.out.println(unmade.getCount());
-                    if(!PresentCheckers.contains(unmade.getId())){
-                        System.out.println("In the first jump");
-                        continue;
+                List<countOfUnmade> correctList= new ArrayList<>(unmades.stream().filter((u) -> presentCheckers.contains(u.getId())).toList());
+                correctList.sort(Comparator.comparingLong(countOfUnmade::getCount).reversed());
+                for(int i=0; i<correctList.size()/2; i++){
+                    var change=forEachChecker-correctList.get(i).getCount()/2;
+                    if(change<0){
+                        correctList.get(i).setCount(forEachChecker-forEachChecker/2);
+                        correctList.get(correctList.size() - 1 - i).setCount(forEachChecker + forEachChecker/2);
                     }
-                    if(unmade.getCount()>forEachChecker){
-                        System.out.println("In the second jump");
-                        continue;
+                    else{
+                        correctList.get(i).setCount(change);
+                        correctList.get(correctList.size() - 1 - i).setCount(forEachChecker + correctList.get(i).getCount() / 2);
                     }
-                    long comparisonVar=forEachChecker-(unmade.getCount()/2);
-                    unmade.setCount(Math.max(comparisonVar, 0));
-                    long toBeCapped=Math.min(indexVariable + unmade.getCount(), makesNotAssignedToday.size());
+                }
+                if(correctList.size()%2!=0){
+                    correctList.get(correctList.size()/2).setCount(forEachChecker);
+                }
+                long toBeCapped=0;
+                for(countOfUnmade unmade:correctList){
+                    toBeCapped=Math.min(indexVariable + unmade.getCount(), makesNotAssignedToday.size());
                     List<Integer> divided=makesNotAssignedToday.subList((int)indexVariable, (int)toBeCapped);
                     indexVariable=toBeCapped;
-                    makeFormRepository.updateHoIdOfaListOfMakeForms(unmade.getId(), divided, getTime());
+
+                    if(!divided.isEmpty()){
+                        makeFormRepository.updateHoIdOfaListOfMakeForms(unmade.getId(), divided, Instant.now());
+                    }
+                }
+
+                if(toBeCapped<makesNotAssignedToday.size()){
+                    List<Integer> leftovers=makesNotAssignedToday.subList((int)toBeCapped, makesNotAssignedToday.size());
+                    Collections.shuffle(presentCheckers);
+                    int i=0;
+                    for(Integer left:leftovers){
+                        makeFormRepository.updateHoIdOfaListOfMakeForms(
+                                presentCheckers.get(i++ % presentCheckers.size()), List.of(left), Instant.now()
+                        );
+                    }
                 }
             }
             return "assigned successfully";
         }
-
     }
 
     @Transactional
     public String AssignNight(){
-        List<Integer> makesLeft=makeFormRepository.findLeftMakes(getTime());
-        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_1, makesLeft.subList(0,makesLeft.size()/2), getTime());
-        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_2, makesLeft.subList(makesLeft.size()/2,makesLeft.size()), getTime());
+        List<Integer> makesLeft=makeFormRepository.findLeftMakes(getBeginningOfTheMorning());
+        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_1, makesLeft.subList(0,makesLeft.size()/2), Instant.now());
+        makeFormRepository.updateHoIdOfaListOfMakeForms(NIGHT_CHECKER_2, makesLeft.subList(makesLeft.size()/2,makesLeft.size()), Instant.now());
         return "Night shift started";
     }
 
-    public Instant getTime(){
+    public Instant getBeginningOfTheMorning(){
         LocalDate today = LocalDate.now();
         LocalTime todayTime = LocalTime.of(8, 0);
         return LocalDateTime.of(today, todayTime).atZone(ZoneId.systemDefault()).toInstant();
@@ -179,4 +193,12 @@ public class DistributorService {
 //                    Makeassign(present, makesNotAssignedToday.subList(from,till));
 //                    from=till;
 //                    till+=forEachChecker;
-//                }
+//
+//               }
+//
+//
+//
+//                    if(unmade.getCount()>forEachChecker){
+//        System.out.println("In the second jump");
+//                        continue;
+//                                }
