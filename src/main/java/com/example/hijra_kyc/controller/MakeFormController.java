@@ -32,12 +32,6 @@ public class MakeFormController {
         return ResponseEntity.ok(makes);
     }
 
-    @DeleteMapping("deleteForm/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        String makeDelete=makeFormService.delete(id);
-        return ResponseEntity.ok(makeDelete);
-    }
-
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<?> statusChange(@PathVariable Long id, @RequestParam("status") int statusNumber) {
         String approve=makeFormService.changeStatus(id, statusNumber);
@@ -66,5 +60,12 @@ public class MakeFormController {
     public ResponseEntity<?> distribute(){
         String distribute=distributorService.Assign();
         return ResponseEntity.ok(distribute);
+    }
+
+    
+    @GetMapping("/assignToNight")
+    public ResponseEntity<?> assignToNight(){
+        String makes=distributorService.AssignNight();
+        return ResponseEntity.ok(makes);
     }
 }
