@@ -37,10 +37,12 @@ public class UserProfile {
     @NotBlank(message = "last name required")
     private String lastName;
     @NotBlank(message = "user name required")
+    @Column(unique = true)
     private String userName;
     @NotBlank(message = "gender required")
     private String gender;
     @NotBlank(message = "phone number required")
+    @Column(unique = true)
     private String phoneNumber;
     @NotNull(message = "status required")
     private int status;
