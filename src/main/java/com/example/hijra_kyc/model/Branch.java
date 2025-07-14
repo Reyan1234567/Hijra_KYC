@@ -28,6 +28,7 @@ public class Branch {
     @Column(unique=true)
     private String name;
     @NotBlank(message = "branch Code is required")
+    @Column(unique = true)
     private String branchCode;
     @NotNull(message="District Code is required")
     @ManyToOne
