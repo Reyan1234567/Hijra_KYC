@@ -52,7 +52,7 @@ public class MakeFormController {
 
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
-        Long Id=makeFormService.saveForm(makeFormDto);
+        MakeFormOutDto Id=makeFormService.saveForm(makeFormDto);
         return ResponseEntity.ok(Id);
     }
 
