@@ -34,7 +34,7 @@ public class MakeForm {
     private String cif;
 
     @Size(max = 100)
-    @Column(name = "customer_account", length = 100)
+    @Column(name = "customer_account", length = 100, unique=true)
     private String customerAccount;
 
     @Size(max = 20)
