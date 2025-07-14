@@ -34,8 +34,7 @@ public class MakeFormService {
     private final BranchRepository branchRepository;
     private final ImageService imageService;
 
-
-    public Long saveForm(MakeFormDto makeFormDto) {
+    public MakeFormOutDto saveForm(MakeFormDto makeFormDto) {
             MakeForm makeForm=makerFormMapper.mapToMakeForm(makeFormDto);
             UserProfile maker=userRepository.findById(makeFormDto.getMakerId())
                     .orElseThrow(()->new EntityNotFoundException("User not found"));
@@ -44,7 +43,7 @@ public class MakeFormService {
             if(foundMakeForm==null){
                 foundMakeForm=makeFormRepository.save(makeForm);
             }
-            return foundMakeForm.getId();
+            return makerFormMapper.makeFormOutMapper(foundMakeForm);
     }
 
     public List<MakeFormOutDto> getAll(Long makerId) {
