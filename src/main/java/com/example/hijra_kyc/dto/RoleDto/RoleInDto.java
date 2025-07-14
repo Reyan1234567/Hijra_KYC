@@ -13,7 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleInDto {
-    private long roleId;
     private String roleName;
     private String recordStatus;
     private Set<PermissionOutDto> permissions;

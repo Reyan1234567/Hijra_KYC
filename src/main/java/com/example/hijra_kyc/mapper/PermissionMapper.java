@@ -8,10 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PermissionMapper {
 
-    // Convert PermissionInDto -> Permission (Entity)
+
     public Permission toModel(PermissionInDto dto) {
         return Permission.builder()
-                .permissionId(Long.valueOf(dto.getPermissionId()))
                 .permissionCategory(dto.getPermissionCategory())
                 .permissionDisplayName(dto.getPermissionDisplayName())
                 .permissionName(dto.getPermissionName())
@@ -19,7 +18,7 @@ public class PermissionMapper {
                 .build();
     }
 
-    // Convert Permission (Entity) -> PermissionOutDto
+
     public PermissionOutDto toOutDto(Permission permission) {
         return PermissionOutDto.builder()
                 .permissionId(permission.getPermissionId())

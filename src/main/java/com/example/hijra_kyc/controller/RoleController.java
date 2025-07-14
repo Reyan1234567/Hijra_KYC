@@ -18,21 +18,20 @@ public class RoleController {
 
     private final RoleService roleService;
 
-    // Create a new role
+
     @PostMapping
     public ResponseEntity<RoleOutDto> createRole(@RequestBody RoleInDto dto) {
         RoleOutDto created = roleService.createRole(dto);
         return ResponseEntity.ok(created);
     }
 
-    // Get all roles
     @GetMapping
     public ResponseEntity<List<RoleOutDto>> getAllRoles() {
         List<RoleOutDto> roles = roleService.getAllRoles();
         return ResponseEntity.ok(roles);
     }
 
-    // Get one role by ID
+   
     @GetMapping("/{roleId}")
     public ResponseEntity<RoleOutDto> getRole(@PathVariable long roleId) {
         RoleOutDto role = roleService.getRole(roleId);

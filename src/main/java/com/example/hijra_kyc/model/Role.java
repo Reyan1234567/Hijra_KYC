@@ -13,7 +13,8 @@ import java.util.Set;
 public class Role {
 
     @Id
-    @Column(name = "role_id") // This maps the field to a column named "role_id"
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
     private Long roleId;
 
     @Column(name = "role_name")
@@ -25,7 +26,7 @@ public class Role {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "role_permission", // join table
-            joinColumns = @JoinColumn(name = "role_id"), // correct column mapping
+            joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
     private Set<Permission> permissions;

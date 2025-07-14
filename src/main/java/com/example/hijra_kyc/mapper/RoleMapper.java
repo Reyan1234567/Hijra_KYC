@@ -25,7 +25,6 @@ public class RoleMapper {
                 .collect(Collectors.toSet());
 
         return Role.builder()
-                .roleId(Long.valueOf(dto.getRoleId()))
                 .roleName(dto.getRoleName())
                 .recordStatus(dto.getRecordStatus())
                 .permissions(permissions)

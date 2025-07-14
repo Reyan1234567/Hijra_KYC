@@ -1,8 +1,6 @@
 package com.example.hijra_kyc.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Set;
@@ -16,6 +14,7 @@ import java.util.Set;
 public class Permission {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long permissionId;
 
     private String permissionCategory;

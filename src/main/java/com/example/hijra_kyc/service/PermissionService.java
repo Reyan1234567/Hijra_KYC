@@ -19,14 +19,13 @@ public class PermissionService {
     private final PermissionRepository permissionRepository;
     private final PermissionMapper permissionMapper;
 
-    // Create and save a new permission
+
     public PermissionOutDto createPermission(PermissionInDto dto) {
         Permission permission = permissionMapper.toModel(dto);
         Permission saved = permissionRepository.save(permission);
         return permissionMapper.toOutDto(saved);
     }
 
-    // Get all permissions
     public List<PermissionOutDto> getAllPermissions() {
         return permissionRepository.findAll().stream()
                 .map(permissionMapper::toOutDto)

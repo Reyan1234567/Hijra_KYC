@@ -23,7 +23,6 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
-    // Write operation - must NOT be readOnly
     @Transactional
     public RoleOutDto createRole(RoleInDto dto) {
         Role role = roleMapper.toModel(dto);
@@ -31,7 +30,6 @@ public class RoleService {
         return roleMapper.toOutDto(savedRole);
     }
 
-    // Read operation - readOnly = true for optimization
     @Transactional(readOnly = true)
     public List<RoleOutDto> getAllRoles() {
         return roleRepository.findAll().stream()
@@ -39,7 +37,6 @@ public class RoleService {
                 .collect(Collectors.toList());
     }
 
-    // Read operation - readOnly = true
     @Transactional(readOnly = true)
     public RoleOutDto getRole(long roleId) {
         Role role = roleRepository.findById(roleId)
@@ -47,12 +44,11 @@ public class RoleService {
         return roleMapper.toOutDto(role);
     }
 
-    // Read operation for permissions - readOnly = true
     @Transactional(readOnly = true)
     public Set<PermissionOutDto> getPermissionsByRoleId(long roleId) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new RuntimeException("Role not found: " + roleId));
-        // Initialize the lazy collection safely
+
         Set<Permission> permissions = new HashSet<>(role.getPermissions());
         return permissions.stream()
                 .map(roleMapper::mapPermission)
