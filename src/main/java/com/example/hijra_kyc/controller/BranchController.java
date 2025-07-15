@@ -42,8 +42,7 @@ public class BranchController {
     }
     @GetMapping("/search-branch/{id}")
     public ResponseEntity<BranchOutDto> getBranchById(@PathVariable Long id) {
-        Branch branch = branchService.searchBranchById(id);
-        BranchOutDto dto = mapper.toDto(branch);
+        BranchOutDto branch = branchService.searchBranchById(id);
         return ResponseEntity.ok(dto);
     }
     
