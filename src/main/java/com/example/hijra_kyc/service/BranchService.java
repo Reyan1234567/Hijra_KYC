@@ -34,7 +34,8 @@ public class BranchService {
             .collect(Collectors.toList());
     }
     public Branch searchBranchById(Long id){
-        return branchRepository.findById(id)
+        Branch branch=branchRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+        return mapper.toDto(branch)
     }
 }
