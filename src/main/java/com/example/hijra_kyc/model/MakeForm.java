@@ -30,7 +30,7 @@ public class MakeForm {
     private UserProfile ho;
 
     @Size(max = 50)
-    @Column(name = "cif", length = 50)
+    @Column(name = "cif", length = 50, unique = true)
     private String cif;
 
     @Size(max = 100)

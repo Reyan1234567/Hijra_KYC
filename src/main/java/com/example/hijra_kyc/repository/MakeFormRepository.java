@@ -11,13 +11,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.hijra_kyc.model.MakeForm;
-import com.example.hijra_kyc.service.countOfUnmade;
+import com.example.hijra_kyc.util.countOfUnmade;
 
 @Repository
 public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
-
-     @Query("SELECT m FROM MakeForm m WHERE m.maker.id = :makerId")
-    List<MakeForm> findByMaker(@Param("makerId") Long makerId);
 
     @Query("SELECT m FROM MakeForm m WHERE m.maker.id = :makerId AND m.status = :status")
     List<MakeForm> findByMakerAndStatus(@Param("makerId") Long makerId, @Param("status") Long status);
@@ -38,7 +35,7 @@ public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
     @Query("Update MakeForm set ho.id=:id where (ho is null and makeTime > :todayHourMin)")
     void nightAssign(@Param("id") int id, @Param("todayHourMin") LocalDateTime todayHourMin);
 
-    @Query("Select NEW com.example.hijra_kyc.service.countOfUnmade(u.id, count(u.id)) as count from UserProfile u left join MakeForm m on m.ho.id=u.id and m.hoActionTime is null and m.makeTime>:day where u.roleId.roleId=:role group by u.id")
+    @Query("Select NEW com.example.hijra_kyc.util.countOfUnmade(u.id, count(u.id)) as count from UserProfile u left join MakeForm m on m.ho.id=u.id and m.hoActionTime is null and m.makeTime>:day where u.roleId.roleId=:role group by u.id")
     List<countOfUnmade> findCheckersPerformance(@Param("day") Instant day, @Param("role") Long role);
 
     @Query("Select m.id from MakeForm m where m.hoActionTime is null and m.makeTime>:day")

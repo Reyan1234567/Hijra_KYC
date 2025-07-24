@@ -1,6 +1,7 @@
 package com.example.hijra_kyc.service;
 
 
+import com.example.hijra_kyc.dto.FormDto.MakeFormDisplayDto;
 import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
 import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
@@ -46,19 +47,19 @@ public class MakeFormService {
             return makerFormMapper.makeFormOutMapper(foundMakeForm);
     }
 
-    public List<MakeFormOutDto> getAll(Long makerId) {
+    public List<MakeFormDisplayDto> getAll(Long makerId) {
         System.out.println(makerId);
-        List<MakeForm> makersForm = makeFormRepository.findByMaker(makerId);
-        if(makersForm==null||makersForm.isEmpty()){
-            throw new EntityNotFoundException("Maker not found");
-        }
-        return makersForm.stream()
-                .map(makerFormMapper::makeFormOutMapper)
+        UserProfile maker = userRepository.findById(makerId).orElseThrow(()->new EntityNotFoundException("Maker not found"));
+
+        List<MakeForm> makes=maker.getMakeFormList();
+        System.out.println(makes.get(0).getMaker().getId());
+        return makes.stream()
+                .map(makerFormMapper::makeFormDisplayDto)
                 .toList();
     }
 
     public List<MakeFormOutDto> get(Long makerId, Long status) {
-            if(status<0||status>3){
+            if(status<0||status>4){
                 throw new IllegalArgumentException("invalid status");
             }
             List<MakeForm> makersForm = makeFormRepository.findByMakerAndStatus(makerId, status);
@@ -91,7 +92,7 @@ public class MakeFormService {
 
 
     public String changeStatus(Long makeId, int statusNumber) {
-            if(statusNumber<0||statusNumber>3){
+            if(statusNumber<0||statusNumber>4){
                 throw new IllegalArgumentException("invalid status");
             }
             System.out.println(makeId.intValue());

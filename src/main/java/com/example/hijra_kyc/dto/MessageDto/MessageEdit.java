@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.dto;
+package com.example.hijra_kyc.dto.MessageDto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

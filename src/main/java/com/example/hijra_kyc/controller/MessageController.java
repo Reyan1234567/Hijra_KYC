@@ -1,10 +1,9 @@
 package com.example.hijra_kyc.controller;
 
-import com.example.hijra_kyc.dto.*;
+import com.example.hijra_kyc.dto.MessageDto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageDto.MessageInDto;
+import com.example.hijra_kyc.dto.MessageDto.MessageMapperDto;
 import com.example.hijra_kyc.dto.MessageDto.MessageOutDto;
-import com.example.hijra_kyc.model.Base;
-import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MessageService;
 import jakarta.validation.Valid;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("message")
+@RequestMapping("/message")
 @RequiredArgsConstructor
 public class MessageController {
 
@@ -44,6 +43,12 @@ public class MessageController {
     public ResponseEntity<?> editMessage(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestBody MessageEdit message, @PathVariable("id") Long id){
         MessageOutDto messageEdit=messageService.updateMessage(senderId, receiverId,message, id);
         return ResponseEntity.ok(messageEdit);
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAllUserMessages(@RequestParam("receiverId") Long receiverId){
+        List<MessageMapperDto> messages=messageService.getAllUsers(receiverId);
+        return ResponseEntity.ok(messages);
     }
 
 

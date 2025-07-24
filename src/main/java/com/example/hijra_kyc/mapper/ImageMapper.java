@@ -17,6 +17,7 @@ public class ImageMapper {
         return ImageReturnDto.builder()
                 .id(image.getId())
                 .description(image.getImageDescription())
+                .descriptionCopy(image.getImageDescription())
                 .name(image.getImageName())
                 .make_id(image.getImageMake().getId())
                 .build();

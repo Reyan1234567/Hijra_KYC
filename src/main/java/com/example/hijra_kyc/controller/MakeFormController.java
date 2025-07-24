@@ -1,6 +1,7 @@
 package com.example.hijra_kyc.controller;
 
 
+import com.example.hijra_kyc.dto.FormDto.MakeFormDisplayDto;
 import com.example.hijra_kyc.service.DistributorService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class MakeFormController {
 
     @GetMapping
     public ResponseEntity<?> get(@RequestParam("makerId") Long makerId) {
-        List<MakeFormOutDto> makes= makeFormService.getAll(makerId);
+        List<MakeFormDisplayDto> makes= makeFormService.getAll(makerId);
         return ResponseEntity.ok(makes);
     }
 

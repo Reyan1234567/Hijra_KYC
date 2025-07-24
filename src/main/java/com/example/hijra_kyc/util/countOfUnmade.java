@@ -1,4 +1,4 @@
-package com.example.hijra_kyc.service;
+package com.example.hijra_kyc.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -9,5 +9,6 @@ public class ImageReturnDto {
     private Long id;
     private String name;
     private String description;
+    private String descriptionCopy;
     private Long make_id;
 }

@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.service;
 
+import com.example.hijra_kyc.dto.Imagedto.DescriptionDto;
 import com.example.hijra_kyc.dto.Imagedto.ImageDto;
 import com.example.hijra_kyc.dto.Imagedto.ImageReturnDto;
 import com.example.hijra_kyc.mapper.ImageMapper;
@@ -89,7 +90,7 @@ public class ImageService {
 
             System.out.println(fileType);
             //check, if really an image
-            if(fileType.equals("png")||fileType.equals("jpg")||fileType.equals("jpeg")||fileType.equals("webm")){
+            if(!fileType.equals("png")&&!fileType.equals("jpg")&&!fileType.equals("jpeg")&&!fileType.equals("webm")){
                 throw new RuntimeException("file type not supported");
             }
             //creating the path's parent path
@@ -125,10 +126,10 @@ public class ImageService {
     }
 
 
-    public String editDescription(String description, Long id) {
+    public String editDescription(DescriptionDto description, Long id) {
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Image not found"));
-            image.setImageDescription(description);
+            image.setImageDescription(description.getDescription());
             imageRepository.save(image);
             return "Image Edited successfully";
     }
@@ -139,5 +140,21 @@ public class ImageService {
             }
             return "Images created successfully";
 
+    }
+
+    public String disassociate(Long id) {
+        System.out.println(id);
+        Image image=imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+        MakeForm makeForm=image.getImageMake();
+        if(makeForm.getStatus()!=3|| makeForm.getStatus() != 0){
+            throw new EntityNotFoundException("Can't edit a pending or an accepted Make-Request");
+        }
+        System.out.println(makeForm.getId());
+        makeForm.setStatus(0);
+        makeForm.setHoActionTime(null);
+        makeFormRepository.save(makeForm);
+        image.setImageMake(null);
+        imageRepository.save(image);
+        return "Updated successfully";
     }
 }
