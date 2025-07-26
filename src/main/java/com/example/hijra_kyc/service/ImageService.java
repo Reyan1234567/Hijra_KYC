@@ -129,12 +129,34 @@ public class ImageService {
     public String editDescription(DescriptionDto description, Long id) {
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Image not found"));
+            MakeForm makeForm=image.getImageMake();
+            if(makeForm.getStatus()!=3 && makeForm.getStatus() != 0){
+                System.out.println(makeForm.getStatus());
+                throw new EntityNotFoundException("Can't edit a pending or an accepted Make-Request");
+            }
+            if(makeForm.getStatus() ==3){
+                makeForm.setStatus(0);
+                makeForm.setHoActionTime(null);
+                makeFormRepository.save(makeForm);
+            }
             image.setImageDescription(description.getDescription());
             imageRepository.save(image);
             return "Image Edited successfully";
     }
 
     public String createImages(@Valid List<ImageDto> imageListDto, Long makeId) {
+        MakeForm makeForm=makeFormRepository.findById(makeId).orElseThrow(() -> new RuntimeException("Maker not found"));
+
+        if(makeForm.getStatus()!=3 && makeForm.getStatus() != 0){
+            throw new EntityNotFoundException("Can't edit a pending or an accepted Make-Request");
+        }
+
+        if(makeForm.getStatus() ==3){
+            makeForm.setStatus(0);
+            makeForm.setHoActionTime(null);
+            makeFormRepository.save(makeForm);
+        }
+
             for (ImageDto image : imageListDto) {
                 createImage(image, makeId);
             }
@@ -146,8 +168,13 @@ public class ImageService {
         System.out.println(id);
         Image image=imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
         MakeForm makeForm=image.getImageMake();
-        if(makeForm.getStatus()!=3|| makeForm.getStatus() != 0){
+        if(makeForm.getStatus()!=3 && makeForm.getStatus() != 0){
             throw new EntityNotFoundException("Can't edit a pending or an accepted Make-Request");
+        }
+        if(makeForm.getStatus() ==3){
+            makeForm.setStatus(0);
+            makeForm.setHoActionTime(null);
+            makeFormRepository.save(makeForm);
         }
         System.out.println(makeForm.getId());
         makeForm.setStatus(0);

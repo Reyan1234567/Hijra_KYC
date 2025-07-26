@@ -102,14 +102,31 @@ public class MakeFormService {
             makeForm1.setHoActionTime(Instant.now());
             makeFormRepository.save(makeForm1);
             if(statusNumber==1){
-                return "Make is now Accepted";
-            }
-            else if (statusNumber==2) {
-                return "Make is now Rejected";
-            }
-            else {
                 return "Make is now Pending";
             }
+            else if (statusNumber==2) {
+                return "Make is now Accepted";
+            }
+            else if(statusNumber==3) {
+                return "Make is now Rejected";
+            }
+            else{
+                return "Make is now in drafts";
+            }
+    }
+
+    public String sendToHo(Long id) {
+        MakeForm makeForm=makeFormRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Make not found"));
+        if(makeForm.getStatus()!=0){
+            throw new RuntimeException("can't send a make with this status");
+        }
+        return changeStatus(id,1);
+    }
+
+    public List<MakeFormDisplayDto> getWithHoUserId(Long hoUserId) {
+        UserProfile ho= userRepository.findById(hoUserId).orElseThrow(()->new RuntimeException("Make not found"));
+        List<MakeForm> makeForm=makeFormRepository.getMakeFormByHoId(hoUserId);
+        return makeForm.stream().map(makerFormMapper::makeFormDisplayDto).toList();
     }
 }
 

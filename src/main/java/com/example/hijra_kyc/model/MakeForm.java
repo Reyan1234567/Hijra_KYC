@@ -60,4 +60,7 @@ public class MakeForm {
 
     @OneToMany(mappedBy = "imageMake", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Image> images=new ArrayList<>();
+
+    @OneToOne(mappedBy = "makeId", cascade = CascadeType.ALL,  orphanRemoval = true, optional = true)
+    private BackReason backReason;
 }

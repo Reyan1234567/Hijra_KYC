@@ -33,6 +33,12 @@ public class MakeFormController {
         return ResponseEntity.ok(makes);
     }
 
+    @GetMapping("/getHo")
+    public ResponseEntity<?> getWithHoUserId(@RequestParam("hoUserId") Long hoUserId) {
+        List<MakeFormDisplayDto> makes= makeFormService.getWithHoUserId(hoUserId);
+        return ResponseEntity.ok(makes);
+    }
+
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<?> statusChange(@PathVariable Long id, @RequestParam("status") int statusNumber) {
         String approve=makeFormService.changeStatus(id, statusNumber);
@@ -68,5 +74,11 @@ public class MakeFormController {
     public ResponseEntity<?> assignToNight(){
         String makes=distributorService.AssignNight();
         return ResponseEntity.ok(makes);
+    }
+
+    @PatchMapping("/send-ToHo/{id}")
+    public ResponseEntity<?> sendToHo(@PathVariable Long id){
+        String response=makeFormService.sendToHo(id);
+        return ResponseEntity.ok(response);
     }
 }
