@@ -20,7 +20,7 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
 
-    @Column(name = "record_status")
+    @Column(columnDefinition = "varchar(255) default 0")
     private String recordStatus;
 
     @ManyToMany(fetch = FetchType.LAZY)

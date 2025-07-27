@@ -21,10 +21,12 @@ public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank(message = "name is required")
     @Column(unique=true)
     private String name;
+
     @NotNull(message = "district code is required")
     @Column(unique=true)
-    private Long districtCode;
+    private String districtCode;
 }

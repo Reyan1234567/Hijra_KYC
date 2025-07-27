@@ -60,7 +60,7 @@ public class ImageService {
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("Image not found"));
             imageRepository.delete(image);
-            File file=new File(image.getImageName());
+            File file=new File(image.getImageUrl());
             file.delete();
 
             return "Image Deleted successfully";
@@ -114,7 +114,7 @@ public class ImageService {
 //          could use Files.write(Path, bytes), were bytes is the decoded image,
 //          and the the Path is of type path representing the path(Path.get("..."))
 
-            image.setImageName(fileName);
+            image.setImageUrl(fileName);
             imageRepository.save(image);
 //            baseService.success("Image created successfully");
         }

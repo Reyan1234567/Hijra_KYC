@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.model;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
@@ -19,13 +20,14 @@ public class BackReason {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank(message = "comment is required")
     private String comment;
+
     @OneToOne
     @JoinColumn(referencedColumnName="id")
-    @NotNull
     private MakeForm makeId;
 
     @NotNull
-    private LocalDateTime rejectionTime;
+    private Instant rejectionTime;
 }

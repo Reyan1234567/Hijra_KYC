@@ -1,7 +1,10 @@
 package com.example.hijra_kyc.controller;
 
 
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
 import com.example.hijra_kyc.dto.FormDto.MakeFormDisplayDto;
+import com.example.hijra_kyc.model.MakeForm;
 import com.example.hijra_kyc.service.DistributorService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
 import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
-import com.example.hijra_kyc.model.Base;
-import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MakeFormService;
 
@@ -41,7 +42,7 @@ public class MakeFormController {
 
     @PatchMapping("/updateStatus/{id}")
     public ResponseEntity<?> statusChange(@PathVariable Long id, @RequestParam("status") int statusNumber) {
-        String approve=makeFormService.changeStatus(id, statusNumber);
+        MakeFormDisplayDto approve=makeFormService.changeStatus(id, statusNumber);
         return ResponseEntity.ok(approve);
     }
 
@@ -57,6 +58,11 @@ public class MakeFormController {
         return ResponseEntity.ok(status);
     }
 
+    @PatchMapping("/toDrafts/{id}")
+    public ResponseEntity<?> toDraft(@PathVariable("id") Long id){
+        MakeFormDisplayDto makeForm=makeFormService.toDraft(id);
+        return ResponseEntity.ok(makeForm);
+    }
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
         MakeFormOutDto Id=makeFormService.saveForm(makeFormDto);
@@ -78,7 +84,13 @@ public class MakeFormController {
 
     @PatchMapping("/send-ToHo/{id}")
     public ResponseEntity<?> sendToHo(@PathVariable Long id){
-        String response=makeFormService.sendToHo(id);
+        MakeFormDisplayDto response=makeFormService.sendToHo(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reject-request")
+    public ResponseEntity<?> rejectRequest(@RequestBody BackReasonInDto comment){
+        BackReasonOutDto response=makeFormService.rejectResponse(comment);
         return ResponseEntity.ok(response);
     }
 }

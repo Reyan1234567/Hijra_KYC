@@ -1,27 +1,24 @@
 package com.example.hijra_kyc.service;
 
 
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
+import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
 import com.example.hijra_kyc.dto.FormDto.MakeFormDisplayDto;
 import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
 import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
+import com.example.hijra_kyc.mapper.BackReasonMapper;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
 import com.example.hijra_kyc.model.*;
-import com.example.hijra_kyc.repository.BranchRepository;
-import com.example.hijra_kyc.repository.ImageRepository;
-import com.example.hijra_kyc.repository.MakeFormRepository;
-import com.example.hijra_kyc.repository.UserProfileRepository;
+import com.example.hijra_kyc.repository.*;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @AllArgsConstructor
 @Service
@@ -30,6 +27,8 @@ public class MakeFormService {
     private final MakeFormRepository makeFormRepository;
     private final ImageRepository imageRepository;
     private final MakeFormMapper makerFormMapper;
+    private final BackReasonRepository backReasonRepository;
+    private final BackReasonMapper backReasonMapper;
     private final BaseService baseService;
     private final UserProfileRepository userRepository;
     private final BranchRepository branchRepository;
@@ -91,32 +90,28 @@ public class MakeFormService {
 
 
 
-    public String changeStatus(Long makeId, int statusNumber) {
+    public MakeFormDisplayDto changeStatus(Long makeId, int statusNumber) {
             if(statusNumber<0||statusNumber>4){
                 throw new IllegalArgumentException("invalid status");
             }
-            System.out.println(makeId.intValue());
             MakeForm makeForm1=makeFormRepository.findById(makeId)
                     .orElseThrow(() -> new EntityNotFoundException("Make not found"));
             makeForm1.setStatus(statusNumber);
-            makeForm1.setHoActionTime(Instant.now());
+            if(statusNumber==2||statusNumber==3){
+                makeForm1.setHoActionTime(Instant.now());
+            }
             makeFormRepository.save(makeForm1);
-            if(statusNumber==1){
-                return "Make is now Pending";
-            }
-            else if (statusNumber==2) {
-                return "Make is now Accepted";
-            }
-            else if(statusNumber==3) {
-                return "Make is now Rejected";
-            }
-            else{
-                return "Make is now in drafts";
-            }
+            return makerFormMapper.makeFormDisplayDto(makeForm1);
     }
 
-    public String sendToHo(Long id) {
+    @Transactional
+    public MakeFormDisplayDto sendToHo(Long id) {
         MakeForm makeForm=makeFormRepository.findById(id).orElseThrow(()->new EntityNotFoundException("Make not found"));
+        BackReason backReason=backReasonRepository.findByMakeId(id)!=null?backReasonRepository.findByMakeId(id):null;
+        if(backReason!=null){
+            backReason.setMakeId(null);
+            backReasonRepository.save(backReason);
+        }
         if(makeForm.getStatus()!=0){
             throw new RuntimeException("can't send a make with this status");
         }
@@ -124,9 +119,26 @@ public class MakeFormService {
     }
 
     public List<MakeFormDisplayDto> getWithHoUserId(Long hoUserId) {
-        UserProfile ho= userRepository.findById(hoUserId).orElseThrow(()->new RuntimeException("Make not found"));
+        System.out.println(hoUserId);
+        userRepository.findById(hoUserId).orElseThrow(()->new RuntimeException("Make not found"));
         List<MakeForm> makeForm=makeFormRepository.getMakeFormByHoId(hoUserId);
         return makeForm.stream().map(makerFormMapper::makeFormDisplayDto).toList();
+    }
+
+    public BackReasonOutDto rejectResponse(BackReasonInDto inDto) {
+        MakeForm makeForm1=makeFormRepository.findById(inDto.getMakeFormId()).orElseThrow(()->new RuntimeException("can't find makeForm1"));
+        changeStatus(inDto.getMakeFormId(), 3);
+        BackReason backReason=backReasonMapper.toEntity(inDto);
+        backReason.setMakeId(makeForm1);
+        return backReasonMapper.toDto(backReasonRepository.save(backReason));
+    }
+
+    public MakeFormDisplayDto toDraft(Long id) {
+        MakeForm makeForm=makeFormRepository.findById(id).orElseThrow(()->new RuntimeException("Make not found"));
+        makeForm.setHoActionTime(null);
+        makeFormRepository.save(makeForm);
+        changeStatus(id,0);
+        return makerFormMapper.makeFormDisplayDto(makeForm);
     }
 }
 

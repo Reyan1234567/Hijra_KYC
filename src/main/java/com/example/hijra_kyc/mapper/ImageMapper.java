@@ -18,7 +18,7 @@ public class ImageMapper {
                 .id(image.getId())
                 .description(image.getImageDescription())
                 .descriptionCopy(image.getImageDescription())
-                .name(image.getImageName())
+                .name(image.getImageUrl())
                 .make_id(image.getImageMake().getId())
                 .build();
     }

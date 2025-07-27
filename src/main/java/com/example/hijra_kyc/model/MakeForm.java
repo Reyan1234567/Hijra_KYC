@@ -30,7 +30,7 @@ public class MakeForm {
     private UserProfile ho;
 
     @Size(max = 50)
-    @Column(name = "cif", length = 50, unique = true)
+    @Column(name = "cif", length = 50)
     private String cif;
 
     @Size(max = 100)
@@ -38,14 +38,14 @@ public class MakeForm {
     private String customerAccount;
 
     @Size(max = 20)
-    @Column(name = "customer_phone", length = 20)
+    @Column(name = "customer_phone", length = 20, unique=true)
     private String customerPhone;
 
     @Size(max = 100)
     @Column(name = "customer_name", length = 100)
     private String customerName;
 
-    @Column(name = "make_time")
+    @Column(name = "make_time", columnDefinition = "timestamp default current_timestamp")
     private Instant makeTime;
 
     @Column(name = "ho_assign_time")
@@ -54,8 +54,7 @@ public class MakeForm {
     @Column(name = "ho_action_time")
     private Instant hoActionTime;
 
-
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "int default 0")
     private int status;
 
     @OneToMany(mappedBy = "imageMake", cascade = CascadeType.ALL,  orphanRemoval = true)

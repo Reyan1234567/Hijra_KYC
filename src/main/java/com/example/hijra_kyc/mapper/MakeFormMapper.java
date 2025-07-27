@@ -60,6 +60,7 @@ public class MakeFormMapper {
         if(makeForm.getImages()!=null){
             imageUrl=makeForm.getImages().stream().map(imageMapper::toImageDto).toList();
         }
+        String backReason=makeForm.getBackReason()==null?"":makeForm.getBackReason().getComment();
         Instant checkedAt=makeForm.getHoActionTime()==null?Instant.now().plus(1, ChronoUnit.DAYS ):makeForm.getHoActionTime();
         Instant assignedAt=makeForm.getHoAssignTime()==null?Instant.now().plus(1, ChronoUnit.DAYS):makeForm.getHoAssignTime();
         return MakeFormDisplayDto.builder()
@@ -76,6 +77,7 @@ public class MakeFormMapper {
                 .checkedAt(makeForm.getHoActionTime())
                 .hoName(checkerFirstName+" "+checkerLastName)
                 .hoId(checkerId)
+                .backReason(backReason)
                 .status(makeForm.getStatus())
                 .build();
     }

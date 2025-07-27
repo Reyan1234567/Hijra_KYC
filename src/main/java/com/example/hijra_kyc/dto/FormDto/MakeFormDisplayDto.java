@@ -25,4 +25,5 @@ public class MakeFormDisplayDto {
     private String customerName;
     private List<ImageReturnDto> images;
     private int status;
+    private String backReason;
 }

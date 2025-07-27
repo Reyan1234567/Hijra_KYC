@@ -35,15 +35,15 @@ public class MessageService {
 
     public MessageOutDto saveMessage(MessageInDto messageInDto){
             Message message = messageMapper.toMessage(messageInDto);
-            if(message.getSenderId()==message.getRecieverId()){
-                throw new RuntimeException("Can't have the same sender and receiverId");
-            }
             UserProfile reciever=userRepository.findById(messageInDto.getReceiver())
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             message.setRecieverId(reciever);
             UserProfile sender=userRepository.findById(messageInDto.getSender())
                     .orElseThrow(()->new RuntimeException("Sender Not Found"));
             message.setSenderId(sender);
+            if(message.getSenderId()==message.getRecieverId()){
+                throw new RuntimeException("Can't have the same sender and receiverId");
+            }
             var messageField=messageInDto.getMessage();
             if(messageField.isEmpty()){
                 throw new RuntimeException("Message Field Empty");

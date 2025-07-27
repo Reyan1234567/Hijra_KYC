@@ -22,7 +22,7 @@ public class DistributorService {
     final Long NIGHT_CHECKER_1=19L;
     final Long NIGHT_CHECKER_2=25L;
 
-    final Long ROLE=3L;
+    final Long ROLE=2L;
 
     @Transactional
     public void setPresent(){
@@ -60,7 +60,7 @@ public class DistributorService {
             for (Long id : ids) {
                 UserProfile user = userProfileRepository.findById(id)
                         .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found"));
-                user.setStatus(2);
+                user.setPresentStatus(1);
                 userProfileRepository.save(user);
             }
         }
