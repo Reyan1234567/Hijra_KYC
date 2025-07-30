@@ -12,12 +12,24 @@ spring:
     jpa:
         generate-ddl: true
         hibernate:
-            ddl-auto: validate
+            ddl-auto: update
         show-sql: true
         properties:
           hibernate:
               format_sql: false
               dialect: org.hibernate.dialect.MySQL8Dialect
+#    ldap:
+#        embedded:
+#            ldif: classpath:test-server.ldif
+#            base-dn: springframework,dc=org
+#            port: 8389
+#            credential:
+#                username: uid=admin, ou=ststem
+#                password: secret
+#jwt:
+#    secret: your-256-bit-secret-key-must-be-at-least-32-chars
+#    expiratoin: 86400
+
 server:
     port: 9090
     tomcat:

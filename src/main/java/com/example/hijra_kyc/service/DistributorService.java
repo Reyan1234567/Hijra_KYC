@@ -49,7 +49,6 @@ public class DistributorService {
             return makeFormRepository.findMakeForms(getBeginningOfTheMorning());
         }
         catch(Exception e){
-            e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -87,6 +86,7 @@ public class DistributorService {
     public String Assign(){
         List<Long> presentCheckers=whoIsPresent();
         List<Integer> makesNotAssignedToday=makesNotAssignedToday();
+        System.out.println(makesNotAssignedToday);
         long indexVariable=0;
 
         if(presentCheckers.isEmpty()){
@@ -166,7 +166,7 @@ public class DistributorService {
     }
 
     public Instant getBeginningOfTheMorning(){
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now().minusDays(9);
         LocalTime todayTime = LocalTime.of(8, 0);
         return LocalDateTime.of(today, todayTime).atZone(ZoneId.systemDefault()).toInstant();
 

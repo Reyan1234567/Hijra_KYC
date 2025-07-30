@@ -9,6 +9,7 @@ import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import com.example.hijra_kyc.util.FileUpload;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class ImageService {
     private final BranchRepository branchRepository;
     private ImageRepository imageRepository;
     private MakeFormRepository makeFormRepository;
+    private FileUpload fileUpload;
     private UserProfileRepository userRepository;
     private ImageMapper imageMapper;
 
@@ -80,39 +82,14 @@ public class ImageService {
             String branchName = branch.getName();
             String cif = makeForm.getCif();
 
+            String fileType= imageDto.getFile().split(",")[0].split("/")[1].split(";")[0];
+
+
             //check if the file sent is an image
-
-            //getting the file
-            String fileString = imageDto.getFile();
-            String fileType=fileString.split(",")[0].split("/")[1].split(";")[0];
-            String encodedBit=fileString.split(",")[1];
-            byte[] fileByte=Base64.getDecoder().decode(encodedBit);
-
-            System.out.println(fileType);
-            //check, if really an image
-            if(!fileType.equals("png")&&!fileType.equals("jpg")&&!fileType.equals("jpeg")&&!fileType.equals("webm")){
-                throw new RuntimeException("file type not supported");
-            }
-            //creating the path's parent path
             String filePath = Paths.get("C:", "Users", "hp", "Desktop", "hijra_kyc", "upload", branchName, today.toString(), cif, makeForm.getCustomerAccount()).toString();
-            File uploadDir = new File(filePath);
-            //check existence and create if path doesn't exist
-            if (!uploadDir.exists()) {
-                var success = uploadDir.mkdirs();
-            }
-
-            //the full path which includes the file to be created
             String fileName = Paths.get(filePath, now.toString().replace(":", "-").replace(".", "-") + "__" + image.getImageDescription() + today + cif + "."+fileType).toString();
-            File fileToBeUploaded = new File(fileName);
 
-
-//          creates the file in a lower storage and detail
-            Thumbnails.of(new ByteArrayInputStream(fileByte))
-                    .size(600, 400)
-                    .outputQuality(0.85)
-                    .toFile(fileToBeUploaded);
-//          could use Files.write(Path, bytes), were bytes is the decoded image,
-//          and the the Path is of type path representing the path(Path.get("..."))
+            fileUpload.createFile(imageDto.getFile(), filePath, fileName, fileType);
 
             image.setImageUrl(fileName);
             imageRepository.save(image);

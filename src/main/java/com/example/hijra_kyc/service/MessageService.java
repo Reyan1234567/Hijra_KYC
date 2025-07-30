@@ -31,6 +31,7 @@ public class MessageService {
     private final UserProfileRepository userRepository;
     private final BaseService baseService;
     private final UserMessageMapper userMessageMapper;
+    private final UserProfileRepository userProfileRepository;
 
 
     public MessageOutDto saveMessage(MessageInDto messageInDto){
@@ -65,9 +66,9 @@ public class MessageService {
 
     @Transactional
     public String updateStatus(Long senderId, Long receiverId) {
-            messageRepository.findById(senderId)
+            userProfileRepository.findById(senderId)
                     .orElseThrow(()-> new RuntimeException("Sender Not Found"));
-            messageRepository.findById(receiverId)
+            userProfileRepository.findById(receiverId)
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             messageRepository.updateStatus(senderId, receiverId);
             return "Message Updated successfully";

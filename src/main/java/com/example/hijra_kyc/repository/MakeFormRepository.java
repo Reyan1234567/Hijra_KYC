@@ -25,7 +25,7 @@ public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
     @Query("Select m from MakeForm m where m.customerAccount=:account")
     MakeForm findMakeFormByAccount(@Param("account") String account);
 
-    @Query("Select m.id from MakeForm m where m.ho is null and m.status=1 and m.makeTime > :todayHourMin")
+    @Query("Select m.id from MakeForm m where m.ho.id is null and m.status=1 and m.makeTime > :todayHourMin")
     List<Integer> findMakeForms(Instant todayHourMin);
 
     @Query("Select m.ho.id, count(m.id) as count from MakeForm m where (m.ho.id is not null and m.hoActionTime is null and m.makeTime>:day) group by m.ho.id")
