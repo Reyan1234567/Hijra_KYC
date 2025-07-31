@@ -43,6 +43,7 @@ public class UserProfileMapper {
 
     public UserProfileDisplayDto userDisplayDto(UserProfile user){
         return UserProfileDisplayDto.builder()
+                .id(user.getId())
                 .name(user.getFirstName()+" "+user.getLastName())
                 .username(user.getUserName())
                 .userId(user.getUserId())

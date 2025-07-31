@@ -90,4 +90,9 @@ public class UserProfileService {
         userRepository.save(user);
         return user;
     }
+
+    public List<UserProfileDisplayDto> getCheckers() {
+        List<UserProfile> users=userRepository.findCheckersPresentToday();
+        return users.stream().map(mapper::userDisplayDto).toList();
+    }
 }

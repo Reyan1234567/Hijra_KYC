@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -138,6 +139,20 @@ public class MakeFormService {
         makeForm.setHoActionTime(null);
         makeFormRepository.save(makeForm);
         changeStatus(id,0);
+        return makerFormMapper.makeFormDisplayDto(makeForm);
+    }
+
+    public List<MakeFormDisplayDto> getManager() {
+        List<MakeForm> makes=makeFormRepository.findAll();
+        return makes.stream().map(makerFormMapper::makeFormDisplayDto).toList();
+    }
+
+    public MakeFormDisplayDto assignToChecker(Long makeId, Long checkerId) {
+        MakeForm makeForm=makeFormRepository.findById(makeId).orElseThrow(()->new RuntimeException("Make not found"));
+        UserProfile checker=userRepository.findById(checkerId).orElseThrow(()->new RuntimeException("User not found"));
+
+        makeForm.setHo(checker);
+        makeFormRepository.save(makeForm);
         return makerFormMapper.makeFormDisplayDto(makeForm);
     }
 }

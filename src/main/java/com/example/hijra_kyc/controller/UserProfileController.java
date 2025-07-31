@@ -57,6 +57,11 @@ public class UserProfileController {
         UserProfile user=userService.nullify(id);
         return ResponseEntity.ok("Successfully edited profile");
     }
-    
+
+    @GetMapping("/getCheckers")
+    public ResponseEntity<List<UserProfileDisplayDto>> getCheckers(){
+        List<UserProfileDisplayDto> users=userService.getCheckers();
+        return ResponseEntity.ok(users);
+    }
     
 }

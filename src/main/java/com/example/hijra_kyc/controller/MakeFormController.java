@@ -34,6 +34,11 @@ public class MakeFormController {
         return ResponseEntity.ok(makes);
     }
 
+    @GetMapping("/manager")
+    public ResponseEntity<?> getAll(){
+        List<MakeFormDisplayDto> makes=makeFormService.getManager();
+        return ResponseEntity.ok(makes);
+    }
     @GetMapping("/getHo")
     public ResponseEntity<?> getWithHoUserId(@RequestParam("hoUserId") Long hoUserId) {
         List<MakeFormDisplayDto> makes= makeFormService.getWithHoUserId(hoUserId);
@@ -67,6 +72,12 @@ public class MakeFormController {
     public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
         MakeFormOutDto Id=makeFormService.saveForm(makeFormDto);
         return ResponseEntity.ok(Id);
+    }
+
+    @PatchMapping("/assignChecker")
+    public ResponseEntity<?> AssignToChecker(@RequestParam("make")Long makeId, @RequestParam("checker") Long checkerId){
+        MakeFormDisplayDto make=makeFormService.assignToChecker(makeId, checkerId);
+        return ResponseEntity.ok(make);
     }
 
     @GetMapping("/distribute")

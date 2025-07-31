@@ -28,7 +28,7 @@ public class ImageController {
 
 
     @PostMapping("/create-Images/{makeId}")
-    public ResponseEntity<?> saveImages(@Valid @RequestBody List<ImageDto> imageListDto, @PathVariable Long makeId){
+    public ResponseEntity<?> saveImages(@RequestBody List<ImageDto> imageListDto, @PathVariable Long makeId){
         String newImages=imageService.createImages(imageListDto, makeId);
         return ResponseEntity.ok(newImages);
     }

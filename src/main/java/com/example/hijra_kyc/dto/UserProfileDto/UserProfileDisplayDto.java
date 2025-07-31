@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class UserProfileDisplayDto {
+    Long id;
     String name;
     String username;
     String userId;
