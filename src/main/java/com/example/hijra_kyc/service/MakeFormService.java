@@ -47,13 +47,16 @@ public class MakeFormService {
             return makerFormMapper.makeFormOutMapper(foundMakeForm);
     }
 
-    public List<MakeFormDisplayDto> getAll(Long makerId) {
+    public List<MakeFormDisplayDto> getAll(Long makerId, Instant date) {
         System.out.println(makerId);
         UserProfile maker = userRepository.findById(makerId).orElseThrow(()->new EntityNotFoundException("Maker not found"));
-
+        if(Instant.now().isBefore(date)){
+            throw new RuntimeException("Invalid date");
+        }
         List<MakeForm> makes=maker.getMakeFormList();
         System.out.println(makes.get(0).getMaker().getId());
         return makes.stream()
+                .filter((make)->make.getMakeTime().isAfter(date))
                 .map(makerFormMapper::makeFormDisplayDto)
                 .toList();
     }
@@ -119,11 +122,14 @@ public class MakeFormService {
         return changeStatus(id,1);
     }
 
-    public List<MakeFormDisplayDto> getWithHoUserId(Long hoUserId) {
+    public List<MakeFormDisplayDto> getWithHoUserId(Long hoUserId, Instant date) {
         System.out.println(hoUserId);
         userRepository.findById(hoUserId).orElseThrow(()->new RuntimeException("Make not found"));
+        if(date.isAfter(Instant.now())){
+            throw new RuntimeException("Invalid date");
+        }
         List<MakeForm> makeForm=makeFormRepository.getMakeFormByHoId(hoUserId);
-        return makeForm.stream().map(makerFormMapper::makeFormDisplayDto).toList();
+        return makeForm.stream().filter((make)->make.getMakeTime().isAfter(date)).map(makerFormMapper::makeFormDisplayDto).toList();
     }
 
     public BackReasonOutDto rejectResponse(BackReasonInDto inDto) {
@@ -142,9 +148,9 @@ public class MakeFormService {
         return makerFormMapper.makeFormDisplayDto(makeForm);
     }
 
-    public List<MakeFormDisplayDto> getManager() {
+    public List<MakeFormDisplayDto> getManager(Instant date) {
         List<MakeForm> makes=makeFormRepository.findAll();
-        return makes.stream().map(makerFormMapper::makeFormDisplayDto).toList();
+        return makes.stream().filter((make)->make.getMakeTime().isAfter(date)).map(makerFormMapper::makeFormDisplayDto).toList();
     }
 
     public MakeFormDisplayDto assignToChecker(Long makeId, Long checkerId) {

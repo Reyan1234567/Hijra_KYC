@@ -17,6 +17,7 @@ import com.example.hijra_kyc.service.MakeFormService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -29,19 +30,19 @@ public class MakeFormController {
 
 
     @GetMapping
-    public ResponseEntity<?> get(@RequestParam("makerId") Long makerId) {
-        List<MakeFormDisplayDto> makes= makeFormService.getAll(makerId);
+    public ResponseEntity<?> get(@RequestParam("makerId") Long makerId, @RequestParam("date") Instant date) {
+        List<MakeFormDisplayDto> makes= makeFormService.getAll(makerId, date);
         return ResponseEntity.ok(makes);
     }
 
     @GetMapping("/manager")
-    public ResponseEntity<?> getAll(){
-        List<MakeFormDisplayDto> makes=makeFormService.getManager();
+    public ResponseEntity<?> getAll(@RequestParam("date") Instant date) {
+        List<MakeFormDisplayDto> makes=makeFormService.getManager(date);
         return ResponseEntity.ok(makes);
     }
     @GetMapping("/getHo")
-    public ResponseEntity<?> getWithHoUserId(@RequestParam("hoUserId") Long hoUserId) {
-        List<MakeFormDisplayDto> makes= makeFormService.getWithHoUserId(hoUserId);
+    public ResponseEntity<?> getWithHoUserId(@RequestParam("hoUserId") Long hoUserId, @RequestParam("date") Instant date) {
+        List<MakeFormDisplayDto> makes= makeFormService.getWithHoUserId(hoUserId, date);
         return ResponseEntity.ok(makes);
     }
 
