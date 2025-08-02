@@ -39,11 +39,12 @@ public class FileUpload {
 
 //          creates the file in a lower storage and detail
             Thumbnails.of(new ByteArrayInputStream(fileByte))
-                    .size(600, 400)
-                    .outputQuality(0.85)
+                    .size(1000, 1000)
+                    .outputQuality(1)
                     .toFile(fileToBeUploaded);
 //          could use Files.write(Path, bytes), were bytes is the decoded image,
 //          and the the Path is of type path representing the path(Path.get("..."))}
+//          or Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING); if file is of type Multi-part
     }
         catch(IOException e){
             log.error("File operation failed ",e);

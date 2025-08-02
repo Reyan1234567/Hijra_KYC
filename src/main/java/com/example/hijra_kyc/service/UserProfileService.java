@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.example.hijra_kyc.dto.UserProfileDto.UserProfileDto;
 import com.example.hijra_kyc.util.FileUpload;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
@@ -34,6 +35,9 @@ public class UserProfileService {
     private final RoleRepository roleRepo;
     private final UserProfileMapper mapper;
     private final FileUpload fileUpload;
+
+    @Value("${server.port}")
+    private String port;
 
     public UserProfileOutDto createUser(UserProfileInDto dto){
         Branch branch = branchRepo.findById(dto.getBranchId())
@@ -63,11 +67,13 @@ public class UserProfileService {
             String fileType = dto.getBase64().split(",")[0].split("/")[1].split(";")[0];
 
             //check if the file sent is an image
-            String filePath = Paths.get("C:", "Users", "hp", "Desktop", "hijra_kyc", "userProfiles", user.getBranch().getName()).toString();
-            String fileName = Paths.get(filePath, Instant.now().toString().replace(":", "-").replace(".", "-") + "__"+"."+fileType).toString();
+            String variable=Paths.get(user.getBranch().getName(), user.getUserName()).toString();
+            String unique=Instant.now().toString().replace(":", "-").replace(".", "-") + "__"+"."+fileType;
+            String filePath = Paths.get("C:", "Users", "hp", "Videos", "Hijra_KYC", "userProfiles",variable).toString();
+            String fileName = Paths.get(filePath, unique).toString();
             fileUpload.createFile(dto.getBase64(), filePath, fileName, fileType);
 
-            user.setPhotoUrl(fileName);
+            user.setPhotoUrl("http://localhost:"+port+"/userProfiles/"+variable.replace("\\","/")+"/"+unique);
             userRepository.save(user);
         }
         catch(IOException e){
