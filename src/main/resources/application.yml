@@ -6,9 +6,9 @@ spring:
             max-file-size: 15MB
             max-request-size: 10MB
     datasource:
-        url: jdbc:mysql://localhost:3306/hijra__kyc
+        url: jdbc:mysql://localhost:3306/hijra_kyc
         username: root
-        password: 'reyanberoneday'
+        password: ''
     jpa:
         generate-ddl: true
         hibernate:
