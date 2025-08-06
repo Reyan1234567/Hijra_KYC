@@ -13,13 +13,15 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class MakeFormService {
 
@@ -35,6 +37,10 @@ public class MakeFormService {
 
     public MakeFormOutDto saveForm(MakeFormDto makeFormDto) {
             MakeForm makeForm=makerFormMapper.mapToMakeForm(makeFormDto);
+            Optional<MakeForm> make=makeFormRepository.findById(makeForm.getId());
+            if(make.isPresent()){
+                throw new EntityNotFoundException("Make Form already exists");
+            }
             UserProfile maker=userRepository.findById(makeFormDto.getMakerId())
                     .orElseThrow(()->new EntityNotFoundException("User not found"));
             makeForm.setMaker(maker);
