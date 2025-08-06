@@ -3,15 +3,13 @@ package com.example.hijra_kyc.controller;
 
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
-import com.example.hijra_kyc.dto.FormDto.MakeFormDisplayDto;
+import com.example.hijra_kyc.dto.FormDto.*;
 import com.example.hijra_kyc.model.MakeForm;
 import com.example.hijra_kyc.service.DistributorService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
-import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MakeFormService;
 
@@ -104,5 +102,23 @@ public class MakeFormController {
     public ResponseEntity<?> rejectRequest(@RequestBody BackReasonInDto comment){
         BackReasonOutDto response=makeFormService.rejectResponse(comment);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/dashboard/{makerId}")
+    public ResponseEntity<?> getDashboardMaker(@PathVariable("makerId") Long makerId, @RequestParam("date") Instant date){
+        int role=1;// just to simulate roles, will be integrated with spring security
+        if(role==1){
+            MakerDashboard makeForm=makeFormService.getMakerDashboard(makerId, date);
+            return ResponseEntity.ok(makeForm);
+        }
+        else if(role==2){
+            CheckerDashboard makeForm=makeFormService.getChekcerDashboard(makerId, date);
+            return ResponseEntity.ok(makeForm);
+        }
+        else if(role==3){
+            ManagerDashboard makeForm=makeFormService.getManagerDashboard(date);
+            return ResponseEntity.ok(makeForm);
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

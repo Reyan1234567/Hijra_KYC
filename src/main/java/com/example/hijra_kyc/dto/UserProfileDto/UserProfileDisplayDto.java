@@ -14,5 +14,6 @@ public class UserProfileDisplayDto {
     String role;
     String phoneNumber;
     int status;
+    int PresentStatus;
     String profilePicture;
 }

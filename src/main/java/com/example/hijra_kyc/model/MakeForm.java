@@ -57,6 +57,8 @@ public class MakeForm {
     @Column(name = "status", columnDefinition = "int default 0")
     private int status;
 
+    private int saved;
+
     @OneToMany(mappedBy = "imageMake", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Image> images=new ArrayList<>();
 

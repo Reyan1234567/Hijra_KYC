@@ -3,9 +3,7 @@ package com.example.hijra_kyc.service;
 
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
-import com.example.hijra_kyc.dto.FormDto.MakeFormDisplayDto;
-import com.example.hijra_kyc.dto.FormDto.MakeFormDto;
-import com.example.hijra_kyc.dto.FormDto.MakeFormOutDto;
+import com.example.hijra_kyc.dto.FormDto.*;
 import com.example.hijra_kyc.mapper.BackReasonMapper;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
 import com.example.hijra_kyc.model.*;
@@ -15,11 +13,11 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -160,6 +158,56 @@ public class MakeFormService {
         makeForm.setHo(checker);
         makeFormRepository.save(makeForm);
         return makerFormMapper.makeFormDisplayDto(makeForm);
+    }
+
+    public MakerDashboard getMakerDashboard(Long makerId, Instant date) {
+        UserProfile maker=userRepository.findById(makerId).orElseThrow(()->new RuntimeException("Maker not found"));
+        List<MakeForm> makeForm=maker.getMakeFormList();
+        makeForm=makeForm.stream().filter((make)->make.getMakeTime().isAfter(date)).toList();
+        int drafts=makeForm.stream().filter((make)->make.getStatus()==0).toList().size();
+        int saved=makeForm.stream().filter((make)->make.getSaved()==1).toList().size();
+        int pending=makeForm.stream().filter((make)->make.getStatus()==1).toList().size();
+        int accepted=makeForm.stream().filter((make)->make.getStatus()==2).toList().size();
+        int rejected=makeForm.stream().filter((make)->make.getStatus()==3).toList().size();
+        return MakerDashboard.builder()
+                .saved(saved)
+                .drafts(drafts)
+                .pending(pending)
+                .accepted(accepted)
+                .rejected(rejected)
+                .total(makeForm.size())
+                .build();
+    }
+
+    public CheckerDashboard getChekcerDashboard(Long checkerId, Instant date) {
+        UserProfile checker=userRepository.findById(checkerId).orElseThrow(()->new RuntimeException("Checker not found"));
+        List<MakeForm> makeForm=makeFormRepository.getMakeFormByHoId(checkerId);
+        makeForm=makeForm.stream().filter((make)->make.getMakeTime().isAfter(date)).toList();
+
+        int pending=makeForm.stream().filter((make)->make.getStatus()==1).toList().size();
+        int accepted=makeForm.stream().filter((make)->make.getStatus()==2).toList().size();
+        int rejected=makeForm.stream().filter((make)->make.getStatus()==3).toList().size();
+        return CheckerDashboard.builder()
+                .pending(pending)
+                .accepted(accepted)
+                .rejected(rejected)
+                .total(makeForm.size())
+                .build();
+    }
+
+    public ManagerDashboard getManagerDashboard(Instant date) {
+        List<MakeForm> makeForm=makeFormRepository.findAll();
+        makeForm=makeForm.stream().filter((make)->make.getMakeTime().isAfter(date)).toList();
+
+        int pending=makeForm.stream().filter((make)->make.getStatus()==1).toList().size();
+        int accepted=makeForm.stream().filter((make)->make.getStatus()==2).toList().size();
+        int rejected=makeForm.stream().filter((make)->make.getStatus()==3).toList().size();
+        return ManagerDashboard.builder()
+                .accepted(accepted)
+                .pending(pending)
+                .rejected(rejected)
+                .total(makeForm.size())
+                .build();
     }
 }
 

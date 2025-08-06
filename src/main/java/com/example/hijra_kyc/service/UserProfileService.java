@@ -4,18 +4,16 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Instant;
 
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileDisplayDto;
+import com.example.hijra_kyc.dto.UserProfileDto.*;
 import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileDto;
 import com.example.hijra_kyc.util.FileUpload;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
 import com.example.hijra_kyc.mapper.UserProfileMapper;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.model.Role;
@@ -99,6 +97,19 @@ public class UserProfileService {
 
     public List<UserProfileDisplayDto> getCheckers() {
         List<UserProfile> users=userRepository.findCheckersPresentToday();
+        return users.stream().map(mapper::userDisplayDto).toList();
+    }
+
+    public List<UserProfileDisplayDto> editPresent(ListInterface ids) {
+        List<UserProfile> users=userRepository.findAll();
+        users.forEach(user->{if(ids.getIds().contains(user.getId())) {
+            user.setPresentStatus(1);
+        }
+        else{
+            user.setPresentStatus(0);
+        }
+        userRepository.save(user);
+        });
         return users.stream().map(mapper::userDisplayDto).toList();
     }
 }

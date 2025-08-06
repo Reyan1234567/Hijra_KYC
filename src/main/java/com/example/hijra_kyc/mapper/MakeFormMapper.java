@@ -79,6 +79,7 @@ public class MakeFormMapper {
                 .hoId(checkerId)
                 .backReason(backReason)
                 .status(makeForm.getStatus())
+                .saved(makeForm.getSaved())
                 .build();
     }
 }

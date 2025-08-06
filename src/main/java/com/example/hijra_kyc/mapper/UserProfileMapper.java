@@ -52,6 +52,7 @@ public class UserProfileMapper {
                 .phoneNumber(user.getPhoneNumber())
                 .status(user.getStatus())
                 .profilePicture(user.getPhotoUrl())
+                .PresentStatus(user.getPresentStatus())
                 .build();
     }
 }

@@ -3,15 +3,12 @@ package com.example.hijra_kyc.controller;
 import java.io.IOException;
 import java.util.List;
 
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileDisplayDto;
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileDto;
+import com.example.hijra_kyc.dto.UserProfileDto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
-import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
 import com.example.hijra_kyc.mapper.UserProfileMapper;
 import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.service.UserProfileService;
@@ -63,5 +60,10 @@ public class UserProfileController {
         List<UserProfileDisplayDto> users=userService.getCheckers();
         return ResponseEntity.ok(users);
     }
-    
+
+    @PatchMapping("/editPresent")
+    public ResponseEntity<?> editPresent(@Valid @RequestBody ListInterface ids){
+        List<UserProfileDisplayDto> user=userService.editPresent(ids);
+        return ResponseEntity.ok(user);
+    }
 }

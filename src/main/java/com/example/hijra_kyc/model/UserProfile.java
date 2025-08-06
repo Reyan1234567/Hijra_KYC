@@ -60,5 +60,6 @@ public class UserProfile {
 
     @OneToMany(mappedBy = "maker")
     List<MakeForm> makeFormList;
+
     private String photoUrl;
 }
