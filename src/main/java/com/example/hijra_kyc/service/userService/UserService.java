@@ -1,9 +1,11 @@
 package com.example.hijra_kyc.service.userService;
 
+import com.example.hijra_kyc.dto.AuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +31,26 @@ public class UserService {
         return repo.save(user);
     }
 
-    public String verify(Users user) {
-        Authentication auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        if(auth.isAuthenticated()){
-            return jwtService.generateToken(user.getUsername());
-        } 
-        return "failed";
+    public AuthResponse verify(Users user) {
+        Authentication auth = authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
+        );
+
+        if (auth.isAuthenticated()) {
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();
+            String accessToken = jwtService.generateAccessToken(userDetails);
+            String refreshToken = jwtService.generateRefreshToken(userDetails);
+
+            Users users = repo.findByUsername(user.getUsername());
+
+
+            return new AuthResponse(
+                    accessToken,
+                    refreshToken,
+                    users.getUsername(),
+                    users.getRole()
+            );
+        }
+        return null;
     } 
 }
