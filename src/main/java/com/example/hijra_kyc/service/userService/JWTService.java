@@ -36,17 +36,26 @@ public class JWTService {
             throw new RuntimeException("Error generating secret key", e);
         }
     }
-    public String generateToken(String username){
+    public String generateAccessToken(UserDetails userDetails) {
+        return buildToken(userDetails, 1000 * 60 * 15); // 15 minutes
+    }
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return buildToken(userDetails, 1000 * 60 * 60 * 24 * 7); // 7 days
+    }
+
+    private String buildToken(UserDetails userDetails, long expirationMillis) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", userDetails.getAuthorities());
         return Jwts.builder()
                 .claims(claims)
-                .subject(username)
+                .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30 )) // 10 hours
-                //.and()
+                .expiration(new Date(System.currentTimeMillis() + expirationMillis))
                 .signWith(getKey())
                 .compact();
     }
+
 
     private SecretKey getKey(){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
