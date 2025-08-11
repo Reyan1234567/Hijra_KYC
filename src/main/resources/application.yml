@@ -1,37 +1,45 @@
 spring:
-    application:
-        name: Hijra_kyc
-    servlet:
-        multipart:
-            max-file-size: 15MB
-            max-request-size: 10MB
-    datasource:
-        url: jdbc:mysql://localhost:3306/hijra__kyc
-        username: root
-        password: 'reyanberoneday'
-    jpa:
-        generate-ddl: true
-        hibernate:
-            ddl-auto: update
-        show-sql: true
-        properties:
-          hibernate:
-              format_sql: false
-              dialect: org.hibernate.dialect.MySQL8Dialect
-#    ldap:
-#        embedded:
-#            ldif: classpath:test-server.ldif
-#            base-dn: springframework,dc=org
-#            port: 8389
-#            credential:
-#                username: uid=admin, ou=ststem
-#                password: secret
-#jwt:
-#    secret: your-256-bit-secret-key-must-be-at-least-32-chars
-#    expiratoin: 86400
+  application:
+    name: Hijra_kyc
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 10MB
+  datasource:
+    url: jdbc:mysql://localhost:3306/hijra
+    username: root
+    password: ''
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
+# ldap embedded example (uncomment and edit if needed)
+#  ldap:
+#    embedded:
+#      ldif: classpath:test-server.ldif
+#      base-dn: springframework,dc=org
+#      port: 8389
+#      credential:
+#        username: uid=admin, ou=ststem
+#        password: secret
 
 server:
-    port: 9090
-    tomcat:
-        max-part-count: 20
-        max-swallow-size: -1
+  port: 9090
+  tomcat:
+    max-part-count: 20
+    max-swallow-size: -1
+
+ldap:
+  base: dc=example,dc=com
+  urls: ldap://localhost:1389
+  username: ""  # not used for bind auth
+  password: ""
+
+jwt:
+  secret: verySecretDemoKeyThatYouShouldChange
+  expiration-ms: 3600000

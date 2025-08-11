@@ -1,0 +1,33 @@
+dn: dc=example,dc=com
+objectClass: top
+objectClass: domain
+dc: example
+
+dn: ou=people,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=alice,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: alice
+sn: Alice
+cn: Alice Example
+userPassword: password1
+emptire: 1
+
+dn: uid=bob,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: bob
+sn: Bob
+cn: Bob Example
+userPassword: password2
+emptire: 3
+
+dn: cn=admin,dc=example,dc=com
+objectClass: inetOrgPerson
+uid:ale
+cn: alex
+sn: Alex Example
+userPassword: Alexpass
+emptire: 5
