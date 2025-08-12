@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    @Query("Select m from Message m where(m.senderId.id=:user1 and m.recieverId.id=:user2)or(m.senderId.id=:user2 and m.recieverId.id=:user1)")
+    @Query("Select m from Message m where(m.senderId.id=:user1 and m.recieverId.id=:user2)or(m.senderId.id=:user2 and m.recieverId.id=:user1) order by m.sentTimestamp")
     List<Message> findConversationBetweenUsers(@Param("user1") Long user1, @Param("user2") Long user2);
 
     @Modifying
