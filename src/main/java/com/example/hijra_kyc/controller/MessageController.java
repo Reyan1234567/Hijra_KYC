@@ -4,15 +4,21 @@ import com.example.hijra_kyc.dto.MessageDto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageDto.MessageInDto;
 import com.example.hijra_kyc.dto.MessageDto.MessageMapperDto;
 import com.example.hijra_kyc.dto.MessageDto.MessageOutDto;
+import com.example.hijra_kyc.mapper.UserPrincipal;
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MessageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/message")
 @RequiredArgsConstructor
@@ -27,6 +33,7 @@ public class MessageController {
         return ResponseEntity.ok(save);
     }
 
+    @PreAuthorize("#id==authentication.principal.userId||#id1==authentication.principal.userId")
     @GetMapping("/getConvo")
     public ResponseEntity<?> getMessages(@RequestParam("user1") Long id, @RequestParam("user2") Long id1){
         List<MessageOutDto> getConversation=messageService.getConversation(id, id1);

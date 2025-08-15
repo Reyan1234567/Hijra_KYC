@@ -12,7 +12,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +37,7 @@ public class UserService {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public User register(AuthInput input){
+    public User register(AuthInput input) {
         User user = User.builder()
                 .username(input.getUsername())
                 .password(encoder.encode(input.getPassword()))
@@ -43,80 +46,46 @@ public class UserService {
         return repo.save(user);
     }
 
-    public AuthResponse verify(AuthInput user, HttpServletResponse response) {
-        Authentication auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-        );
-        System.out.println(auth.isAuthenticated()+auth.getPrincipal().toString());
-        if (auth.isAuthenticated()) {
-            UserDetails userDetails = (UserDetails) auth.getPrincipal();
-            String accessToken = jwtService.generateAccessToken(userDetails);
-            String refreshToken = jwtService.generateRefreshToken(userDetails);
-
-            Cookie cookie = getCookie(refreshToken);
-            log.info("Refresh key: {}", cookie.getName());
-            log.info("Refresh Token: {}", cookie.getValue());
-            response.addCookie(cookie);
-
-            User user1=repo.findByUsername(user.getUsername());
-            UserInfo userInfo=UserInfo.builder()
-                    .username(user1.getUsername())
-                    .role(user1.getRole())
-                    .userId(user1.getId())
-                    .build();
-            return new AuthResponse(
-                    accessToken,
-                    userInfo
+    public AuthResponse verify(AuthInput user) {
+        try {
+            Authentication auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
             );
+            if (auth.isAuthenticated()) {
+                UserDetails userDetails = (UserDetails) auth.getPrincipal();
+                String accessToken = jwtService.generateAccessToken(userDetails);
+                String refreshToken = jwtService.generateRefreshToken(userDetails);
+
+                User user1 = repo.findByUsername(user.getUsername());
+                UserInfo userInfo = UserInfo.builder()
+                        .username(user1.getUsername())
+                        .role(user1.getRole())
+                        .userId(user1.getId())
+                        .build();
+                return new AuthResponse(
+                        accessToken,
+                        refreshToken,
+                        userInfo
+                );
+            }
+        } catch (Exception e) {
+            log.error("Invalid username or password", e);
+            throw new AuthenticationServiceException(e.getMessage());
         }
-        throw new RuntimeException("Invalid credentials");
+        throw new BadCredentialsException("Invalid username or password");
     }
 
-    private Cookie getCookie(String refreshToken){
-        Cookie cookie=new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(60*60*24*7);
-        cookie.setAttribute("SameSite", "Strict");
-        return cookie;
-    }
 
-    public RefreshResponse accessRefreshToken(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
-//        log.info("Refresh route do get hit");
-//        String refreshToken = getRefreshTokenFromCookie(request);
-//        log.info(refreshToken);
+    public RefreshResponse accessRefreshToken(String refreshToken) {
         UserDetails userDetails = getUserDetailsFromRefreshToken(refreshToken);
-        log.info("User Details: {}", userDetails);
-        RefreshResponse refresh = returnFinalRefreshResponse(refreshToken, userDetails, response);
+        RefreshResponse refresh = returnFinalRefreshResponse(refreshToken, userDetails);
         log.info(refresh.getAccessToken());
         return refresh;
     }
 
-    private String getRefreshTokenFromCookie(HttpServletRequest request) {
-        try{
-            log.info(request.toString());
-            Cookie[] cookies = request.getCookies();
-            log.info("Cookies prolly null "+Arrays.toString(cookies));
-            if(cookies==null){
-                throw new AuthenticationException("Cookies are null");
-            }
-            List<Cookie> refreshToken = Arrays.stream(cookies).filter((cookie) -> Objects.equals(cookie.getName(), "refreshToken")).toList();
-            return refreshToken.get(0).getValue();
-        }
-        catch(AuthenticationException e){
-            throw e;
-        }
-        catch(NullPointerException e){
-            throw new AuthenticationServiceException("Invalid refresh token");
-        }
-        catch(Exception e){
-            log.error("Error while getting refreshToken from cookie", e);
-            throw new AuthenticationServiceException("Could not get refresh token from the Cookie");
-        }
-    }
-
     private UserDetails getUserDetailsFromRefreshToken(String token) {
         try {
+            log.info("check: getUserDetailsFromRefreshToken");
             String username = jwtService.extractUsername(token);
             User user = repo.findByUsername(username);
 
@@ -124,26 +93,26 @@ public class UserService {
                 throw new AuthenticationException("Username not found");
             }
             return new UserPrincipal(user); // or however you wrap your user}
-        }
-        catch(AuthenticationException e){
+        } catch (AuthenticationException e) {
             throw e;
-        }
-        catch(JwtException e){
+        } catch (JwtException e) {
             throw new AuthenticationException("Invalid refresh token");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error while getting userDetails from RefreshToken", e);
             throw new AuthenticationServiceException("could not get user details from token");
         }
     }
 
-    private RefreshResponse returnFinalRefreshResponse(String refreshToken, UserDetails userDetails, HttpServletResponse response) {
+    private RefreshResponse returnFinalRefreshResponse(String refreshToken, UserDetails userDetails) {
         try {
+            log.info("check returnFinalRefreshResponse");
             if (jwtService.validateToken(refreshToken, userDetails)) {
                 String newAccessToken = jwtService.generateAccessToken(userDetails);
                 String newRefreshToken = jwtService.generateRefreshToken(userDetails);
-                response.addCookie(getCookie(newRefreshToken));
-                return RefreshResponse.builder().accessToken(newAccessToken).build();
+                return RefreshResponse.builder()
+                        .refreshToken(newRefreshToken)
+                        .accessToken(newAccessToken)
+                        .build();
             } else {
                 throw new AuthenticationException("Bad credentials");
             }

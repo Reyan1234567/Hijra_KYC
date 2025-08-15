@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.example.hijra_kyc.util.FileUpload;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.example.hijra_kyc.mapper.UserProfileMapper;
@@ -111,5 +112,11 @@ public class UserProfileService {
         userRepository.save(user);
         });
         return users.stream().map(mapper::userDisplayDto).toList();
+    }
+
+    public void changeStatus(Long id, int status) {
+        UserProfile user=userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found!"));
+        user.setStatus(status);
+        userRepository.save(user);
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class UsersDetailsService implements UserDetailsService {
     private final UserRepo repo;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
         User user=repo.findByUsername(username);
         if(user==null){
             System.out.println("User not found");

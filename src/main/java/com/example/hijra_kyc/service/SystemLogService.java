@@ -21,15 +21,19 @@ public class SystemLogService {
     private final SystemLogRepository logRepository;
     private final UserProfileRepository userRepo;
     private final SystemLogMapper mapper;
+    private final UserProfileService userService;
 
-    public SystemLogOutDto createLog(SystemLogInDto dto){
+    public SystemLogOutDto createAuthLog(SystemLogInDto dto, String type, int flag){
         UserProfile user = userRepo.findById(dto.getUserId())
         .orElseThrow(() -> new RuntimeException("User Not found"));
-        
+
+        userService.changeStatus(user.getId(), flag);
+        userRepo.save(user);
         SystemLog log = mapper.toEntity(dto,user);
-        SystemLog savedLog = logRepository.save(log);
-        return mapper.toDto(savedLog);
+        log.setActionType(type);
+        return mapper.toDto(logRepository.save(log));
     }
+
     public List<SystemLogOutDto> getAllLogs(){
         return logRepository.findAll().stream()
             .map(mapper::toDto)
@@ -38,5 +42,15 @@ public class SystemLogService {
     public SystemLog searchLogById(Long id){
         return logRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Log not found with id: " + id));
+    }
+
+    public SystemLogOutDto createLogOutLog(SystemLogInDto dto) {
+        int logoutFlag = 0;
+        return createAuthLog(dto,"Logout", logoutFlag);
+    }
+
+    public SystemLogOutDto createLogInLog(SystemLogInDto dto) {
+        int loginFlag = 1;
+        return createAuthLog(dto,"LogIn", loginFlag);
     }
 }

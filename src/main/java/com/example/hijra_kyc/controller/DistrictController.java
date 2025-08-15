@@ -32,12 +32,14 @@ public class DistrictController {
         DistrictOutDto result = districtService.createDistrict(dto);
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/get-all-districts")
     public ResponseEntity<List<DistrictOutDto>> getAllBranches(){
         List<DistrictOutDto> result = districtService.getAllDistricts();
         return ResponseEntity.ok(result);
     
     }
+
     @GetMapping("/search-district/{id}")
     public ResponseEntity<DistrictOutDto> getBranchById(@PathVariable Long id) {
         District district = districtService.searchDistrictById(id);

@@ -35,3 +35,6 @@ server:
     tomcat:
         max-part-count: 20
         max-swallow-size: -1
+
+refresh:
+    pass: R5KMhjMu+4dLnLaPi+aEKUferUw5TqlYynL1BGNaI14WynuHGhm9o3BDmu+m1EGT6z8VqaU4/HSh9IZiBDuhABpZjlOS3YOYc4s5vrGUPoK23/xRyLB2/s0+1IAqG3Km2Gy6UOByRDjeJ+Ago+EhgCKqTsIbjvexIJf+nMmTfYiGH8Kb1+MrPStGPUleseiqT3bjP6jppXx1bCdlyae0Y/jtVUfupEGO6BcLGhPFYoAd5uR4FFIA5vC8Q7yAXUJHXvAQ31ysVUf4fa2Mctnmn0U99hQFrZUJbH7wlaD/WrnirUFgZwpg5A

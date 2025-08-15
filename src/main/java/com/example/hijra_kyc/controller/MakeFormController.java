@@ -4,23 +4,28 @@ package com.example.hijra_kyc.controller;
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
 import com.example.hijra_kyc.dto.FormDto.*;
-import com.example.hijra_kyc.model.MakeForm;
 import com.example.hijra_kyc.service.DistributorService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import com.example.hijra_kyc.service.BaseService;
 import com.example.hijra_kyc.service.MakeFormService;
-
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasRole;
 
+@Slf4j
 @RestController
 @RequestMapping("makeForm")
 @RequiredArgsConstructor
@@ -29,18 +34,21 @@ public class MakeFormController {
     private final BaseService baseService;
     private final DistributorService distributorService;
 
-
+    @PreAuthorize("hasRole('maker')")
     @GetMapping
     public ResponseEntity<?> get(@RequestParam("makerId") Long makerId, @RequestParam("date") Instant date) {
         List<MakeFormDisplayDto> makes= makeFormService.getAll(makerId, date);
         return ResponseEntity.ok(makes);
     }
 
+    @PreAuthorize("hasRole('HO_Manager')")
     @GetMapping("/manager")
     public ResponseEntity<?> getAll(@RequestParam("date") Instant date) {
         List<MakeFormDisplayDto> makes=makeFormService.getManager(date);
         return ResponseEntity.ok(makes);
     }
+
+    @PreAuthorize("hasRole('HO_Checker')")
     @GetMapping("/getHo")
     public ResponseEntity<?> getWithHoUserId(@RequestParam("hoUserId") Long hoUserId, @RequestParam("date") Instant date) {
         List<MakeFormDisplayDto> makes= makeFormService.getWithHoUserId(hoUserId, date);
@@ -65,20 +73,29 @@ public class MakeFormController {
         return ResponseEntity.ok(status);
     }
 
+    @PreAuthorize("hasRole('maker')")
     @PatchMapping("/toDrafts/{id}")
     public ResponseEntity<?> toDraft(@PathVariable("id") Long id){
         MakeFormDisplayDto makeForm=makeFormService.toDraft(id);
         return ResponseEntity.ok(makeForm);
     }
+
     @PostMapping
     public ResponseEntity<?> save(@Valid @RequestBody MakeFormDto makeFormDto) {
-        MakeFormOutDto Id=makeFormService.saveForm(makeFormDto);
+        MakeFormDisplayDto Id=makeFormService.saveForm(makeFormDto);
         return ResponseEntity.ok(Id);
     }
 
+    @PreAuthorize("hasRole('HO_Manager')")
     @PatchMapping("/assignChecker")
     public ResponseEntity<?> AssignToChecker(@RequestParam("make")Long makeId, @RequestParam("checker") Long checkerId){
         MakeFormDisplayDto make=makeFormService.assignToChecker(makeId, checkerId);
+        return ResponseEntity.ok(make);
+    }
+
+    @GetMapping("accountCheck")
+    public ResponseEntity<?> getAccountCheck(@RequestParam("accountNumber") String accountNumber){
+        MakeFormDisplayDto make=makeFormService.checkAccountPresence(accountNumber);
         return ResponseEntity.ok(make);
     }
 
@@ -88,7 +105,7 @@ public class MakeFormController {
         return ResponseEntity.ok(distribute);
     }
 
-    
+
     @GetMapping("/assignToNight")
     public ResponseEntity<?> assignToNight(){
         String makes=distributorService.AssignNight();
@@ -101,28 +118,31 @@ public class MakeFormController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('HO_Checker')")
     @PostMapping("/reject-request")
     public ResponseEntity<?> rejectRequest(@RequestBody BackReasonInDto comment){
         BackReasonOutDto response=makeFormService.rejectResponse(comment);
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/dashboard/{makerId}")
     public ResponseEntity<?> getDashboardMaker(@PathVariable("makerId") Long makerId, @RequestParam("date") Instant date){
-        int role=1;// just to simulate roles, will be integrated with spring security
-        if(role==1){
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        List<GrantedAuthority> roleList=authentication.getAuthorities().stream().filter((h)->h.getAuthority().startsWith("ROLE")).collect(Collectors.toList());
+        String role=roleList.get(0).getAuthority();
+        log.error("Role {}", role);
+        if(Objects.equals(role, "ROLE_maker")){
             MakerDashboard makeForm=makeFormService.getMakerDashboard(makerId, date);
             return ResponseEntity.ok(makeForm);
         }
-        else if(role==2){
+        else if(role.equals("ROLE_HO_Checker")){
             CheckerDashboard makeForm=makeFormService.getChekcerDashboard(makerId, date);
             return ResponseEntity.ok(makeForm);
         }
-        else if(role==3){
+        else if(role.equals("ROLE_HO_Manager")){
             ManagerDashboard makeForm=makeFormService.getManagerDashboard(date);
             return ResponseEntity.ok(makeForm);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Access denied, your role isn't found");
     }
 }

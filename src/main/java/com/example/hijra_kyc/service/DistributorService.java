@@ -8,10 +8,12 @@ import com.example.hijra_kyc.util.countOfUnmade;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.*;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class DistributorService {
@@ -44,9 +46,12 @@ public class DistributorService {
     }
 
     public List<Integer> makesNotAssignedToday(){
-
         try{
-            return makeFormRepository.findMakeForms(getBeginningOfTheMorning());
+            List<Integer> makesNotAssignedToday = makeFormRepository.findMakeForms(getBeginningOfTheMorning());
+            log.info(getBeginningOfTheMorning().toString());
+            log.info("makesNotAssignedToday:{}", makesNotAssignedToday);
+            makesNotAssignedToday.forEach((make)->log.info(make.toString()));
+            return makesNotAssignedToday;
         }
         catch(Exception e){
             throw new RuntimeException(e.getMessage());

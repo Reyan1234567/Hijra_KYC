@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.Filter;
 
+import com.example.hijra_kyc.mapper.UserPrincipal;
 import com.example.hijra_kyc.service.JwtService;
 import com.example.hijra_kyc.service.UsersDetailsService;
 import jakarta.servlet.FilterChain;
@@ -7,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -27,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username  = null;
-
+//      extract username from token
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             System.out.println("so it has a bearer");
             token = authHeader.substring(7);
@@ -35,12 +38,14 @@ public class JwtFilter extends OncePerRequestFilter {
             username = jwtService.extractUsername(token);
             System.out.println(username);
         }
-
+//      use extracted username and construct a UserDetails object and validate token and set up a security context
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             System.out.println("so it has a username");
-            UserDetails userDetails = usersDetailsService.loadUserByUsername(username);
-            System.out.println(userDetails);
+            UserPrincipal userDetails = usersDetailsService.loadUserByUsername(username);
+            log.info("The userPrincipal object from the token");
+            log.info(userDetails.getUserId()+" "+userDetails.getUsername()+" "+ userDetails.getAuthorities());
             if(jwtService.validateToken(token, userDetails)){
+//      create an authentication object representing the authenticated user
                 UsernamePasswordAuthenticationToken authToken= new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

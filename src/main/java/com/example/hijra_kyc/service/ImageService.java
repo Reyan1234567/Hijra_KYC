@@ -72,7 +72,7 @@ public class ImageService {
 
             //check if the file sent is an image
             String variable=Paths.get(branchName, today.toString(), cif, makeForm.getCustomerAccount()).toString();
-            String unique=now.toString().replace(":", "-").replace(".", "-") + "__" + image.getImageDescription().trim().replaceAll("\\s+","_") + today + cif + "."+fileType;
+            String unique=now.toString().replace(":", "-").replace(".", "-") + "__" + image.getImageDescription().trim().replaceAll("\\s+","_").replaceAll("[?!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/~]","") + today + cif + "."+fileType;
             String filePath = Paths.get("C:", "Users", "hp", "Videos", "Hijra_KYC", "upload", variable).toString();
             String fileName = Paths.get(filePath,unique).toString();
 

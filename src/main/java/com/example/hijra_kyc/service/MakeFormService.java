@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MakeFormService {
@@ -35,20 +37,27 @@ public class MakeFormService {
     private final BranchRepository branchRepository;
     private final ImageService imageService;
 
-    public MakeFormOutDto saveForm(MakeFormDto makeFormDto) {
-            MakeForm makeForm=makerFormMapper.mapToMakeForm(makeFormDto);
-            Optional<MakeForm> make=makeFormRepository.findById(makeForm.getId());
-            if(make.isPresent()){
-                throw new EntityNotFoundException("Make Form already exists");
-            }
-            UserProfile maker=userRepository.findById(makeFormDto.getMakerId())
-                    .orElseThrow(()->new EntityNotFoundException("User not found"));
-            makeForm.setMaker(maker);
-            MakeForm foundMakeForm=makeFormRepository.findMakeFormByAccount(makeForm.getCustomerAccount());
-            if(foundMakeForm==null){
-                foundMakeForm=makeFormRepository.save(makeForm);
-            }
-            return makerFormMapper.makeFormOutMapper(foundMakeForm);
+    public MakeFormDisplayDto saveForm(MakeFormDto makeFormDto) {
+        log.info("In the saveForm function");
+        String account=makeFormDto.getCustomerAccount();
+        log.info(account);
+        MakeForm make=makeFormRepository.findMakeFormByAccount(account);
+        if (make == null) {
+            log.info("shit is really null");
+        } else {
+            log.info("shit ain't null");
+        }
+        if(make==null){
+            log.info("Make is null");
+            MakeForm mappedMake=makerFormMapper.mapToMakeForm(makeFormDto);
+            log.info("maker: {}", makeFormDto.getMakerId());
+            UserProfile user=userRepository.findById(makeFormDto.getMakerId()).orElseThrow(()->new EntityNotFoundException("Maker not found"));
+            log.info("user: {}", user);
+            mappedMake.setMaker(user);
+            makeFormRepository.save(mappedMake);
+            return makerFormMapper.makeFormDisplayDto(mappedMake);
+        }
+       return makerFormMapper.makeFormDisplayDto(make);
     }
 
     public List<MakeFormDisplayDto> getAll(Long makerId, Instant date) {
@@ -76,13 +85,6 @@ public class MakeFormService {
             return makersForm
                     .stream()
                     .map(makerFormMapper::makeFormOutMapper).toList();
-    }
-
-    public String delete(Long id) {
-            MakeForm makeForm1 = makeFormRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Make not found"));
-            makeFormRepository.delete(makeForm1);
-            return "Make is now deleted";
     }
 
     public MakeFormOutDto updateAssignTime(Long id, Long hoId){
@@ -214,6 +216,14 @@ public class MakeFormService {
                 .rejected(rejected)
                 .total(makeForm.size())
                 .build();
+    }
+
+    public MakeFormDisplayDto checkAccountPresence(String accountNumber) {
+        MakeForm make=makeFormRepository.findMakeFormByAccount(accountNumber);
+        if(make==null){
+            throw new EntityNotFoundException("Make not found");
+        }
+        return makerFormMapper.makeFormDisplayDto(make);
     }
 }
 

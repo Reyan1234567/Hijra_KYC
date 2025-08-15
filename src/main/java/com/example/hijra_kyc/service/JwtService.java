@@ -1,16 +1,18 @@
 package com.example.hijra_kyc.service;
 
 import com.example.hijra_kyc.exception.AuthenticationException;
+import com.example.hijra_kyc.exception.AuthenticationServiceException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.security.NoSuchAlgorithmException;
@@ -19,26 +21,19 @@ import java.util.function.Function;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JwtService {
-    private String secretKey = "";
-    public JwtService(){
-        secretKey = generateSecretKey();
-        System.out.println(secretKey);
-    }
+//    private String secretKey = "";
+//    public JwtService(){
+//        secretKey = generateSecretKey();
+//        System.out.println(secretKey);
+//    }
 
-    public String generateSecretKey(){
-        try{
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGen.generateKey();
-            return Base64.getEncoder().encodeToString(sk.getEncoded());
-        }
-        catch(NoSuchAlgorithmException e){
-            throw new RuntimeException("Error generating secret key", e);
-        }
-    }
+    @Value("${refresh.pass}")
+    private String refreshPass;
 
     public String generateAccessToken(UserDetails userDetails) {
-        return buildToken(userDetails, 1000 * 20 ); // 15 minutes
+        return buildToken(userDetails, 1000 * 60 * 10); // 15 minutes
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
@@ -67,10 +62,7 @@ public class JwtService {
 
     private SecretKey getKey(){
         try {
-            if (Objects.equals(secretKey, "")) {
-                throw new AuthenticationException("secret key is empty");
-            }
-            byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+            byte[] keyBytes = Decoders.BASE64.decode(refreshPass);
             return Keys.hmacShaKeyFor(keyBytes);
         } catch (AuthenticationException e) {
             throw e;
@@ -114,7 +106,7 @@ public class JwtService {
         }
         catch(Exception e){
             log.error("Error extracting claims", e);
-            throw new BadCredentialsException("Error getting claims");
+            throw new AuthenticationServiceException("Error getting claims");
         }
     }
 

@@ -35,15 +35,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthInput user, HttpServletResponse response) {
-        AuthResponse res=service.verify(user, response);
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthInput user) {
+        AuthResponse res=service.verify(user);
         return ResponseEntity.ok(res);
     }
 
-    @GetMapping("/refresh")
-    public ResponseEntity<RefreshResponse> refresh(@CookieValue(name="refreshToken") String refreshToken, HttpServletRequest request, HttpServletResponse response){
-        log.info("THE REFRESH ROUTE"+refreshToken);
-        RefreshResponse refresh=service.accessRefreshToken(request, response, refreshToken);
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest refreshToken){
+        RefreshResponse refresh=service.accessRefreshToken(refreshToken.getRefreshToken());
         return ResponseEntity.ok(refresh);
     }
 }

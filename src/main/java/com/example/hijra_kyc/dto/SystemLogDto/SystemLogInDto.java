@@ -5,6 +5,5 @@ import lombok.Data;
 
 @Data
 public class SystemLogInDto {
-    private String actionType;
     private Long userId;
 }
