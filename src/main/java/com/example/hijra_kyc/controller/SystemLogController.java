@@ -52,6 +52,5 @@ public class SystemLogController {
         SystemLogOutDto dto = mapper.toDto(log);
         return ResponseEntity.ok(dto);
     }
- 
-    
+
 }

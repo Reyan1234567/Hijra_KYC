@@ -48,15 +48,15 @@ public class UserProfile {
     private String phoneNumber;
 
     @NotNull(message = "status required")
-    @Column(columnDefinition = "int default 0")
+    @Column(columnDefinition = "int default 1")
     private int status;
 
     @ManyToOne
     @JoinColumn(name="branchId", nullable = false)
     private Branch branch;
 
-    @Column(columnDefinition = "int default 1")
-    private int PresentStatus;
+    @Column(columnDefinition = "int default 0")
+    private int loginStatus;
 
     @OneToMany(mappedBy = "maker")
     List<MakeForm> makeFormList;

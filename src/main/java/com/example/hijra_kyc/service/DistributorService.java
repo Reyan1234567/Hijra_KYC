@@ -26,15 +26,15 @@ public class DistributorService {
 
     final Long ROLE=2L;
 
-    @Transactional
-    public void setPresent(){
-        try{
-            userProfileRepository.updateUsersAttendance(ROLE);
-        }
-        catch(Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+//    @Transactional
+//    public void setPresent(){
+//        try{
+//            userProfileRepository.updateUsersAttendance(ROLE);
+//        }
+//        catch(Exception e){
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 
     public List<Long> whoIsPresent(){
         try{
@@ -59,19 +59,19 @@ public class DistributorService {
     }
 
 
-    public void changeStatus(List<Long> ids){
-        try{
-            for (Long id : ids) {
-                UserProfile user = userProfileRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found"));
-                user.setPresentStatus(1);
-                userProfileRepository.save(user);
-            }
-        }
-        catch(Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+//    public void changeStatus(List<Long> ids){
+//        try{
+//            for (Long id : ids) {
+//                UserProfile user = userProfileRepository.findById(id)
+//                        .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found"));
+//                user.setPresentStatus(1);
+//                userProfileRepository.save(user);
+//            }
+//        }
+//        catch(Exception e){
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 
     public void Makeassign(Long hoId, List<Long> ids){
         System.out.println("In Makeassign function");

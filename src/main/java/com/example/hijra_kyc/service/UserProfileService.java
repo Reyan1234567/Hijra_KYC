@@ -101,22 +101,9 @@ public class UserProfileService {
         return users.stream().map(mapper::userDisplayDto).toList();
     }
 
-    public List<UserProfileDisplayDto> editPresent(ListInterface ids) {
-        List<UserProfile> users=userRepository.findAll();
-        users.forEach(user->{if(ids.getIds().contains(user.getId())) {
-            user.setPresentStatus(1);
-        }
-        else{
-            user.setPresentStatus(0);
-        }
-        userRepository.save(user);
-        });
-        return users.stream().map(mapper::userDisplayDto).toList();
-    }
-
     public void changeStatus(Long id, int status) {
         UserProfile user=userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found!"));
-        user.setStatus(status);
+        user.setLoginStatus(status);
         userRepository.save(user);
     }
 }

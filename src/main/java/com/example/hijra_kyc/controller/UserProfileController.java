@@ -65,10 +65,10 @@ public class UserProfileController {
         return ResponseEntity.ok(users);
     }
 
-    @PreAuthorize("hasRole('HO_Manager')")
-    @PatchMapping("/editPresent")
-    public ResponseEntity<?> editPresent(@Valid @RequestBody ListInterface ids){
-        List<UserProfileDisplayDto> user=userService.editPresent(ids);
-        return ResponseEntity.ok(user);
-    }
+//    @PreAuthorize("hasRole('HO_Manager')")
+//    @PatchMapping("/editPresent")
+//    public ResponseEntity<?> editPresent(@Valid @RequestBody ListInterface ids){
+//        List<UserProfileDisplayDto> user=userService.editPresent(ids);
+//        return ResponseEntity.ok(user);
+//    }
 }
