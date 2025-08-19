@@ -4,10 +4,14 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.hijra_kyc.model.UserProfile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import com.example.hijra_kyc.model.MakeForm;
@@ -45,6 +49,24 @@ public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
     @Query("UPDATE MakeForm m set m.ho.id=:hoId, m.hoAssignTime=:time where m.id in :ids ")
     void updateHoIdOfaListOfMakeForms(@Param("hoId") Long id, @Param("ids") List<Integer> ids, @Param("time") Instant now);
 
-    @Query("Select m from MakeForm m where m.ho.id=:id")
-    List<MakeForm> getMakeFormByHoId(@Param("id") Long id);
+    @Query("Select m from MakeForm m where m.ho.id=:id and m.makeTime>:date")
+    List<MakeForm> getMakeFormByHoIdCount(@Param("id") Long id, @Param("date") Instant date);
+
+    @Query("Select m from MakeForm m where m.ho.id=:id and m.makeTime>:date")
+    Page<MakeForm> getMakeFormByHoId(@Param("id") Long id, Pageable page, @Param("date") Instant date);
+
+    @Query("Select m from MakeForm m where m.ho.id=:id and m.makeTime>:date and m.status=:status")
+    Page<MakeForm> getMakeFormByHoIdStatus(@Param("id") Long id, Pageable page, @Param("date") Instant date, @Param("status") Integer status);
+
+    @Query("Select m from MakeForm m where m.maker.id=:id and m.makeTime>:date")
+    Page<MakeForm> getMakeFormById(@Param("id") Long id, Pageable pageable, @Param("date") Instant date);
+
+    @Query("Select m from MakeForm m where m.maker.id=:id and m.status=:status and m.makeTime>:date")
+    Page<MakeForm> getByStatusMakeFormById(@Param("id") Long id, @Param("status") int status, Pageable pageable, @Param("date") Instant date);
+
+    @Query("Select m from MakeForm m where m.status!=0 and m.makeTime>:date")
+    Page<MakeForm> getAllMakes(@Param("date") Instant date, Pageable pageable);
+
+    @Query("Select m from MakeForm m where m.status=:status and m.makeTime>:date")
+    Page<MakeForm> getAllMakes(@Param("date") Instant date, @Param("status") Integer status, Pageable pageable);
 }
