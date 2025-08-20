@@ -21,7 +21,7 @@ public class Role {
     private String roleName;
 
     @Column(name = "record_status")
-    private String recordStatus;
+    private Integer recordStatus;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

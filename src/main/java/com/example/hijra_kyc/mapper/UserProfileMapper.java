@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.mapper;
 
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Service;
 
 import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
@@ -25,6 +26,8 @@ public class UserProfileMapper {
                 .phoneNumber(dto.getPhoneNumber())
                 .build();
     }
+
+
     public UserProfileOutDto toDto(UserProfile user){
         UserProfileOutDto dto = new UserProfileOutDto();
         dto.setId(user.getId());
@@ -37,6 +40,9 @@ public class UserProfileMapper {
         dto.setGender(user.getGender());
         dto.setBranchAddress(user.getBranch().getName());
         dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setRoleName(user.getRoleId().getRoleName()); // Role name
+        dto.setStatus(user.getStatus() == 1 ? "Active" : "Blocked");
         return dto;
     }
+
 }

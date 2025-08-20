@@ -1,25 +1,38 @@
 spring:
     application:
-        name: Hijra_kyc
+        name: hijra
     servlet:
         multipart:
             max-file-size: 15MB
             max-request-size: 10MB
     datasource:
-        url: jdbc:mysql://localhost:3306/hijra
+        url: jdbc:mysql://localhost:3306/hijra_kyc_sem
         username: root
         password: ''
+        driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         generate-ddl: true
         hibernate:
             ddl-auto: update
         show-sql: true
         properties:
-          hibernate:
-              format_sql: false
-              dialect: org.hibernate.dialect.MySQL8Dialect
+            hibernate:
+                format_sql: false
+                dialect: org.hibernate.dialect.MySQL8Dialect
+
+
 server:
     port: 9090
     tomcat:
         max-part-count: 20
         max-swallow-size: -1
+
+ldap:
+    base: dc=example,dc=com
+    urls: ldap://localhost:1389
+    username: ""  # not used for bind auth
+    password: ""
+
+jwt:
+    secret: verySecretDemoKeyThatYouShouldChange
+    expiration-ms: 3600000 # 1 hour

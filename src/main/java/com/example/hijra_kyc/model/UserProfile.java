@@ -1,12 +1,6 @@
 package com.example.hijra_kyc.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -46,7 +40,11 @@ public class UserProfile {
     private String phoneNumber;
     @NotNull(message = "status required")
     private int status;
+    @Lob
+    @Column(name = "photo", columnDefinition = "LONGBLOB")
+    private byte[] photo;
     @ManyToOne
     @JoinColumn(name="branchId", nullable = false)
     private Branch branch;
+
 }

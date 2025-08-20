@@ -14,4 +14,8 @@ public class UserProfileOutDto {
     private String gender;
     private String branchAddress;
     private String phoneNumber;
+    private String photoBase64;
+    private String roleName;
+    private String status;
+
 }

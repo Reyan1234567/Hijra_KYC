@@ -12,4 +12,6 @@ public class UserProfileInDto {
     private String userName;
     private String gender;
     private String phoneNumber;
+    private String photoBase64;
+
 }

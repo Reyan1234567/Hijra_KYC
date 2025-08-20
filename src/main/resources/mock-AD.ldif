@@ -1,0 +1,43 @@
+dn: dc=example,dc=com
+objectClass: top
+objectClass: domain
+dc: example
+
+dn: ou=people,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=semirand,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: semirand
+givenName: Semira
+sn: Ahmed
+userPassword: password1
+gender: Female
+phoneNumber: 0911000001
+branchId: 1
+userId: U001
+
+dn: uid=Abebend,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: Abebend
+givenName: Abebe
+sn: Bekele
+userPassword: password2
+gender: Male
+phoneNumber: 0911000002
+branchId: 1
+userId: U002
+
+dn: uid=Reyand,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: Reyand
+givenName: Reyan
+sn: Ahmed
+userPassword: password3
+gender: Male
+phoneNumber: 0911000555
+branchId: 1
+userId: U006
+
