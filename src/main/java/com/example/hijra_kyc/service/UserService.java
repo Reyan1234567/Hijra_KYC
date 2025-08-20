@@ -5,6 +5,8 @@ import com.example.hijra_kyc.exception.AuthenticationException;
 import com.example.hijra_kyc.exception.AuthenticationServiceException;
 import com.example.hijra_kyc.mapper.UserPrincipal;
 import com.example.hijra_kyc.model.User;
+import com.example.hijra_kyc.model.UserProfile;
+import com.example.hijra_kyc.repository.UserProfileRepository;
 import com.example.hijra_kyc.repository.UserRepo;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
@@ -22,9 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -34,6 +34,7 @@ public class UserService {
     private final UserRepo repo;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
+    private final UserProfileRepository userProfileRepository;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
@@ -45,36 +46,6 @@ public class UserService {
                 .build();
         return repo.save(user);
     }
-
-    public AuthResponse verify(AuthInput user) {
-        try {
-            Authentication auth = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword())
-            );
-            if (auth.isAuthenticated()) {
-                UserDetails userDetails = (UserDetails) auth.getPrincipal();
-                String accessToken = jwtService.generateAccessToken(userDetails);
-                String refreshToken = jwtService.generateRefreshToken(userDetails);
-
-                User user1 = repo.findByUsername(user.getUsername());
-                UserInfo userInfo = UserInfo.builder()
-                        .username(user1.getUsername())
-                        .role(user1.getRole())
-                        .userId(user1.getId())
-                        .build();
-                return new AuthResponse(
-                        accessToken,
-                        refreshToken,
-                        userInfo
-                );
-            }
-        } catch (Exception e) {
-            log.error("Invalid username or password", e);
-            throw new AuthenticationServiceException(e.getMessage());
-        }
-        throw new BadCredentialsException("Invalid username or password");
-    }
-
 
     public RefreshResponse accessRefreshToken(String refreshToken) {
         UserDetails userDetails = getUserDetailsFromRefreshToken(refreshToken);
@@ -92,7 +63,11 @@ public class UserService {
             if (user == null) {
                 throw new AuthenticationException("Username not found");
             }
-            return new UserPrincipal(user); // or however you wrap your user}
+            Optional<UserProfile> userProfile = userProfileRepository.findByUsername(user.getUsername());
+            if (userProfile.isPresent()) {
+                return new UserPrincipal(userProfile.get()); // or however you wrap your user}
+            }
+            throw new AuthenticationException("Can't find user with username "+user.getUsername());
         } catch (AuthenticationException e) {
             throw e;
         } catch (JwtException e) {

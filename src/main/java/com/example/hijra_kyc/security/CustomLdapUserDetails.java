@@ -1,0 +1,46 @@
+package com.example.hijra_kyc.security;
+
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+
+@Getter
+public class CustomLdapUserDetails implements UserDetails {
+
+    private final String username;
+    private final String password;
+    private final String firstName;
+    private final String lastName;
+    private final String gender;
+    private final String phoneNumber;
+    private final String branchId;
+    private final String userId;
+
+
+    public CustomLdapUserDetails(
+            String username,
+            String password,
+            String firstName,
+            String lastName,
+            String gender,
+            String phoneNumber,
+            String branchId,
+            String userId
+    ) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.branchId = branchId;
+        this.userId = userId;
+
+    }
+
+    @Override public Collection<? extends GrantedAuthority> getAuthorities() { return java.util.List.of(); }
+    @Override public String getPassword() { return password; }
+    @Override public String getUsername() { return username; }
+}

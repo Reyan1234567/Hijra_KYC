@@ -18,14 +18,11 @@ spring:
           hibernate:
               format_sql: false
               dialect: org.hibernate.dialect.MySQL8Dialect
-#    ldap:
-#        embedded:
-#            ldif: classpath:test-server.ldif
-#            base-dn: springframework,dc=org
-#            port: 8389
-#            credential:
-#                username: uid=admin, ou=ststem
-#                password: secret
+    ldap:
+        urls: ldap://localhost:8389
+        base: dc=example, dc =com
+        username: cn=admin, dc=example, dc=com
+        password: Alexpass
 #jwt:
 #    secret: your-256-bit-secret-key-must-be-at-least-32-chars
 #    expiratoin: 86400

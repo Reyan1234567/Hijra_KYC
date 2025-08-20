@@ -1,8 +1,9 @@
 package com.example.hijra_kyc.config;
 
 import com.example.hijra_kyc.Filter.JwtFilter;
-import com.example.hijra_kyc.service.UsersDetailsService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.hijra_kyc.security.CustomUserDetailsContextMapper;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,43 +23,55 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
-    private final UsersDetailsService userDetailsService;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(request->request
-                        .requestMatchers("/user/**", "userProfiles/**", "upload/**")
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/auth/**", "userProfiles/**", "upload/**")
                         .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(c->{
-                    c.authenticationEntryPoint(
-                            new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-                    );
+                .exceptionHandling(c -> {
+                    c.authenticationEntryPoint((request, response, exception) -> {
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                        response.setContentType("application/json");
+                        response.getWriter().write("Unauthorized");
+                    });
                     c.accessDeniedHandler(((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                        response.setContentType("application/json");
+                        response.getWriter().write("Access Denied");
                     }));
                 })
                 .build();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
-        return provider;
+    public DefaultSpringSecurityContextSource contextSource() {
+        return new DefaultSpringSecurityContextSource(List.of("ldap://localhost:1389/"), "dc=example,dc=com");
     }
 
     @Bean
-    public AuthenticationManager authManager(AuthenticationConfiguration config)throws Exception{
-        return config.getAuthenticationManager();
+    public AuthenticationManager authManager(HttpSecurity http, DefaultSpringSecurityContextSource contextSource) throws Exception {
+        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authBuilder
+                .ldapAuthentication()
+                .userDnPatterns("uid={0},ou=people")
+                .contextSource(contextSource)
+                .userDetailsContextMapper(new CustomUserDetailsContextMapper());
+
+        return authBuilder.build();
     }
 }

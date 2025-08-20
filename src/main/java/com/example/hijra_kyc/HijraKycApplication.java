@@ -3,7 +3,12 @@ package com.example.hijra_kyc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {
+        org.springframework.boot.autoconfigure.ldap.LdapAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapAutoConfiguration.class,
+        org.springframework.boot.actuate.autoconfigure.ldap.LdapHealthContributorAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.data.ldap.LdapRepositoriesAutoConfiguration.class
+})
 public class HijraKycApplication {
     public static void main(String[] args) {
         System.out.println("Hijra have arrived");
