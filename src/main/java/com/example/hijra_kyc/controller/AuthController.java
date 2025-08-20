@@ -13,6 +13,7 @@ import com.example.hijra_kyc.security.CustomAuthentication;
 import com.example.hijra_kyc.security.CustomLdapUserDetails;
 import com.example.hijra_kyc.service.JwtService;
 import com.example.hijra_kyc.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,61 +23,32 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-
-    private final AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserProfileRepository userProfileRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private BranchRepository branchRepository;
-
-    @Autowired
-    private JwtService jwtUtil;
-
-    @Autowired
-    public AuthController(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
-    }
-    @Autowired
-    private UserService service;
+    private final UserProfileRepository userProfileRepository;
+    private final AuthenticationManager authManager;
+    private final RoleRepository roleRepository;
+    private final BranchRepository branchRepository;
+    private final JwtService jwtUtil;
+    private final UserService service;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthInput body) {
-        log.info("DO YOU EVEN GET HIT???");
-        log.error("DO YOU EVEN GET HIT???");
-
         String username = body.getUsername();
         String password = body.getPassword();
 
         if (username == null || password == null) {
             throw new BadCredentialsException("Missing credentials");
         }
-        Authentication auth;
-        // Authenticate user via LDAP
-        try{
-            auth = authenticationManager.authenticate(
+        Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
-        }
-        catch (Exception e){
-            throw new AuthenticationException(e.getMessage());
-        }
 
         log.info("THE ERROR ISN'T HAPPENING in THE AUTH MANAGER");
         log.error("THE ERROR ISN'T HAPPENING in THE AUTH MANAGER");
@@ -113,7 +85,7 @@ public class AuthController {
                 userProfile.setPhotoUrl(null);
 
                 // Default role id = 2
-                Role defaultRole = roleRepository.findById(2L)
+                Role defaultRole = roleRepository.findById(1L)
                         .orElseThrow(() -> new RuntimeException("Default role not found"));
                 userProfile.setRoleId(defaultRole);
 

@@ -30,11 +30,11 @@ phoneNumber: 0911223344
 branchId: 1
 userId: U003
 
-dn: uid=samtad,ou=people,dc=example,dc=com
+dn: uid=didi,ou=people,dc=example,dc=com
 objectClass: inetOrgPerson
-uid: samtad
+uid: didi
 givenName: Samuel
-sn: Taddesse
+sn: Dinknew
 userPassword: rewsek
 gender: male
 phoneNumber: 0922334455
