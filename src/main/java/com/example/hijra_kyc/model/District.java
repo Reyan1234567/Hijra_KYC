@@ -28,5 +28,6 @@ public class District {
 
     @NotNull(message = "district code is required")
     @Column(unique=true)
+
     private String districtCode;
 }

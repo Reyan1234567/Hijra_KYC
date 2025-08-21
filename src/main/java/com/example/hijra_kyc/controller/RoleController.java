@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
-
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
@@ -43,5 +43,19 @@ public class RoleController {
         Set<PermissionOutDto> permissions = roleService.getPermissionsByRoleId(roleId);
         return ResponseEntity.ok(permissions);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteRole(@PathVariable("id") Long id) {
+        roleService.deleteRoleById(id);
+        return ResponseEntity.ok("Role deleted successfully");
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<RoleOutDto> updateRole(
+            @PathVariable("id") Long id,
+            @RequestBody RoleInDto updatedDto) {
+        RoleOutDto updatedRole = roleService.updateRole(id, updatedDto);
+        return ResponseEntity.ok(updatedRole);
+    }
+
+
 
 }

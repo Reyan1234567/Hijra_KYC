@@ -18,7 +18,6 @@ public class CustomLdapUserDetails implements UserDetails {
     private final String branchId;
     private final String userId;
 
-
     public CustomLdapUserDetails(
             String username,
             String password,
@@ -37,10 +36,13 @@ public class CustomLdapUserDetails implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.branchId = branchId;
         this.userId = userId;
-
     }
 
     @Override public Collection<? extends GrantedAuthority> getAuthorities() { return java.util.List.of(); }
     @Override public String getPassword() { return password; }
     @Override public String getUsername() { return username; }
+    @Override public boolean isAccountNonExpired() { return true; }
+    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
+    @Override public boolean isEnabled() { return true; }
 }

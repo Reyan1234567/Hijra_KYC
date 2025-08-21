@@ -20,8 +20,8 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
 
-    @Column(columnDefinition = "varchar(255) default 0")
-    private String recordStatus;
+    @Column(name = "record_status")
+    private Integer recordStatus;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

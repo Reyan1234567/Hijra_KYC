@@ -54,4 +54,41 @@ public class RoleService {
                 .map(roleMapper::mapPermission)
                 .collect(Collectors.toSet());
     }
+
+    @Transactional
+    public void deleteRoleById(long roleId) {
+        if (!roleRepository.existsById(roleId)) {
+            throw new RuntimeException("Role not found: " + roleId);
+        }
+        roleRepository.deleteById(roleId);
+    }
+    @Transactional
+    public RoleOutDto updateRole(long roleId, RoleInDto updatedDto) {
+        Role existingRole = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + roleId));
+
+        existingRole.setRoleName(updatedDto.getRoleName());
+
+        // ✅ Update recordStatus if provided
+        if (updatedDto.getRecordStatus() != null) {
+            existingRole.setRecordStatus(updatedDto.getRecordStatus());
+        }
+
+        if (updatedDto.getPermissionIds() != null) {
+            Set<Permission> permissions = updatedDto.getPermissionIds().stream()
+                    .map(id -> {
+                        Permission permission = new Permission();
+                        permission.setPermissionId(id);
+                        return permission;
+                    })
+                    .collect(Collectors.toSet());
+
+            existingRole.setPermissions(permissions);
+        }
+
+        Role savedRole = roleRepository.save(existingRole);
+        return roleMapper.toOutDto(savedRole);
+    }
+
+
 }

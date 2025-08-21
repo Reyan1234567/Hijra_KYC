@@ -1,6 +1,6 @@
 spring:
     application:
-        name: Hijra_kyc
+        name: hijra
     servlet:
         multipart:
             max-file-size: 15MB

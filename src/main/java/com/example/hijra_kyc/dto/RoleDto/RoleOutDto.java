@@ -15,7 +15,7 @@ import java.util.Set;
 public class RoleOutDto {
     private Long roleId;
     private String roleName;
-    private String recordStatus;
+    private Integer recordStatus;
     private Set<PermissionOutDto> permissions;
 
 

@@ -17,9 +17,10 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long>{
     @Query("Select u.id from UserProfile u where(u.roleId.roleId=:roleId and u.status=1)")
     List<Long> findPresentUsers(@Param("roleId") Long roleId);
 
-//    @Modifying
-//    @Query("Update UserProfile set PresentStatus=1 where roleId.roleId=:roleId ")
-//    void updateUsersAttendance(@Param("roleId") Long roleId);
+    @Modifying
+    @Query("Update UserProfile set status=2 where roleId.roleId=:roleId ")
+    void updateUsersAttendance(@Param("roleId") Long roleId);
+    Optional<UserProfile> findByUserId(String userId);
 
     @Query("Select u from UserProfile u where u.roleId.roleId=2")
     List<UserProfile> findCheckersPresentToday();

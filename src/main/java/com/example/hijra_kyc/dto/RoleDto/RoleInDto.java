@@ -14,9 +14,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class RoleInDto {
     private String roleName;
-    private String recordStatus;
-    private Set<PermissionOutDto> permissions;
-    private Set<String> permissionIds;
+    private Integer recordStatus;
+//    private Set<PermissionOutDto> permissions;
+    private Set<Long> permissionIds;
 
 }
 

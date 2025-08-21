@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 
+
 @Slf4j
 @Component
 public class EmbededLdapConfig {
