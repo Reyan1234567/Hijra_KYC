@@ -28,22 +28,29 @@ public class SystemLogController {
     private final SystemLogService logService;
     private final SystemLogMapper mapper;
 
-    @PostMapping("/add-new-logs")
-    public ResponseEntity<SystemLogOutDto> postLogs(@RequestBody SystemLogInDto dto) {
-       SystemLogOutDto result = logService.createLog(dto);
+    @PostMapping("/add-new-login-log")
+    public ResponseEntity<SystemLogOutDto> postLoginLogs(@RequestBody SystemLogInDto dto) {
+       SystemLogOutDto result = logService.createLogInLog(dto);
        return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/add-new-logout-log")
+    public ResponseEntity<SystemLogOutDto> postLogoutLogs(@RequestBody SystemLogInDto dto) {
+        SystemLogOutDto result = logService.createLogOutLog(dto);
+        return ResponseEntity.ok(result);
+    }
+
     @GetMapping("/get-all-logs")
     public ResponseEntity<List<SystemLogOutDto>> getAllLogs() {
         List<SystemLogOutDto> result = logService.getAllLogs();
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/search-System-log/{id}")
     public ResponseEntity<SystemLogOutDto> getLogById(@PathVariable Long id) {
         SystemLog log = logService.searchLogById(id);
         SystemLogOutDto dto = mapper.toDto(log);
         return ResponseEntity.ok(dto);
     }
- 
-    
+
 }

@@ -1,12 +1,10 @@
 package com.example.hijra_kyc.dto.BackReasonDto;
 
+import com.example.hijra_kyc.model.MakeForm;
 import lombok.Data;
 
 @Data
 public class BackReasonInDto {
     private String comment;
-    private String bankAccount;
-    private Long commentedBy;
-    private Long makerId;
-    private Long branchId;
+    private Long makeFormId;
 }

@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.dto.FormDto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,7 +13,9 @@ import com.example.hijra_kyc.dto.Imagedto.ImageReturnDto;
 public class MakeFormOutDto {
     private Long id;
     private Long makerId;
+    private String makerName;
     private Long hoId;
+    private String hoName;
     private String cif;
     private String customerAccount;
     private String customerPhone;

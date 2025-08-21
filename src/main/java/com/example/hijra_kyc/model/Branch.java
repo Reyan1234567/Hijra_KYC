@@ -24,12 +24,15 @@ public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long branchId;
+
     @NotBlank(message = "name is required")
     @Column(unique=true)
     private String name;
+
     @NotBlank(message = "branch Code is required")
     @Column(unique = true)
     private String branchCode;
+
     @NotNull(message="District Code is required")
     @ManyToOne
     @JoinColumn(name = "district_code", referencedColumnName = "id")

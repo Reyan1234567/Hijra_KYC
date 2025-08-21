@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.service;
 
+import com.example.hijra_kyc.dto.Imagedto.DescriptionDto;
 import com.example.hijra_kyc.dto.Imagedto.ImageDto;
 import com.example.hijra_kyc.dto.Imagedto.ImageReturnDto;
 import com.example.hijra_kyc.mapper.ImageMapper;
@@ -8,62 +9,49 @@ import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.ImageRepository;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import com.example.hijra_kyc.util.FileUpload;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Base64;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
-@Validated
 public class ImageService {
 
     private final BaseService baseService;
     private final BranchRepository branchRepository;
-    private ImageRepository imageRepository;
-    private MakeFormRepository makeFormRepository;
-    private UserProfileRepository userRepository;
-    private ImageMapper imageMapper;
+    private final ImageRepository imageRepository;
+    private final MakeFormRepository makeFormRepository;
+    private final FileUpload fileUpload;
+    private final UserProfileRepository userRepository;
+    private final ImageMapper imageMapper;
+
+    @Value("${server.port}")
+    private String port;
 
     public List<ImageReturnDto> getImages(Long makeId) {
-        try{
-            System.out.println("getImages");
-            MakeForm makeForm = makeFormRepository.findById(makeId)
-                    .orElseThrow(() -> new RuntimeException("Maker not found"));
-            List<Image> listOfImages = makeForm.getImages();
-            if(listOfImages.isEmpty()){
-                throw new RuntimeException("Maker not found");
-            }
-            System.out.println(listOfImages);
-            return listOfImages.stream()
-                            .map((image)->imageMapper.toImageDto(image))
-                            .toList();
+        System.out.println("getImages");
+        MakeForm makeForm = makeFormRepository.findById(makeId)
+                .orElseThrow(() -> new RuntimeException("Maker not found"));
+        List<Image> listOfImages = makeForm.getImages();
+        if(listOfImages.isEmpty()){
+            throw new RuntimeException("Maker not found");
+        }
+        System.out.println(listOfImages);
+        return listOfImages.stream()
+                        .map(imageMapper::toImageDto)
+                        .toList();
 
-        }
-        catch (Exception e){
-            throw e;
-        }
     }
 
-    public String deleteImage(Long id) {
-            Image image = imageRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Image not found"));
-            imageRepository.delete(image);
-            File file=new File(image.getImageName());
-            file.delete();
-
-            return "Image Deleted successfully";
-    }
 
     public void createImage(@Valid ImageDto imageDto, Long makeId){
         try{
@@ -79,41 +67,18 @@ public class ImageService {
             String branchName = branch.getName();
             String cif = makeForm.getCif();
 
+            String fileType= imageDto.getFile().split(",")[0].split("/")[1].split(";")[0];
+
+
             //check if the file sent is an image
+            String variable=Paths.get(branchName, today.toString(), cif, makeForm.getCustomerAccount()).toString();
+            String unique=now.toString().replace(":", "-").replace(".", "-") + "__" + image.getImageDescription().trim().replaceAll("\\s+","_").replaceAll("[?!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/~]","") + today + cif + "."+fileType;
+            String filePath = Paths.get("C:", "Users", "hp", "Videos", "Hijra_KYC", "upload", variable).toString();
+            String fileName = Paths.get(filePath,unique).toString();
 
-            //getting the file
-            String fileString = imageDto.getFile();
-            String fileType=fileString.split(",")[0].split("/")[1].split(";")[0];
-            String encodedBit=fileString.split(",")[1];
-            byte[] fileByte=Base64.getDecoder().decode(encodedBit);
+            fileUpload.createFile(imageDto.getFile(), filePath, fileName, fileType);
 
-            System.out.println(fileType);
-            //check, if really an image
-            if(fileType.equals("png")||fileType.equals("jpg")||fileType.equals("jpeg")||fileType.equals("webm")){
-                throw new RuntimeException("file type not supported");
-            }
-            //creating the path's parent path
-            String filePath = Paths.get("C:", "Users", "hp", "Desktop", "hijra_kyc", "upload", branchName, today.toString(), cif, makeForm.getCustomerAccount()).toString();
-            File uploadDir = new File(filePath);
-            //check existence and create if path doesn't exist
-            if (!uploadDir.exists()) {
-                var success = uploadDir.mkdirs();
-            }
-
-            //the full path which includes the file to be created
-            String fileName = Paths.get(filePath, now.toString().replace(":", "-").replace(".", "-") + "__" + image.getImageDescription() + today + cif + "."+fileType).toString();
-            File fileToBeUploaded = new File(fileName);
-
-
-//          creates the file in a lower storage and detail
-            Thumbnails.of(new ByteArrayInputStream(fileByte))
-                    .size(600, 400)
-                    .outputQuality(0.85)
-                    .toFile(fileToBeUploaded);
-//          could use Files.write(Path, bytes), were bytes is the decoded image,
-//          and the the Path is of type path representing the path(Path.get("..."))
-
-            image.setImageName(fileName);
+            image.setImageUrl("http://localhost:"+port+"/upload/"+variable.replace("\\","/")+"/"+unique);
             imageRepository.save(image);
 //            baseService.success("Image created successfully");
         }
@@ -125,19 +90,62 @@ public class ImageService {
     }
 
 
-    public String editDescription(String description, Long id) {
+    public String editDescription(DescriptionDto description, Long id) {
             Image image = imageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Image not found"));
-            image.setImageDescription(description);
+            MakeForm makeForm=image.getImageMake();
+            if(makeForm.getStatus()!=3 && makeForm.getStatus() != 0){
+                System.out.println(makeForm.getStatus());
+                throw new EntityNotFoundException("Can't edit a pending or an accepted Make-Request");
+            }
+            if(makeForm.getStatus() ==3){
+                makeForm.setStatus(0);
+                makeForm.setHoActionTime(null);
+                makeFormRepository.save(makeForm);
+            }
+            image.setImageDescription(description.getDescription());
             imageRepository.save(image);
             return "Image Edited successfully";
     }
 
     public String createImages(@Valid List<ImageDto> imageListDto, Long makeId) {
+        MakeForm makeForm=makeFormRepository.findById(makeId).orElseThrow(() -> new RuntimeException("Maker not found"));
+
+        if(makeForm.getStatus()!=3 && makeForm.getStatus() != 0){
+            throw new EntityNotFoundException("Can't edit a pending or an accepted Make-Request");
+        }
+
+        if(makeForm.getStatus() ==3){
+            makeForm.setStatus(0);
+            makeForm.setHoActionTime(null);
+            makeFormRepository.save(makeForm);
+        }
+
             for (ImageDto image : imageListDto) {
                 createImage(image, makeId);
             }
             return "Images created successfully";
 
+    }
+
+    public String disassociate(Long id) {
+        System.out.println(id);
+        Image image=imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+        MakeForm makeForm=image.getImageMake();
+        if(makeForm.getStatus()!=3 && makeForm.getStatus() != 0){
+            throw new EntityNotFoundException("Can't edit a pending or an accepted Make-Request");
+        }
+        if(makeForm.getStatus() ==3){
+            makeForm.setStatus(0);
+            makeForm.setHoActionTime(null);
+            makeFormRepository.save(makeForm);
+        }
+        System.out.println(makeForm.getId());
+        makeForm.setStatus(0);
+        makeForm.setHoActionTime(null);
+        makeFormRepository.save(makeForm);
+        image.setImageMake(null);
+        imageRepository.save(image);
+        return "Updated successfully";
     }
 }

@@ -1,0 +1,54 @@
+dn: dc=example,dc=com
+objectClass: top
+objectClass: domain
+dc: example
+
+dn: ou=people,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=kewserber,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: kewserber
+givenName: Kewser
+sn: Berhanu
+userPassword: rewsek
+gender: female
+phoneNumber: 0989878765
+branchId: 2
+userId: U002
+
+dn: uid=liyayoha,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: liyayoha
+givenName: Liya
+sn: Yohannes
+userPassword: rewsek
+gender: female
+phoneNumber: 0911223344
+branchId: 1
+userId: U003
+
+dn: uid=didi,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: didi
+givenName: Samuel
+sn: Dinknew
+userPassword: rewsek
+gender: male
+phoneNumber: 0922334455
+branchId: 2
+userId: U004
+
+dn: uid=bermoh,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: bermoh
+givenName: Berhanu
+sn: Mohammed
+userPassword: rewsek
+gender: male
+phoneNumber: 0911234455
+branchId: 2
+userId: U004
+

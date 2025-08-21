@@ -18,15 +18,15 @@ public class MakeFormDto {
     private Long makerId;
 
     @NotBlank(message = "cif is required")
-    @Pattern(regexp="^\\d{5}$", message = "cif is not in the correct format")
+    @Pattern(regexp="^\\d{6}$", message = "cif is not in the correct format")
     private String cif;
 
     @NotBlank(message = "customerAccount is required")
-    @Pattern(regexp = "^100\\d{7}$", message = "customerAccount is not in the correct format")
+    @Pattern(regexp = "^100\\d{10}$", message = "customerAccount is not in the correct format")
     private String customerAccount;
 
     @NotBlank(message = "customerPhone is required")
-    @Pattern(regexp = "^(09|07)\\d{8}$", message = "customerPhone is not in the correct format")
+//    @Pattern(regexp = "^(09|07)\\d{8}$", message = "customerPhone is not in the correct format")
     private String customerPhone;
 
     @NotBlank(message = "customerName is required")

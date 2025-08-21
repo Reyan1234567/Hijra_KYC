@@ -6,9 +6,9 @@ spring:
             max-file-size: 15MB
             max-request-size: 10MB
     datasource:
-        url: jdbc:mysql://localhost:3306/hijra
+        url: jdbc:mysql://localhost:3306/hijra__kyc
         username: root
-        password: ''
+        password: 'reyanberoneday'
     jpa:
         generate-ddl: true
         hibernate:
@@ -18,8 +18,20 @@ spring:
           hibernate:
               format_sql: false
               dialect: org.hibernate.dialect.MySQL8Dialect
+    ldap:
+        urls: ldap://localhost:8389
+        base: dc=example, dc =com
+        username: cn=admin, dc=example, dc=com
+        password: Alexpass
+#jwt:
+#    secret: your-256-bit-secret-key-must-be-at-least-32-chars
+#    expiratoin: 86400
+
 server:
     port: 9090
     tomcat:
         max-part-count: 20
         max-swallow-size: -1
+
+refresh:
+    pass: R5KMhjMu+4dLnLaPi+aEKUferUw5TqlYynL1BGNaI14WynuHGhm9o3BDmu+m1EGT6z8VqaU4/HSh9IZiBDuhABpZjlOS3YOYc4s5vrGUPoK23/xRyLB2/s0+1IAqG3Km2Gy6UOByRDjeJ+Ago+EhgCKqTsIbjvexIJf+nMmTfYiGH8Kb1+MrPStGPUleseiqT3bjP6jppXx1bCdlyae0Y/jtVUfupEGO6BcLGhPFYoAd5uR4FFIA5vC8Q7yAXUJHXvAQ31ysVUf4fa2Mctnmn0U99hQFrZUJbH7wlaD/WrnirUFgZwpg5A

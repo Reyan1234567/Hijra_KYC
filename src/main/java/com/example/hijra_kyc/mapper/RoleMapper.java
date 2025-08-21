@@ -1,6 +1,5 @@
 package com.example.hijra_kyc.mapper;
 
-import com.example.hijra_kyc.dto.*;
 import com.example.hijra_kyc.dto.PermissionDto.PermissionOutDto;
 import com.example.hijra_kyc.dto.RoleDto.RoleInDto;
 import com.example.hijra_kyc.dto.RoleDto.RoleOutDto;

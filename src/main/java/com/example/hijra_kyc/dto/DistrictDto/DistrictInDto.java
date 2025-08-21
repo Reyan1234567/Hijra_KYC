@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class DistrictInDto {
     private String name;
-    private Long districtCode;
+    private String districtCode;
 }

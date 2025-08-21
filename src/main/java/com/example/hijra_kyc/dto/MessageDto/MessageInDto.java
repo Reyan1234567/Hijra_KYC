@@ -12,6 +12,6 @@ public class MessageInDto {
     @NotBlank(message = "messageBody is required")
     private String message;
 
-    @NotBlank(message="receiverId is required")
+    @NotNull(message="receiverId is required")
     private Long receiver;
 }
