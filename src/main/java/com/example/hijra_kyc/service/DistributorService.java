@@ -9,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.*;
@@ -87,18 +88,21 @@ public class DistributorService {
             makeFormRepository.save(makeForm);
         }
     }
+//    0 0/5 8-13 * * SAT
+    @Scheduled(cron = "0 0/5 8-18 * * MON-FRI")
     @Transactional
-    public String Assign(){
+    public void Assign(){
         List<Long> presentCheckers=whoIsPresent();
         List<Integer> makesNotAssignedToday=makesNotAssignedToday();
         System.out.println(makesNotAssignedToday);
         long indexVariable=0;
 
         if(presentCheckers.isEmpty()){
-           throw new EntityNotFoundException("No available checkers");
+            log.error("No available checkers");
+            return;
         }
         if(makesNotAssignedToday.isEmpty()){
-            throw new EntityNotFoundException("Nothing to assign");
+            log.error("Nothing to assign");
         }
 
         long forEachChecker = makesNotAssignedToday.size() / presentCheckers.size();
@@ -110,14 +114,16 @@ public class DistributorService {
             for (int i=0; i<makesNotAssignedToday.size(); i++) {
                 makeFormRepository.updateHoIdOfaListOfMakeForms(shuffledCheckers.get(i), List.of(makesNotAssignedToday.get(i)), Instant.now());
             }
-            return "assigned successfully";
+            log.info("assigned successfully");
+            return;
         }
 
         else{
             System.out.println("In the else");
             List<countOfUnmade> unmades=makeFormRepository.findCheckersPerformance(getBeginningOfTheMorning(),ROLE);
             if(unmades.isEmpty()){
-                throw new EntityNotFoundException("No available checkers");
+                log.error("No available checkers");
+                return;
             }
             else{
                 List<countOfUnmade> correctList= new ArrayList<>(unmades.stream().filter((u) -> presentCheckers.contains(u.getId())).toList());
@@ -158,10 +164,10 @@ public class DistributorService {
                     }
                 }
             }
-            return "assigned successfully";
+            log.info("assigned successfully");
         }
     }
-
+    @Scheduled(cron = "0 15 18 * * MON-SAT")
     @Transactional
     public String AssignNight(){
         List<Integer> makesLeft=makeFormRepository.findLeftMakes(getBeginningOfTheMorning());

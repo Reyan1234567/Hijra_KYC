@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -56,6 +57,13 @@ public class MessageController {
     public ResponseEntity<?> getAllUserMessages(@RequestParam("receiverId") Long receiverId){
         List<MessageMapperDto> messages=messageService.getAllUsers(receiverId);
         return ResponseEntity.ok(messages);
+    }
+
+    @GetMapping("/unread")
+    public ResponseEntity<?> getUnreadMessages(){
+        UserPrincipal principal= (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer unread=messageService.getUnreadMessages(principal);
+        return ResponseEntity.ok(unread);
     }
 
 

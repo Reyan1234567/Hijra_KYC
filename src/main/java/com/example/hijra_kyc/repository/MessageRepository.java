@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,9 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query("Select m from Message m where m.recieverId.id=:id group by m.senderId.id")
     List<Message> messagesSentToMe(@Param("id") Long id);
+
+    @Query("Select m from Message m where m.id=:id and m.recieverStatus=0")
+    List<Message> getUnreadMessages(@Param("id") Long id);
 //    @Modifying
 //    @Query("Update Message m set m.messageBody=:messageBody where m.id=:id")
 //    void updateMessageBody(@Param("id") Integer id, @Param("messageBody") String messageBody);

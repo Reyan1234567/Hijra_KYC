@@ -174,12 +174,11 @@ public class MakeFormController {
         return ResponseEntity.ok(make);
     }
 
-    @GetMapping("/distribute")
-    public ResponseEntity<?> distribute() {
-        String distribute = distributorService.Assign();
-        return ResponseEntity.ok(distribute);
-    }
-
+//    @GetMapping("/distribute")
+//    public ResponseEntity<?> distribute() {
+//        String distribute = distributorService.Assign();
+//        return ResponseEntity.ok(distribute);
+//    }
 
     @GetMapping("/assignToNight")
     public ResponseEntity<?> assignToNight() {
@@ -217,5 +216,17 @@ public class MakeFormController {
             return ResponseEntity.ok(makeForm);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Access denied, your role isn't found");
+    }
+
+    @GetMapping("/getRejected")
+    public ResponseEntity<?> getRejected(){
+        Integer rejectedCount=makeFormService.getRejectedCount();
+        return ResponseEntity.ok(rejectedCount);
+    }
+
+    @GetMapping("/getPending")
+    public ResponseEntity<?> getPending(){
+        Integer pendingCount=makeFormService.getPendingCount();
+        return ResponseEntity.ok(pendingCount);
     }
 }

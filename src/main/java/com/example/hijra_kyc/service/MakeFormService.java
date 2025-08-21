@@ -4,8 +4,10 @@ package com.example.hijra_kyc.service;
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonInDto;
 import com.example.hijra_kyc.dto.BackReasonDto.BackReasonOutDto;
 import com.example.hijra_kyc.dto.FormDto.*;
+import com.example.hijra_kyc.exception.AuthenticationException;
 import com.example.hijra_kyc.mapper.BackReasonMapper;
 import com.example.hijra_kyc.mapper.MakeFormMapper;
+import com.example.hijra_kyc.mapper.UserPrincipal;
 import com.example.hijra_kyc.model.*;
 import com.example.hijra_kyc.repository.*;
 
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -283,6 +286,30 @@ public class MakeFormService {
     }
 
 
+    public Integer getRejectedCount() {
+        log.info("THE GET REJECTED METHOD");
+        log.info("THE GET REJECTED METHOD");
+        log.error("THE GET REJECTED METHOD");
+        UserPrincipal principal=(UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId=principal.getUserId();
+        if(userId==null){
+            throw new AuthenticationException("User not found");
+        }
+        log.info("THE GET REJECTED METHOD");
+        log.info("THE GET REJECTED METHOD");
+        log.error("THE GET REJECTED METHOD");
+        log.info(userId.toString());
+        return makeFormRepository.getRejected(userId).size();
+    }
+
+    public Integer getPendingCount() {
+        UserPrincipal principal=(UserPrincipal)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId=principal.getUserId();
+        if(userId==null){
+            throw new AuthenticationException("User not found");
+        }
+        return makeFormRepository.getPending(userId).size();
+    }
 }
 
 

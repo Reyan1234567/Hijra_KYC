@@ -5,8 +5,10 @@ import com.example.hijra_kyc.dto.MessageDto.MessageInDto;
 import com.example.hijra_kyc.dto.MessageDto.MessageMapperDto;
 import com.example.hijra_kyc.dto.MessageDto.MessageOutDto;
 import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
+import com.example.hijra_kyc.exception.AuthenticationException;
 import com.example.hijra_kyc.mapper.MessageMapper;
 import com.example.hijra_kyc.mapper.UserMessageMapper;
+import com.example.hijra_kyc.mapper.UserPrincipal;
 import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.Message;
 import com.example.hijra_kyc.model.UserProfile;
@@ -112,5 +114,13 @@ public class MessageService {
     public List<MessageMapperDto> getAllUsers(Long id){
         List<userMessage> unread=messageRepository.findUnread(id);
         return unread.stream().map(userMessageMapper::messageMapperDto).toList();
+    }
+
+    public Integer getUnreadMessages(UserPrincipal principal) {
+        Long receiver=principal.getUserId();
+        if(receiver == null){
+            throw new AuthenticationException("User not Logged in");
+        }
+        return messageRepository.getUnreadMessages(receiver).size();
     }
 }

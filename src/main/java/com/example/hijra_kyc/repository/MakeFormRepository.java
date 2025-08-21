@@ -69,4 +69,10 @@ public interface MakeFormRepository extends JpaRepository<MakeForm, Long> {
 
     @Query("Select m from MakeForm m where m.status=:status and m.makeTime>:date")
     Page<MakeForm> getAllMakes(@Param("date") Instant date, @Param("status") Integer status, Pageable pageable);
+
+    @Query("Select m from MakeForm m where m.status=3 and m.maker.id=:makerId")
+    List<MakeForm> getRejected(@Param("makerId") Long makerId);
+
+    @Query("Select m from MakeForm m where m.status=3 and m.ho.id=:makerId")
+    List<MakeForm> getPending(@Param("makerId") Long makerId);
 }
