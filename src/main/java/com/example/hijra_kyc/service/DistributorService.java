@@ -1,17 +1,20 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.model.Base;
 import com.example.hijra_kyc.model.MakeForm;
 import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.repository.MakeFormRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import com.example.hijra_kyc.util.countOfUnmade;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.*;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class DistributorService {
@@ -22,17 +25,17 @@ public class DistributorService {
     final Long NIGHT_CHECKER_1=19L;
     final Long NIGHT_CHECKER_2=25L;
 
-    final Long ROLE=3L;
+    final Long ROLE=2L;
 
-    @Transactional
-    public void setPresent(){
-        try{
-            userProfileRepository.updateUsersAttendance(ROLE);
-        }
-        catch(Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+//    @Transactional
+//    public void setPresent(){
+//        try{
+//            userProfileRepository.updateUsersAttendance(ROLE);
+//        }
+//        catch(Exception e){
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 
     public List<Long> whoIsPresent(){
         try{
@@ -44,30 +47,32 @@ public class DistributorService {
     }
 
     public List<Integer> makesNotAssignedToday(){
-
         try{
-            return makeFormRepository.findMakeForms(getBeginningOfTheMorning());
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-
-    public void changeStatus(List<Long> ids){
-        try{
-            for (Long id : ids) {
-                UserProfile user = userProfileRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found"));
-                user.setStatus(2);
-                userProfileRepository.save(user);
-            }
+            List<Integer> makesNotAssignedToday = makeFormRepository.findMakeForms(getBeginningOfTheMorning());
+            log.info(getBeginningOfTheMorning().toString());
+            log.info("makesNotAssignedToday:{}", makesNotAssignedToday);
+            makesNotAssignedToday.forEach((make)->log.info(make.toString()));
+            return makesNotAssignedToday;
         }
         catch(Exception e){
             throw new RuntimeException(e.getMessage());
         }
     }
+
+
+//    public void changeStatus(List<Long> ids){
+//        try{
+//            for (Long id : ids) {
+//                UserProfile user = userProfileRepository.findById(id)
+//                        .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found"));
+//                user.setPresentStatus(1);
+//                userProfileRepository.save(user);
+//            }
+//        }
+//        catch(Exception e){
+//            throw new RuntimeException(e.getMessage());
+//        }
+//    }
 
     public void Makeassign(Long hoId, List<Long> ids){
         System.out.println("In Makeassign function");
@@ -83,17 +88,21 @@ public class DistributorService {
             makeFormRepository.save(makeForm);
         }
     }
+//    0 0/5 8-13 * * SAT
+    @Scheduled(cron = "0 0/5 8-18 * * MON-FRI")
     @Transactional
-    public String Assign(){
+    public void Assign(){
         List<Long> presentCheckers=whoIsPresent();
         List<Integer> makesNotAssignedToday=makesNotAssignedToday();
+        System.out.println(makesNotAssignedToday);
         long indexVariable=0;
 
         if(presentCheckers.isEmpty()){
-           throw new EntityNotFoundException("No available checkers");
+            log.error("No available checkers");
+            return;
         }
         if(makesNotAssignedToday.isEmpty()){
-            throw new EntityNotFoundException("Nothing to assign");
+            log.error("Nothing to assign");
         }
 
         long forEachChecker = makesNotAssignedToday.size() / presentCheckers.size();
@@ -105,14 +114,16 @@ public class DistributorService {
             for (int i=0; i<makesNotAssignedToday.size(); i++) {
                 makeFormRepository.updateHoIdOfaListOfMakeForms(shuffledCheckers.get(i), List.of(makesNotAssignedToday.get(i)), Instant.now());
             }
-            return "assigned successfully";
+            log.info("assigned successfully");
+            return;
         }
 
         else{
             System.out.println("In the else");
             List<countOfUnmade> unmades=makeFormRepository.findCheckersPerformance(getBeginningOfTheMorning(),ROLE);
             if(unmades.isEmpty()){
-                throw new EntityNotFoundException("No available checkers");
+                log.error("No available checkers");
+                return;
             }
             else{
                 List<countOfUnmade> correctList= new ArrayList<>(unmades.stream().filter((u) -> presentCheckers.contains(u.getId())).toList());
@@ -153,10 +164,10 @@ public class DistributorService {
                     }
                 }
             }
-            return "assigned successfully";
+            log.info("assigned successfully");
         }
     }
-
+    @Scheduled(cron = "0 15 18 * * MON-SAT")
     @Transactional
     public String AssignNight(){
         List<Integer> makesLeft=makeFormRepository.findLeftMakes(getBeginningOfTheMorning());
@@ -166,7 +177,7 @@ public class DistributorService {
     }
 
     public Instant getBeginningOfTheMorning(){
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now().minusDays(9);
         LocalTime todayTime = LocalTime.of(8, 0);
         return LocalDateTime.of(today, todayTime).atZone(ZoneId.systemDefault()).toInstant();
 

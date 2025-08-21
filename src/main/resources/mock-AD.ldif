@@ -8,36 +8,48 @@ objectClass: top
 objectClass: organizationalUnit
 ou: people
 
-dn: uid=semirand,ou=people,dc=example,dc=com
+dn: uid=kewserber,ou=people,dc=example,dc=com
 objectClass: inetOrgPerson
-uid: semirand
-givenName: Semira
-sn: Ahmed
-userPassword: password1
-gender: Female
-phoneNumber: 0911000001
-branchId: 1
-userId: U001
-
-dn: uid=Abebend,ou=people,dc=example,dc=com
-objectClass: inetOrgPerson
-uid: Abebend
-givenName: Abebe
-sn: Bekele
-userPassword: password2
-gender: Male
-phoneNumber: 0911000002
-branchId: 1
+uid: kewserber
+givenName: Kewser
+sn: Berhanu
+userPassword: rewsek
+gender: female
+phoneNumber: 0989878765
+branchId: 2
 userId: U002
 
-dn: uid=Reyand,ou=people,dc=example,dc=com
+dn: uid=liyayoha,ou=people,dc=example,dc=com
 objectClass: inetOrgPerson
-uid: Reyand
-givenName: Reyan
-sn: Ahmed
-userPassword: password3
-gender: Male
-phoneNumber: 0911000555
+uid: liyayoha
+givenName: Liya
+sn: Yohannes
+userPassword: rewsek
+gender: female
+phoneNumber: 0911223344
 branchId: 1
-userId: U006
+userId: U003
+
+dn: uid=didi,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: didi
+givenName: Samuel
+sn: Dinknew
+userPassword: rewsek
+gender: male
+phoneNumber: 0922334455
+branchId: 2
+userId: U004
+
+dn: uid=bermoh,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+uid: bermoh
+givenName: Berhanu
+sn: Mohammed
+userPassword: rewsek
+gender: male
+phoneNumber: 0911234455
+branchId: 2
+userId: U004
+
 

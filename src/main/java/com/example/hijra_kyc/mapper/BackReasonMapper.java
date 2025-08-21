@@ -1,5 +1,6 @@
 package com.example.hijra_kyc.mapper;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
@@ -15,25 +16,19 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BackReasonMapper {
-    public BackReason toEntity(BackReasonInDto dto,UserProfile commentedBy,UserProfile makerId,Branch branch){
+    public BackReason toEntity(BackReasonInDto inDto){
         return BackReason.builder()
-        .comment(dto.getComment())
-        .bankAccount(dto.getBankAccount())
-        .commentedBy(commentedBy)
-        .makerId(makerId)
-        .branchId(branch)
-        .commentedAt(LocalDateTime.now())
+        .comment(inDto.getComment())
+        .rejectionTime(Instant.now())
         .build();
     }
+
     public BackReasonOutDto toDto(BackReason reason){
-        BackReasonOutDto dto = new BackReasonOutDto();
-        dto.setId(reason.getId());
-        dto.setComment(reason.getComment());
-        dto.setBankAccount(reason.getBankAccount());
-        dto.setCommentedBy(reason.getCommentedBy().getId());
-        dto.setMakerId(reason.getMakerId().getId());
-        dto.setBranchId(reason.getBranchId().getBranchId());
-        dto.setCommentedAt(reason.getCommentedAt());
-        return dto;
+        return BackReasonOutDto.builder()
+                .id(reason.getId())
+                .comment(reason.getComment())
+                .rejectionTime(reason.getRejectionTime())
+                .makeId(reason.getMakeId().getId())
+                .build();
     }
 }

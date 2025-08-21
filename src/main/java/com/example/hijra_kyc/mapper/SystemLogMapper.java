@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 public class SystemLogMapper {
     public SystemLog toEntity(SystemLogInDto dto,UserProfile user){
         return SystemLog.builder()
-        .actionType(dto.getActionType())
         .actionTime(LocalDateTime.now())
         .userId(user)
         .build();

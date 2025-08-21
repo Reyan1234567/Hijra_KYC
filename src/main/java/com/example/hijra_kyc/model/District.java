@@ -20,11 +20,14 @@ import lombok.NoArgsConstructor;
 public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long districtId;
+    private Long id;
+
     @NotBlank(message = "name is required")
     @Column(unique=true)
     private String name;
+
     @NotNull(message = "district code is required")
-    @Column(name = "district_code")
+    @Column(unique=true)
+
     private String districtCode;
 }

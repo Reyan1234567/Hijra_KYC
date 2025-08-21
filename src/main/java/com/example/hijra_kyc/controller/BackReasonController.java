@@ -3,6 +3,7 @@ package com.example.hijra_kyc.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,16 +28,19 @@ public class BackReasonController {
     private final BackReasonService backReasonService;
     private final BackReasonMapper mapper;
 
+    @PreAuthorize("hasRole('HO_Checker')")
     @PostMapping("/post-Back-Reason")
     public ResponseEntity<BackReasonOutDto> postBackReason(@RequestBody BackReasonInDto dto) {
         BackReasonOutDto result = backReasonService.createBackReason(dto);
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/get-all-back-reasons")
     public ResponseEntity<List<BackReasonOutDto>> getAllBackReason() {
         List<BackReasonOutDto> result = backReasonService.getAllBackReasons();
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/search-back-reason/{id}")
     public ResponseEntity<BackReasonOutDto> getBackReasonById(@PathVariable Long id) {
         BackReason reason = backReasonService.searchBackReasonById(id);

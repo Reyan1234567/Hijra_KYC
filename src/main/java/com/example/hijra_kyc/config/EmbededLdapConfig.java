@@ -6,11 +6,14 @@ import com.unboundid.ldap.listener.InMemoryListenerConfig;
 import com.unboundid.ldif.LDIFReader;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
 
+
+@Slf4j
 @Component
 public class EmbededLdapConfig {
     private InMemoryDirectoryServer ds;
@@ -48,14 +51,13 @@ public class EmbededLdapConfig {
 
         // Start LDAP
         ds.startListening();
-        System.out.println("✅ Embedded LDAP started on ldap://localhost:1389");
+        log.info("LDIF CONFIGURED");
     }
 
     @PreDestroy
     public void stop() {
         if (ds != null) {
             ds.shutDown(true);
-            System.out.println("🛑 Embedded LDAP stopped");
         }
     }
 }

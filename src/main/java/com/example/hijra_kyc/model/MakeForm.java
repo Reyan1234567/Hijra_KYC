@@ -38,14 +38,14 @@ public class MakeForm {
     private String customerAccount;
 
     @Size(max = 20)
-    @Column(name = "customer_phone", length = 20)
+    @Column(name = "customer_phone", length = 20, unique=true)
     private String customerPhone;
 
     @Size(max = 100)
     @Column(name = "customer_name", length = 100)
     private String customerName;
 
-    @Column(name = "make_time")
+    @Column(name = "make_time", columnDefinition = "timestamp default current_timestamp")
     private Instant makeTime;
 
     @Column(name = "ho_assign_time")
@@ -54,10 +54,14 @@ public class MakeForm {
     @Column(name = "ho_action_time")
     private Instant hoActionTime;
 
-
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "int default 0")
     private int status;
+
+    private int saved;
 
     @OneToMany(mappedBy = "imageMake", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Image> images=new ArrayList<>();
+
+    @OneToOne(mappedBy = "makeId", cascade = CascadeType.ALL,  orphanRemoval = true, optional = true)
+    private BackReason backReason;
 }

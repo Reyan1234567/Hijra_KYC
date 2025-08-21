@@ -1,15 +1,20 @@
 package com.example.hijra_kyc.service;
 
-import com.example.hijra_kyc.dto.MessageEdit;
+import com.example.hijra_kyc.dto.MessageDto.MessageEdit;
 import com.example.hijra_kyc.dto.MessageDto.MessageInDto;
+import com.example.hijra_kyc.dto.MessageDto.MessageMapperDto;
 import com.example.hijra_kyc.dto.MessageDto.MessageOutDto;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
+import com.example.hijra_kyc.exception.AuthenticationException;
 import com.example.hijra_kyc.mapper.MessageMapper;
+import com.example.hijra_kyc.mapper.UserMessageMapper;
+import com.example.hijra_kyc.mapper.UserPrincipal;
 import com.example.hijra_kyc.model.Base;
-import com.example.hijra_kyc.model.BaseList;
 import com.example.hijra_kyc.model.Message;
 import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.repository.MessageRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import com.example.hijra_kyc.util.userMessage;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -27,15 +32,21 @@ public class MessageService {
     private final MessageMapper messageMapper;
     private final UserProfileRepository userRepository;
     private final BaseService baseService;
+    private final UserMessageMapper userMessageMapper;
+    private final UserProfileRepository userProfileRepository;
+
 
     public MessageOutDto saveMessage(MessageInDto messageInDto){
-        Message message = messageMapper.toMessage(messageInDto);
+            Message message = messageMapper.toMessage(messageInDto);
             UserProfile reciever=userRepository.findById(messageInDto.getReceiver())
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             message.setRecieverId(reciever);
             UserProfile sender=userRepository.findById(messageInDto.getSender())
                     .orElseThrow(()->new RuntimeException("Sender Not Found"));
             message.setSenderId(sender);
+            if(message.getSenderId()==message.getRecieverId()){
+                throw new RuntimeException("Can't have the same sender and receiverId");
+            }
             var messageField=messageInDto.getMessage();
             if(messageField.isEmpty()){
                 throw new RuntimeException("Message Field Empty");
@@ -57,9 +68,9 @@ public class MessageService {
 
     @Transactional
     public String updateStatus(Long senderId, Long receiverId) {
-            messageRepository.findById(senderId)
+            userProfileRepository.findById(senderId)
                     .orElseThrow(()-> new RuntimeException("Sender Not Found"));
-            messageRepository.findById(receiverId)
+            userProfileRepository.findById(receiverId)
                     .orElseThrow(()->new RuntimeException("Receiver Not Found"));
             messageRepository.updateStatus(senderId, receiverId);
             return "Message Updated successfully";
@@ -98,5 +109,18 @@ public class MessageService {
             messageValue.setMessageBody(message.getMessage());
             var updateResult=messageRepository.save(messageValue);
             return messageMapper.messageOutMapper(updateResult);
+    }
+
+    public List<MessageMapperDto> getAllUsers(Long id){
+        List<userMessage> unread=messageRepository.findUnread(id);
+        return unread.stream().map(userMessageMapper::messageMapperDto).toList();
+    }
+
+    public Integer getUnreadMessages(UserPrincipal principal) {
+        Long receiver=principal.getUserId();
+        if(receiver == null){
+            throw new AuthenticationException("User not Logged in");
+        }
+        return messageRepository.getUnreadMessages(receiver).size();
     }
 }

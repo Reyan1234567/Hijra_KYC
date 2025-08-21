@@ -31,12 +31,22 @@ public class BranchController {
         BranchOutDto result = branchService.createBranch(dto);
         return ResponseEntity.ok(result);
     }
+
     @GetMapping()
+  public ResponseEntity<List<BranchOutDto>> getAllBranches(){
+        List<BranchOutDto> result = branchService.getAllBranches();
+        return ResponseEntity.ok(result);
+
+    }
+
+
+    @GetMapping("/get-all-branches")
     public ResponseEntity<List<BranchOutDto>> getAllBranches(){
         List<BranchOutDto> result = branchService.getAllBranches();
         return ResponseEntity.ok(result);
 
     }
+
     @GetMapping("/search-branch/{id}")
     public ResponseEntity<BranchOutDto> getBranchById(@PathVariable Long id) {
         BranchOutDto branch = branchService.searchBranchById(id);

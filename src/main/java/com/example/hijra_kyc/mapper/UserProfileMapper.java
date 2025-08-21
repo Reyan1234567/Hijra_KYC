@@ -1,6 +1,7 @@
 package com.example.hijra_kyc.mapper;
 
 import org.mapstruct.Mapper;
+import com.example.hijra_kyc.dto.UserProfileDto.UserProfileDisplayDto;
 import org.springframework.stereotype.Service;
 
 import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
@@ -45,4 +46,20 @@ public class UserProfileMapper {
         return dto;
     }
 
+}
+
+    public UserProfileDisplayDto userDisplayDto(UserProfile user){
+        return UserProfileDisplayDto.builder()
+                .id(user.getId())
+                .name(user.getFirstName()+" "+user.getLastName())
+                .username(user.getUserName())
+                .userId(user.getUserId())
+                .role(user.getRoleId().getRoleName())
+                .branch(user.getBranch().getName())
+                .phoneNumber(user.getPhoneNumber())
+                .status(user.getStatus())
+                .profilePicture(user.getPhotoUrl())
+                .PresentStatus(user.getLoginStatus())
+                .build();
+    }
 }
