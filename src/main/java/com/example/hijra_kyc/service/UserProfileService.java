@@ -60,7 +60,7 @@ public class UserProfileService {
     }
 
     // ✅ Updated to use userID (String)
-    public UserProfileOutDto getUserByuserId(String userId) {
+    public UserProfileOutDto getUserByUserId(String userId) {
         UserProfile user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with userID: " + userId));
         return mapper.toDto(user);
@@ -111,6 +111,10 @@ public class UserProfileService {
 
     public void changeProfile(UserProfileDto dto) {
         try {
+            log.info("DOES TEH CHANGE PROFILE GET HIT?");
+            log.info("DOES TEH CHANGE PROFILE GET HIT?");
+            log.info("DOES TEH CHANGE PROFILE GET HIT?");
+
             UserProfile user = userRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getId()));
             String fileType = dto.getBase64().split(",")[0].split("/")[1].split(";")[0];
 

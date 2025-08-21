@@ -126,7 +126,11 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest refreshToken){
+        log.info("THE REFRESH ROUTE");
+        log.info(refreshToken.getRefreshToken());
         RefreshResponse refresh=service.accessRefreshToken(refreshToken.getRefreshToken());
+        log.info(refresh.getAccessToken());
+        log.info(refresh.getRefreshToken());
         return ResponseEntity.ok(refresh);
     }
 }

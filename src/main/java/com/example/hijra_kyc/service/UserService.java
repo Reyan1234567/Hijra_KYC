@@ -31,43 +31,38 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepo repo;
+    private final UserProfileRepository repo;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
     private final UserProfileRepository userProfileRepository;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public User register(AuthInput input) {
-        User user = User.builder()
-                .username(input.getUsername())
-                .password(encoder.encode(input.getPassword()))
-                .role("maker")
-                .build();
-        return repo.save(user);
-    }
+//    public User register(AuthInput input) {
+//        User user = User.builder()
+//                .username(input.getUsername())
+//                .password(encoder.encode(input.getPassword()))
+//                .role("maker")
+//                .build();
+//        return repo.save(user);
+//    }
 
     public RefreshResponse accessRefreshToken(String refreshToken) {
         UserDetails userDetails = getUserDetailsFromRefreshToken(refreshToken);
         RefreshResponse refresh = returnFinalRefreshResponse(refreshToken, userDetails);
+        log.info("THE REFRESH TOKEN");
         log.info(refresh.getAccessToken());
         return refresh;
     }
 
     private UserDetails getUserDetailsFromRefreshToken(String token) {
         try {
-            log.info("check: getUserDetailsFromRefreshToken");
             String username = jwtService.extractUsername(token);
-            User user = repo.findByUsername(username);
-
-            if (user == null) {
-                throw new AuthenticationException("Username not found");
-            }
-            Optional<UserProfile> userProfile = userProfileRepository.findByUsername(user.getUsername());
+            Optional<UserProfile> userProfile = userProfileRepository.findByUsername(username);
             if (userProfile.isPresent()) {
                 return new UserPrincipal(userProfile.get()); // or however you wrap your user}
             }
-            throw new AuthenticationException("Can't find user with username "+user.getUsername());
+            throw new AuthenticationException("Can't find user with username "+username);
         } catch (AuthenticationException e) {
             throw e;
         } catch (JwtException e) {

@@ -116,7 +116,6 @@ public class DistributorService {
                 makeFormRepository.updateHoIdOfaListOfMakeForms(shuffledCheckers.get(i), List.of(makesNotAssignedToday.get(i)), Instant.now());
             }
             log.info("assigned successfully");
-            return;
         }
 
         else{

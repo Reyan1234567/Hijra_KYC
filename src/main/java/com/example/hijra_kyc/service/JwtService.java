@@ -26,7 +26,7 @@ public class JwtService {
     private String refreshPass;
 
     public String generateAccessToken(UserDetails userDetails) {
-        return buildToken(userDetails, 1000 * 60 * 10); // 15 minutes
+        return buildToken(userDetails, 1000 * 10); // 15 minutes
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
@@ -70,18 +70,24 @@ public class JwtService {
     }
 
     public String extractUsername(String token){
-        log.info(token);
-        return extractClaim(token, Claims::getSubject);
+        log.info("check: extractUsername");
+        log.info("THE TOKEN {}",token);
+        String claim = extractClaim(token, Claims::getSubject);
+        log.info("THE SUBJECT {}",claim);
+        return claim;
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         final Claims claims = extractAllClaims(token);
+        log.info("THE Claims {}",claims);
         System.out.println(claims);
         return claimResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
         try{
+            log.info("check: extractAllClaims");
+            log.info("TOKEN {}",token);
             if (token == null) {
                 throw new AuthenticationException("token is null");
             }
@@ -92,18 +98,23 @@ public class JwtService {
                     .getPayload();
         }
         catch(JwtException e){
+            log.error("Jwt Exception {}", String.valueOf(e));
             throw new AuthenticationException("Jwt Exception "+e);
         }
         catch(AuthenticationException e){
+            log.error("Jwt Exception {}", String.valueOf(e));
             throw e;
         }
         catch(Exception e){
+            log.error("Jwt Exception {}", String.valueOf(e));
             log.error("Error extracting claims", e);
             throw new AuthenticationServiceException("Error getting claims");
         }
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
+        log.info("CHECK: validateToken");
+        log.info("THE TOKEN {}",token);
         final String userName = extractUsername(token);
         return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }

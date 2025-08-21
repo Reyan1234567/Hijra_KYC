@@ -3,7 +3,10 @@ package com.example.hijra_kyc.controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import com.example.hijra_kyc.mapper.UserPrincipal;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +14,7 @@ import com.example.hijra_kyc.dto.UserProfileDto.*;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.example.hijra_kyc.dto.UserProfileDto.UserProfileInDto;
@@ -22,7 +26,7 @@ import com.example.hijra_kyc.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@Slf4j
 @RestController
 @RequestMapping("/api/user-profiles")
 @Validated
@@ -49,7 +53,7 @@ public class UserProfileController {
 
     @GetMapping("/get-user/{userId}")
     public ResponseEntity<UserProfileOutDto> getUserByUserId(@PathVariable String userId) {
-        UserProfileOutDto user = userService.getUserByuserId(userId);
+        UserProfileOutDto user = userService.getUserByUserId(userId);
         return ResponseEntity.ok(user);
     }
 
@@ -107,15 +111,16 @@ public class UserProfileController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user: " + e.getMessage());
         }
     }
-    @GetMapping("/get-user/{id}")
+    @GetMapping("/get-users/{id}")
     public ResponseEntity<UserProfileDisplayDto> getUserById(@PathVariable Long id) {
         UserProfileDisplayDto user = userService.searchUserById(id);
         return ResponseEntity.ok(user);
     }
 
-    @PreAuthorize("#dto.id=authentication.principal.userId")
+    @PreAuthorize("#dto.id==authentication.principal.userId")
     @PatchMapping("/change-profile")
     public ResponseEntity<?> changeProfile(@Valid @RequestBody UserProfileDto dto){
+        UserPrincipal userPrincipal=(UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         userService.changeProfile(dto);
         return ResponseEntity.ok("Successfully edited profile");
     }
