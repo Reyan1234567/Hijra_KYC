@@ -29,12 +29,12 @@ public class Branch {
   
     @NotNull(message="District Code is required")
     @ManyToOne
-    @JoinColumn(name = "district", referencedColumnName = "districtId")
-    private District id;
+    @JoinColumn(name = "district_id", referencedColumnName = "id")
+    private District districtId;
+
     @Column(nullable = false)
     private Integer status; // 1 = active, 0 = inactive
 
     @NotBlank(message = "branch phone is required")
     private String phone;
-
 }

@@ -19,7 +19,7 @@ public class DistrictMapper {
     }
     public DistrictOutDto toDto(District district){
         DistrictOutDto dto = new DistrictOutDto();
-        dto.setId(district.getDistrictId());
+        dto.setId(district.getId());
         dto.setName(district.getName());
         dto.setDistrictCode(district.getDistrictCode());
         return dto;

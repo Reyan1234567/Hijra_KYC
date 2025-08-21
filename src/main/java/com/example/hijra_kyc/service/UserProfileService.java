@@ -6,7 +6,9 @@ import java.time.Instant;
 
 import com.example.hijra_kyc.dto.UserProfileDto.*;
 import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.hijra_kyc.util.FileUpload;
@@ -65,12 +67,18 @@ public class UserProfileService {
     }
 
     // You can remove this if not needed anymore
-    public UserProfile searchUserById(Long id) {
-        return userRepository.findById(id)
-}
-    public UserProfileDisplayDto searchUsersById(Long id){
-        UserProfile user=userRepository.findById(id)
+    public UserProfileDisplayDto searchUserById(Long id) {
+        Optional<UserProfile> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return mapper.userDisplayDto(user.get());
+        }
+        throw new UsernameNotFoundException("User not found with userID: " + id);
+    }
+
+    public UserProfileDisplayDto searchUsersById(Long id) {
+        UserProfile user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return mapper.userDisplayDto(user);
     }
 
     // ✅ Updated to use userID (String) instead of id (Long)
@@ -94,56 +102,53 @@ public class UserProfileService {
         if (phoneNo != null) user.setPhoneNumber(phoneNo);
         if (status != null) user.setStatus(status);
         if (photo != null && !photo.isEmpty()) {
-            user.setPhoto(photo.getBytes());
+            user.setPhotoUrl(photo.toString());
         }
 
         UserProfile savedUser = userRepository.save(user);
         return mapper.toDto(savedUser);
     }
 
-    public void changeProfile(UserProfileDto dto){
-        try{
+    public void changeProfile(UserProfileDto dto) {
+        try {
             UserProfile user = userRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getId()));
             String fileType = dto.getBase64().split(",")[0].split("/")[1].split(";")[0];
 
             //check if the file sent is an image
-            String variable=Paths.get(user.getBranch().getName(), user.getUserName()).toString();
-            String unique=Instant.now().toString().replace(":", "-").replace(".", "-") + "__"+"."+fileType;
-            String filePath = Paths.get("C:", "Users", "hp", "Videos", "Hijra_KYC", "userProfiles",variable).toString();
+            String variable = Paths.get(user.getBranch().getName(), user.getUserName()).toString();
+            String unique = Instant.now().toString().replace(":", "-").replace(".", "-") + "__" + "." + fileType;
+            String filePath = Paths.get("C:", "Users", "hp", "Videos", "Hijra_KYC", "userProfiles", variable).toString();
             String fileName = Paths.get(filePath, unique).toString();
             fileUpload.createFile(dto.getBase64(), filePath, fileName, fileType);
 
-            user.setPhotoUrl("http://localhost:"+port+"/userProfiles/"+variable.replace("\\","/")+"/"+unique);
+            user.setPhotoUrl("http://localhost:" + port + "/userProfiles/" + variable.replace("\\", "/") + "/" + unique);
             userRepository.save(user);
-        }
-        catch(IOException e){
-            log.error("File operation failed ",e);
+        } catch (IOException e) {
+            log.error("File operation failed ", e);
             throw new RuntimeException("File operation failed");
-        }
-        catch(ArrayIndexOutOfBoundsException e){
-            log.error("Not the correct type of image input, ",e);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            log.error("Not the correct type of image input, ", e);
             throw new RuntimeException("Wrong image format");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             log.error("Image saving failed", e);
             throw new RuntimeException("Failed to save profile image");
         }
     }
 
     public UserProfile nullify(Long id) {
-        UserProfile user=userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found with id: " + id));
+        UserProfile user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         user.setPhotoUrl(null);
         userRepository.save(user);
         return user;
     }
 
     public List<UserProfileDisplayDto> getCheckers() {
-        List<UserProfile> users=userRepository.findCheckersPresentToday();
+        List<UserProfile> users = userRepository.findCheckersPresentToday();
         return users.stream().map(mapper::userDisplayDto).toList();
     }
 
     public void changeStatus(Long id, int status) {
-        UserProfile user=userRepository.findById(id).orElseThrow(()->new UsernameNotFoundException("User not found!"));
+        UserProfile user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
         user.setLoginStatus(status);
         userRepository.save(user);
     }

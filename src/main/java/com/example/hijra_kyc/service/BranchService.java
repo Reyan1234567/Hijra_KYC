@@ -56,16 +56,16 @@ public class BranchService {
         if (dto.getDistrictId() != null) {
             District district = districtRepository.findById(dto.getDistrictId())
                     .orElseThrow(() -> new RuntimeException("District not found"));
-            existingBranch.setId(district);
+            existingBranch.setDistrictId(district);
         }
 
         Branch updatedBranch = branchRepository.save(existingBranch);
         return mapper.toDto(updatedBranch);
     }
   
-    public BranchOutDto searchBranchById(Long id){
-        Branch branch=branchRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
-        return mapper.toDto(branch);
-    }
+//    public BranchOutDto searchBranchById(Long id){
+//        Branch branch=branchRepository.findById(id)
+//            .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+//        return mapper.toDto(branch);
+//    }
 }

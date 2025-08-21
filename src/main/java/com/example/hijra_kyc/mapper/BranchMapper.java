@@ -14,7 +14,7 @@ public class BranchMapper {
         return Branch.builder()
                 .name(dto.getName())
                 .branchCode(dto.getBranchCode())
-                .id(district)
+                .districtId(district)
                 .status(dto.getStatus())
                 .phone(dto.getPhone())
                 .build();
@@ -25,7 +25,7 @@ public class BranchMapper {
         dto.setId(branch.getBranchId());
         dto.setName(branch.getName());
         dto.setBranchCode(branch.getBranchCode());
-        dto.setDistrictId(branch.getId().getDistrictId());
+        dto.setDistrictId(branch.getDistrictId().getId());
         dto.setStatus(branch.getStatus());
         dto.setPhone(branch.getPhone());
         return dto;

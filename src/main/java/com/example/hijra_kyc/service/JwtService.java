@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -23,11 +21,6 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtService {
-//    private String secretKey = "";
-//    public JwtService(){
-//        secretKey = generateSecretKey();
-//        System.out.println(secretKey);
-//    }
 
     @Value("${refresh.pass}")
     private String refreshPass;

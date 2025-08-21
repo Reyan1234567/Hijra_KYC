@@ -46,7 +46,7 @@ public class UserProfileMapper {
         return dto;
     }
 
-}
+
 
     public UserProfileDisplayDto userDisplayDto(UserProfile user){
         return UserProfileDisplayDto.builder()

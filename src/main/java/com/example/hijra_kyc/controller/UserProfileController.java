@@ -62,7 +62,7 @@ public class UserProfileController {
         if (optionalUser.isPresent()) {
             UserProfile user = optionalUser.get();
             try {
-                user.setPhoto(file.getBytes());
+                user.setPhotoUrl(file.getBytes().toString());
                 userProfileRepository.save(user);
                 return ResponseEntity.ok("Photo uploaded successfully.");
             } catch (IOException e) {
@@ -78,7 +78,7 @@ public class UserProfileController {
     public ResponseEntity<byte[]> getPhoto(@PathVariable String userId) {
         Optional<UserProfile> optionalUser = userProfileRepository.findByUserId(userId);
         if (optionalUser.isPresent()) {
-            byte[] photo = optionalUser.get().getPhoto();
+            byte[] photo = optionalUser.get().getPhotoUrl().getBytes();
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
                     .body(photo);
