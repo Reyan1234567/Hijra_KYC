@@ -103,6 +103,7 @@ public class DistributorService {
         }
         if(makesNotAssignedToday.isEmpty()){
             log.error("Nothing to assign");
+            return;
         }
 
         long forEachChecker = makesNotAssignedToday.size() / presentCheckers.size();
