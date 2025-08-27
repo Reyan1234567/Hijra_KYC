@@ -44,7 +44,6 @@ public class BranchController {
     public ResponseEntity<List<BranchOutDto>> getAllBranchess(){
         List<BranchOutDto> result = branchService.getAllBranches();
         return ResponseEntity.ok(result);
-
     }
 
     @GetMapping("/search-branch/{id}")

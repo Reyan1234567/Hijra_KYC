@@ -8,7 +8,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/hijra__kyc
         username: root
-        password: 'reyanberoneday'
+        password: ''
     jpa:
         generate-ddl: true
         hibernate:
