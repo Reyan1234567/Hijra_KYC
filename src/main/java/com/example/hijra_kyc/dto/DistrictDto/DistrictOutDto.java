@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class DistrictOutDto {
     private Long id;
-    private String name;
+    private String districtName;
     private String districtCode;
 }

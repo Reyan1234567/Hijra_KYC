@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class UserProfileMapper {
     public UserProfile toEntity(UserProfileInDto dto, Branch branch, Role role){
         return UserProfile.builder()
-                .userId(dto.getUserID())
+
                 .branch(branch)
                 .roleId(role)
                 .firstName(dto.getFirstName())
@@ -32,7 +32,7 @@ public class UserProfileMapper {
     public UserProfileOutDto toDto(UserProfile user){
         UserProfileOutDto dto = new UserProfileOutDto();
         dto.setId(user.getId());
-        dto.setUserID(user.getUserId());
+        dto.setId(user.getId());
         dto.setBranchId(user.getBranch().getBranchId());
         dto.setRoleId(user.getRoleId().getRoleId());
         dto.setFirstName(user.getFirstName());
@@ -53,13 +53,12 @@ public class UserProfileMapper {
                 .id(user.getId())
                 .name(user.getFirstName()+" "+user.getLastName())
                 .username(user.getUserName())
-                .userId(user.getUserId())
                 .role(user.getRoleId().getRoleName())
                 .branch(user.getBranch().getName())
                 .phoneNumber(user.getPhoneNumber())
                 .status(user.getStatus())
                 .profilePicture(user.getPhotoUrl())
-                .PresentStatus(user.getLoginStatus())
+                .PresentStatus(user.getStatus())
                 .build();
     }
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserProfileOutDto {
     private Long id;
-    private String userID;
+
     private Long branchId;
     private Long roleId;
     private String firstName;
@@ -14,7 +14,7 @@ public class UserProfileOutDto {
     private String gender;
     private String branchAddress;
     private String phoneNumber;
-    private String photoBase64;
+    private String photoUrl;
     private String roleName;
     private String status;
 

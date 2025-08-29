@@ -15,8 +15,8 @@ public class CustomLdapUserDetails implements UserDetails {
     private final String lastName;
     private final String gender;
     private final String phoneNumber;
-    private final String branchId;
-    private final String userId;
+    private final String branchName;
+
 
     public CustomLdapUserDetails(
             String username,
@@ -25,8 +25,8 @@ public class CustomLdapUserDetails implements UserDetails {
             String lastName,
             String gender,
             String phoneNumber,
-            String branchId,
-            String userId
+            String branchName
+
     ) {
         this.username = username;
         this.password = password;
@@ -34,8 +34,8 @@ public class CustomLdapUserDetails implements UserDetails {
         this.lastName = lastName;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
-        this.branchId = branchId;
-        this.userId = userId;
+        this.branchName= branchName;
+
     }
 
     @Override public Collection<? extends GrantedAuthority> getAuthorities() { return java.util.List.of(); }

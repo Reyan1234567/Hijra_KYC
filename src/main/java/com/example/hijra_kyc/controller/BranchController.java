@@ -1,5 +1,4 @@
 package com.example.hijra_kyc.controller;
-
 import java.util.List;
 
 import com.example.hijra_kyc.dto.UserProfileDto.UserProfileOutDto;
@@ -33,7 +32,7 @@ public class BranchController {
     }
 
     @GetMapping()
-  public ResponseEntity<List<BranchOutDto>> getAllBranches(){
+    public ResponseEntity<List<BranchOutDto>> getAllBranches(){
         List<BranchOutDto> result = branchService.getAllBranches();
         return ResponseEntity.ok(result);
 
@@ -44,11 +43,12 @@ public class BranchController {
     public ResponseEntity<List<BranchOutDto>> getAllBranchess(){
         List<BranchOutDto> result = branchService.getAllBranches();
         return ResponseEntity.ok(result);
+
     }
 
     @GetMapping("/search-branch/{id}")
     public ResponseEntity<BranchOutDto> getBranchById(@PathVariable Long id) {
-        BranchOutDto branch = branchService.searchBranchById(id);
+        BranchOutDto branch = branchService.searchbranchById(id);
         return ResponseEntity.ok(branch);
     }
     @PutMapping("/{id}")

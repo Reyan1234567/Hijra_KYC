@@ -16,15 +16,14 @@ import com.example.hijra_kyc.service.JwtService;
 import com.example.hijra_kyc.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Optional;
 
 @Slf4j
@@ -32,6 +31,7 @@ import java.util.Optional;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final UserProfileRepository userProfileRepository;
     private final AuthenticationManager authManager;
     private final RoleRepository roleRepository;
@@ -47,16 +47,13 @@ public class AuthController {
         if (username == null || password == null) {
             throw new BadCredentialsException("Missing credentials");
         }
-        Authentication auth = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, password)
-            );
 
-        log.info("THE ERROR ISN'T HAPPENING in THE AUTH MANAGER");
-        log.error("THE ERROR ISN'T HAPPENING in THE AUTH MANAGER");
+        Authentication auth = authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
 
         if (auth.isAuthenticated()) {
-            log.info("SO I AM AUTHENTICATED");
-            log.error("SO I AM AUTHENTICATED");
+            log.info("User authenticated successfully");
             CustomLdapUserDetails ldapUser = (CustomLdapUserDetails) auth.getPrincipal();
             String userId = ldapUser.getUsername();
 
@@ -69,14 +66,12 @@ public class AuthController {
 
                 if (userProfile.getStatus() != 1) {
                     // Status is not active → blocked
-                    throw new AuthenticationException("Your Are Currently blocked and can't login");
+                    throw new AuthenticationException("You are currently blocked and can't login");
                 }
 
             } else {
-                //find if the user exists
-                // User does not exist → save LDAP details in DB
+                // ----------------- START: NEW LDAP USER REGISTRATION -----------------
                 userProfile = new UserProfile();
-                userProfile.setUserId(userId);
                 userProfile.setUserName(username);
                 userProfile.setFirstName(ldapUser.getFirstName());
                 userProfile.setLastName(ldapUser.getLastName());
@@ -85,52 +80,67 @@ public class AuthController {
                 userProfile.setStatus(1); // active
                 userProfile.setPhotoUrl(null);
 
-                // Default role id = 2
+                // Default role id = 1
                 Role defaultRole = roleRepository.findById(1L)
                         .orElseThrow(() -> new RuntimeException("Default role not found"));
                 userProfile.setRoleId(defaultRole);
 
-                // Set branch if exists
-                Branch branch = branchRepository.findById(Long.valueOf(ldapUser.getBranchId()))
-                        .orElseThrow(() -> new RuntimeException("Branch not found"));
-                userProfile.setBranch(branch);
+                // ----------------- BRANCH LOGIC -----------------
+                Branch branch = null;
+                String branchName = ldapUser.getBranchName();
 
+                if (branchName != null && !branchName.isEmpty()) {
+                    Optional<Branch> optionalBranch = branchRepository.findByName(branchName);
+
+                    if (optionalBranch.isPresent()) {
+                        branch = optionalBranch.get();
+                    } else {
+                        // Branch not found → create new branch in DB
+                        branch = new Branch();
+                        branch.setName(branchName);
+                        branch.setPhone("0000000000"); // default phone
+                        branch.setStatus(1);          // active
+                        branch.setDistrictCode(null);   // optional: set a default district or null
+                        branch.setDistrictName(null);
+                        branch = branchRepository.save(branch); // save and get the ID
+                        log.info("Created new branch: {}", branchName);
+                    }
+                }
+
+                userProfile.setBranch(branch);
+                // -------------------------------------------------
+
+                // Save new user
                 userProfileRepository.save(userProfile);
+                // ----------------- END: NEW LDAP USER REGISTRATION -----------------
             }
 
             UserPrincipal userPrincipal = new UserPrincipal(userProfile);
-            // Generate JWT token using injected jwtUtil
+            // Generate JWT token
             String accessToken = jwtUtil.generateAccessToken(userPrincipal);
             String refreshToken = jwtUtil.generateRefreshToken(userPrincipal);
 
-            // Return username, token, and roleId
+            // Prepare user info for response
             UserInfo userInfo = UserInfo.builder()
                     .username(userProfile.getUserName())
                     .role(userProfile.getRoleId().getRoleName())
                     .userId(userProfile.getId())
                     .build();
-            Authentication auth2=new CustomAuthentication(userProfile);
+
+            // Set authentication in context
+            Authentication auth2 = new CustomAuthentication(userProfile);
             SecurityContextHolder.getContext().setAuthentication(auth2);
-            return ResponseEntity.ok(new AuthResponse(
-                    accessToken,
-                    refreshToken,
-                    userInfo
-            ));
+
+            return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken, userInfo));
         } else {
-            log.info("I AM NOT AUTHENTICATED");
-            log.error("I AM NOT AUTHENTICATED");
             throw new BadCredentialsException("Username or Password incorrect");
         }
-
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest refreshToken){
-        log.info("THE REFRESH ROUTE");
-        log.info(refreshToken.getRefreshToken());
-        RefreshResponse refresh=service.accessRefreshToken(refreshToken.getRefreshToken());
-        log.info(refresh.getAccessToken());
-        log.info(refresh.getRefreshToken());
+        log.info("Refreshing JWT token");
+        RefreshResponse refresh = service.accessRefreshToken(refreshToken.getRefreshToken());
         return ResponseEntity.ok(refresh);
     }
 }

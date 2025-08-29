@@ -19,10 +19,10 @@ public interface ReportRepository extends JpaRepository<MakeForm, Long> {
        f.customer_account,
        f.customer_phone,
        CASE f.status
-            WHEN 0 THEN 'Pending'
-            WHEN 1 THEN 'Approved'
-            WHEN 2 THEN 'Rejected'
-            WHEN 3 THEN 'Saved'
+            WHEN 1 THEN 'Pending'
+            WHEN 2 THEN 'Approved'
+            WHEN 3 THEN 'Rejected'
+            WHEN 4 THEN 'Saved'
        END as status,
        b.name as branchName,
        maker.user_name as user_name,
@@ -50,10 +50,10 @@ ORDER BY f.make_time DESC
      SELECT 
             b.name as branchName,
             COUNT(f.id) as totalRecords,
-            SUM(CASE WHEN f.status = 0 THEN 1 ELSE 0 END) as pendingCount,
-            SUM(CASE WHEN f.status = 1 THEN 1 ELSE 0 END) as approvedCount,
-            SUM(CASE WHEN f.status = 2 THEN 1 ELSE 0 END) as rejectedCount,
-            SUM(CASE WHEN f.status = 3 THEN 1 ELSE 0 END) as savedCount
+            SUM(CASE WHEN f.status = 1 THEN 1 ELSE 0 END) as pendingCount,
+            SUM(CASE WHEN f.status = 2 THEN 1 ELSE 0 END) as approvedCount,
+            SUM(CASE WHEN f.status = 3 THEN 1 ELSE 0 END) as rejectedCount,
+            SUM(CASE WHEN f.status = 4 THEN 1 ELSE 0 END) as savedCount
         FROM kyc_make_forms f
         LEFT JOIN user_profile maker ON f.maker_user_id = maker.id
         LEFT JOIN branch b ON maker.branch_id = b.branch_id

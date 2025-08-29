@@ -3,21 +3,11 @@ package com.example.hijra_kyc.service;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.Instant;
-
-import com.example.hijra_kyc.dto.UserProfileDto.*;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.example.hijra_kyc.util.FileUpload;
-import org.apache.catalina.User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.example.hijra_kyc.dto.UserProfileDto.*;
 import com.example.hijra_kyc.mapper.UserProfileMapper;
 import com.example.hijra_kyc.model.Branch;
 import com.example.hijra_kyc.model.Role;
@@ -25,8 +15,15 @@ import com.example.hijra_kyc.model.UserProfile;
 import com.example.hijra_kyc.repository.BranchRepository;
 import com.example.hijra_kyc.repository.RoleRepository;
 import com.example.hijra_kyc.repository.UserProfileRepository;
+import com.example.hijra_kyc.util.FileUpload;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Service
@@ -59,39 +56,29 @@ public class UserProfileService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Updated to use userID (String)
-    public UserProfileOutDto getUserByUserId(String userId) {
-        UserProfile user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with userID: " + userId));
+    // ✅ Use database ID (Long)
+    public UserProfileOutDto getUserById(Long id) {
+        UserProfile user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         return mapper.toDto(user);
     }
 
-    // You can remove this if not needed anymore
     public UserProfileDisplayDto searchUserById(Long id) {
-        Optional<UserProfile> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            return mapper.userDisplayDto(user.get());
-        }
-        throw new UsernameNotFoundException("User not found with userID: " + id);
+        return userRepository.findById(id)
+                .map(mapper::userDisplayDto)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
     }
 
-    public UserProfileDisplayDto searchUsersById(Long id) {
-        UserProfile user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        return mapper.userDisplayDto(user);
-    }
-
-    // ✅ Updated to use userID (String) instead of id (Long)
-    public UserProfileOutDto updateUser(String userId, Long roleIdValue, Long branchIdValue,
-                                        String gender, String phoneNo, Integer status, MultipartFile photo)
+    // ✅ Updated to accept id: Long instead of userId: String
+    public UserProfileOutDto updateUser(Long id, Long roleIdValue, Long branchIdValue,
+                                        String gender, String phoneNumber, Integer status, MultipartFile photo)
             throws IOException {
 
-        UserProfile user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with userId: " + userId));
+        UserProfile user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
         Branch branch = branchRepo.findById(branchIdValue)
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
-
         Role role = roleRepo.findById(roleIdValue)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
@@ -99,10 +86,10 @@ public class UserProfileService {
         user.setRoleId(role);
 
         if (gender != null) user.setGender(gender);
-        if (phoneNo != null) user.setPhoneNumber(phoneNo);
+        if (phoneNumber != null) user.setPhoneNumber(phoneNumber);
         if (status != null) user.setStatus(status);
         if (photo != null && !photo.isEmpty()) {
-            user.setPhotoUrl(photo.toString());
+            user.setPhotoUrl(photo.toString()); // ⚠️ ideally store Base64 or file path
         }
 
         UserProfile savedUser = userRepository.save(user);
@@ -111,18 +98,17 @@ public class UserProfileService {
 
     public void changeProfile(UserProfileDto dto) {
         try {
-            log.info("DOES TEH CHANGE PROFILE GET HIT?");
-            log.info("DOES TEH CHANGE PROFILE GET HIT?");
-            log.info("DOES TEH CHANGE PROFILE GET HIT?");
+            UserProfile user = userRepository.findById(dto.getId())
+                    .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getId()));
 
-            UserProfile user = userRepository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getId()));
             String fileType = dto.getBase64().split(",")[0].split("/")[1].split(";")[0];
 
-            //check if the file sent is an image
+            // Build storage path
             String variable = Paths.get(user.getBranch().getName(), user.getUserName()).toString();
-            String unique = Instant.now().toString().replace(":", "-").replace(".", "-") + "__" + "." + fileType;
+            String unique = Instant.now().toString().replace(":", "-").replace(".", "-") + "__." + fileType;
             String filePath = Paths.get("C:", "Users", "hp", "Videos", "Hijra_KYC", "userProfiles", variable).toString();
             String fileName = Paths.get(filePath, unique).toString();
+
             fileUpload.createFile(dto.getBase64(), filePath, fileName, fileType);
 
             user.setPhotoUrl("http://localhost:" + port + "/userProfiles/" + variable.replace("\\", "/") + "/" + unique);
@@ -140,7 +126,8 @@ public class UserProfileService {
     }
 
     public UserProfile nullify(Long id) {
-        UserProfile user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        UserProfile user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         user.setPhotoUrl(null);
         userRepository.save(user);
         return user;
@@ -151,9 +138,14 @@ public class UserProfileService {
         return users.stream().map(mapper::userDisplayDto).toList();
     }
 
+    // ⚠️ careful: your entity doesn't have loginStatus field in the code you shared
     public void changeStatus(Long id, int status) {
-        UserProfile user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
-        user.setLoginStatus(status);
+        UserProfile user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+
+        // If you meant "status" (active/inactive)
+        user.setStatus(status);
+
         userRepository.save(user);
     }
 }

@@ -20,8 +20,8 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
         String last = getAttr(attrs, "sn");
         String gender = getAttr(attrs, "gender");
         String phone = getAttr(attrs, "phoneNumber");
-        String branch = getAttr(attrs, "branchId");  // string
-        String userId = getAttr(attrs, "userId");
+        String branch = getAttr(attrs, "branchName");  // string
+
 
         // password can be either String or byte[]
         Object pwdAttr = ctx.getObjectAttribute("userPassword");
@@ -32,7 +32,7 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
         }
 
         return new CustomLdapUserDetails(
-                username, pwd, first, last, gender, phone, branch, userId
+                username, pwd, first, last, gender, phone, branch
         );
     }
 

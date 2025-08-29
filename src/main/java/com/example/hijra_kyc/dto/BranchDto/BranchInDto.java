@@ -6,7 +6,8 @@ import lombok.Data;
 public class BranchInDto {
     private String name;
     private String branchCode;
-    private Long districtId ;
+    private String districtCode ;
+    private String districtName;
     private Integer status;
     private String phone;
 }

@@ -24,7 +24,7 @@ public class District {
 
     @NotBlank(message = "name is required")
     @Column(unique=true)
-    private String name;
+    private String districtName;
 
     @NotNull(message = "district code is required")
     @Column(unique=true)

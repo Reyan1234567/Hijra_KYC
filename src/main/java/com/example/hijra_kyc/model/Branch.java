@@ -27,12 +27,16 @@ public class Branch {
     @Column(unique = true)
     private String branchCode;
   
+    @NotNull(message="District Name is required")
+    @ManyToOne
+    @JoinColumn(name = "district_Name", referencedColumnName = "districtName ")
+    private District districtName;
     @NotNull(message="District Code is required")
     @ManyToOne
-    @JoinColumn(name = "district_id", referencedColumnName = "id")
-    private District districtId;
+    @JoinColumn(name = "district_Code", referencedColumnName = "districtCode ")
+    private District districtCode;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "int default 1")
     private Integer status; // 1 = active, 0 = inactive
 
     @NotBlank(message = "branch phone is required")

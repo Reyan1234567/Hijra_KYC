@@ -21,9 +21,9 @@ public class UserProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "user id required")
-    @Column(unique = true)
-    private String userId;
+//    @NotBlank(message = "user id required")
+//    @Column(unique = true)
+//    private String userId;
 
     @NotNull(message = "commented by is required")
     @ManyToOne
@@ -55,8 +55,6 @@ public class UserProfile {
     @JoinColumn(name="branchId", nullable = false)
     private Branch branch;
 
-    @Column(columnDefinition = "int default 0")
-    private int loginStatus;
 
     @OneToMany(mappedBy = "maker")
     List<MakeForm> makeFormList;

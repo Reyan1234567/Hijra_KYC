@@ -13,14 +13,14 @@ import lombok.RequiredArgsConstructor;
 public class DistrictMapper {
     public District toEntity(DistrictInDto dto){
         return District.builder()
-        .name(dto.getName())
+        .districtName(dto.getDistrictName())
         .districtCode(dto.getDistrictCode())
         .build();
     }
     public DistrictOutDto toDto(District district){
         DistrictOutDto dto = new DistrictOutDto();
         dto.setId(district.getId());
-        dto.setName(district.getName());
+        dto.setDistrictName(district.getDistrictName());
         dto.setDistrictCode(district.getDistrictCode());
         return dto;
     }

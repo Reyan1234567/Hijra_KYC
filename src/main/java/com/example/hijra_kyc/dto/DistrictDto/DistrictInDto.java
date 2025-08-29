@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class DistrictInDto {
-    private String name;
+    private String districtName;
     private String districtCode;
 }
