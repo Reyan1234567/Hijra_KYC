@@ -69,10 +69,10 @@ ORDER BY f.make_time DESC
 
     @Query(value = """
     SELECT checker.user_name as ho_user_name,
-           SUM(CASE WHEN f.status = 0 THEN 1 ELSE 0 END) as pending,
-           SUM(CASE WHEN f.status = 1 THEN 1 ELSE 0 END) as approved,
-           SUM(CASE WHEN f.status = 2 THEN 1 ELSE 0 END) as rejected,
-           SUM(CASE WHEN f.status IN (1,2) THEN 1 ELSE 0 END) as total
+           SUM(CASE WHEN f.status = 1 THEN 1 ELSE 0 END) as pending,
+           SUM(CASE WHEN f.status = 2 THEN 1 ELSE 0 END) as approved,
+           SUM(CASE WHEN f.status = 3 THEN 1 ELSE 0 END) as rejected,
+           SUM(CASE WHEN f.status IN (2,3) THEN 2 ELSE 2 END) as total
     FROM kyc_make_forms f
     LEFT JOIN user_profile checker ON f.ho_user_id = checker.id
     WHERE f.ho_user_id IS NOT NULL
